@@ -172,3 +172,6 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+/src/*.tss
+/src/ACBr.Net.sln.GhostDoc.xml
+/src/ACBr.Net.Boleto.sln.GhostDoc.xml

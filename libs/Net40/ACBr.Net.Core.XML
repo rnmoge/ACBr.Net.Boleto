@@ -1,0 +1,1300 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ACBr.Net.Core</name>
+    </assembly>
+    <members>
+        <member name="T:ACBr.Net.Core.CalcDigFormula">
+            <summary>
+            Enum CalcDigFormula
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.CalcDigFormula.Modulo11">
+            <summary>
+            The modulo11
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.CalcDigFormula.Modulo10PIS">
+            <summary>
+            The modulo10 pis
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.CalcDigFormula.Modulo10">
+            <summary>
+            The modulo10
+            </summary>
+        </member>
+        <member name="T:ACBr.Net.Boleto.CalcDigito">
+            <summary>
+            Class CalcDigito. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Boleto.CalcDigito.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:ACBr.Net.Boleto.CalcDigito"/> class.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Boleto.CalcDigito.Calcular">
+            <summary>
+            Calcula o digito verificador
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Boleto.CalcDigito.CalculoPadrao">
+            <summary>
+            Calculoes the padrao.
+            </summary>
+        </member>
+        <member name="P:ACBr.Net.Boleto.CalcDigito.Documento">
+            <summary>
+            Gets or sets the documento.
+            </summary>
+            <value>The documento.</value>
+        </member>
+        <member name="P:ACBr.Net.Boleto.CalcDigito.MultiplicadorInicial">
+            <summary>
+            Gets or sets the multiplicador inicial.
+            </summary>
+            <value>The multiplicador inicial.</value>
+        </member>
+        <member name="P:ACBr.Net.Boleto.CalcDigito.MultiplicadorFinal">
+            <summary>
+            Gets or sets the multiplicador final.
+            </summary>
+            <value>The multiplicador final.</value>
+        </member>
+        <member name="P:ACBr.Net.Boleto.CalcDigito.MultiplicadorAtual">
+            <summary>
+            Gets or sets the multiplicador atual.
+            </summary>
+            <value>The multiplicador atual.</value>
+        </member>
+        <member name="P:ACBr.Net.Boleto.CalcDigito.DigitoFinal">
+            <summary>
+            Gets or sets the digito final.
+            </summary>
+            <value>The digito final.</value>
+        </member>
+        <member name="P:ACBr.Net.Boleto.CalcDigito.ModuloFinal">
+            <summary>
+            Gets or sets the modulo final.
+            </summary>
+            <value>The modulo final.</value>
+        </member>
+        <member name="P:ACBr.Net.Boleto.CalcDigito.SomaDigitos">
+            <summary>
+            Gets or sets the soma digitos.
+            </summary>
+            <value>The soma digitos.</value>
+        </member>
+        <member name="P:ACBr.Net.Boleto.CalcDigito.FormulaDigito">
+            <summary>
+            Gets or sets the formula digito.
+            </summary>
+            <value>The formula digito.</value>
+        </member>
+        <member name="T:ACBr.Net.Core.ACBrDevice">
+            <summary>
+            Class ACBrDevice. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.ACBrDeviceAtivarPortaException">
+            <summary>
+            The ac br device ativar porta exception
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.ACBrDeviceAtivarException">
+            <summary>
+            The ac br device ativar exception
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.ACBrDeviceSetBaudException">
+            <summary>
+            The ac br device set baud exception
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.ACBrDeviceSetDataException">
+            <summary>
+            The ac br device set data exception
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.ACBrDeviceSetPortaException">
+            <summary>
+            The ac br device set porta exception
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.ACBrDeviceEnviaStrThreadException">
+            <summary>
+            The ac br device envia string thread exception
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.COMPort">
+            <summary>
+            The COM port
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.port">
+            <summary>
+            The port
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.timeout">
+            <summary>
+            The timeout
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.baud">
+            <summary>
+            The baud
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.data">
+            <summary>
+            The data
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.hard">
+            <summary>
+            The hard
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.soft">
+            <summary>
+            The soft
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.interval">
+            <summary>
+            The interval
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.hand">
+            <summary>
+            The hand
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.stop">
+            <summary>
+            The stop
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.ACBrDevice.parity">
+            <summary>
+            The parity
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:ACBr.Net.Core.ACBrDevice"/> class.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.SetPorta(System.String)">
+            <summary>
+            Sets the porta.
+            </summary>
+            <param name="value">The value.</param>
+            <exception cref="T:ACBr.Net.Core.ACBrException"></exception>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.SetHandshake(System.IO.Ports.Handshake)">
+            <summary>
+            Sets the handshake.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.SetHardflow(System.Boolean)">
+            <summary>
+            Sets the hardflow.
+            </summary>
+            <param name="value">if set to <c>true</c> [value].</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.SetSoftflow(System.Boolean)">
+            <summary>
+            Sets the softflow.
+            </summary>
+            <param name="value">if set to <c>true</c> [value].</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.SetBaund(System.Int32)">
+            <summary>
+            Sets the baund.
+            </summary>
+            <param name="value">The value.</param>
+            <exception cref="T:ACBr.Net.Core.ACBrException"></exception>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.SetData(System.Int32)">
+            <summary>
+            Sets the data.
+            </summary>
+            <param name="value">The value.</param>
+            <exception cref="T:ACBr.Net.Core.ACBrException"></exception>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.SetTimeout(System.Int32)">
+            <summary>
+            Sets the timeout.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.SetBytesInterval(System.Int32)">
+            <summary>
+            Sets the bytes interval.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.SetStop(System.IO.Ports.StopBits)">
+            <summary>
+            Sets the stop.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.SetParity(System.IO.Ports.Parity)">
+            <summary>
+            Sets the parity.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.Ativar">
+            <summary>
+            Ativars this instance.
+            </summary>
+            <exception cref="T:ACBr.Net.Core.ACBrException">
+            Dispositivo já esta ativo
+            or
+            or
+            </exception>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.Desativar">
+            <summary>
+            Desativars this instance.
+            </summary>
+            <exception cref="T:ACBr.Net.Core.ACBrException">
+            Dispositivo não está ativo
+            or
+            Erro ao desativar o dispositivo
+            </exception>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.EmLinha(System.Int32)">
+            <summary>
+            Ems the linha.
+            </summary>
+            <param name="timeout">The timeout.</param>
+            <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.EnviaString(System.String)">
+            <summary>
+            Envias the string.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.ConfigurarSerial">
+            <summary>
+            Configurars the serial.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.COMPort_ErrorReceived(System.Object,System.IO.Ports.SerialErrorReceivedEventArgs)">
+            <summary>
+            Handles the ErrorReceived event of the COMPort control.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">The <see cref="T:System.IO.Ports.SerialErrorReceivedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.COMPort_DataReceived(System.Object,System.IO.Ports.SerialDataReceivedEventArgs)">
+            <summary>
+            Handles the DataReceived event of the COMPort control.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">The <see cref="T:System.IO.Ports.SerialDataReceivedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.ACBrDevice.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.Ativo">
+            <summary>
+            Gets a value indicating whether this <see cref="T:ACBr.Net.Core.ACBrDevice"/> is ativo.
+            </summary>
+            <value><c>true</c> if ativo; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.Porta">
+            <summary>
+            Gets or sets the porta.
+            </summary>
+            <value>The porta.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.Baud">
+            <summary>
+            Gets or sets the baud.
+            </summary>
+            <value>The baud.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.DataBits">
+            <summary>
+            Gets or sets the data bits.
+            </summary>
+            <value>The data bits.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.Parity">
+            <summary>
+            Gets or sets the parity.
+            </summary>
+            <value>The parity.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.StopBits">
+            <summary>
+            Gets or sets the stop bits.
+            </summary>
+            <value>The stop bits.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.HandShake">
+            <summary>
+            Gets or sets the hand shake.
+            </summary>
+            <value>The hand shake.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.HardFlow">
+            <summary>
+            Gets or sets a value indicating whether [hard flow].
+            </summary>
+            <value><c>true</c> if [hard flow]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.SoftFlow">
+            <summary>
+            Gets or sets a value indicating whether [soft flow].
+            </summary>
+            <value><c>true</c> if [soft flow]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.TimeOut">
+            <summary>
+            Gets or sets the time out.
+            </summary>
+            <value>The time out.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.SendBytesCount">
+            <summary>
+            Gets or sets the send bytes count.
+            </summary>
+            <value>The send bytes count.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.SendBytesInterval">
+            <summary>
+            Gets or sets the send bytes interval.
+            </summary>
+            <value>The send bytes interval.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ACBrDevice.ProcessMessages">
+            <summary>
+            Gets or sets a value indicating whether [process messages].
+            </summary>
+            <value><c>true</c> if [process messages]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="F:ACBr.Net.ECF.EstadoECF.NaoInicializada">
+            <summary>
+            Porta Serial ainda nao foi aberta
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.ECF.EstadoECF.Desconhecido">
+            <summary>
+            Porta aberta, mas ado ainda nao definido
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.ECF.EstadoECF.Livre">
+            <summary>
+            Impressora Livre, sem nenhum cupom aberto, pronta para nova venda, Reducao Z e Leitura X ok, pode ou nao já ter ocorrido 1ª venda no dia...
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.ECF.EstadoECF.Venda">
+            <summary>
+            Cupom de Venda Aberto com ou sem venda do 1º Item
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.ECF.EstadoECF.Pagamento">
+            <summary>
+            Iniciado Fechamento de Cupom com Formas Pagto pode ou nao ter efetuado o 1º pagto. Nao pode mais vender itens, ou alterar Subtotal
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.ECF.EstadoECF.Relatorio">
+            <summary>
+            Imprimindo Cupom Fiscal Vinculado ou Relatorio Gerencial
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.ECF.EstadoECF.Bloqueada">
+            <summary>
+            Reduçao Z já emitida, bloqueada até as 00:00
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.ECF.EstadoECF.RequerZ">
+            <summary>
+            Reducao Z dia anterior nao emitida. Emita agora
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.ECF.EstadoECF.RequerX">
+            <summary>
+            a impressora requer Leitura X todo inicio de dia. Imprima uma Leitura X para poder vender
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.ECF.EstadoECF.NaoFiscal">
+            <summary>
+            Comprovante Nao Fiscal Aberto
+            </summary>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.AACECF">
+            <summary>
+            Class AACECF. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.AACECF.ValorGT">
+            <summary>
+            Gets or sets the valor gt.
+            </summary>
+            <value>The valor gt.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.AACECF.NumeroSerie">
+            <summary>
+            Gets or sets the numero serie.
+            </summary>
+            <value>The numero serie.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.AACECF.CRO">
+            <summary>
+            Gets or sets the cro.
+            </summary>
+            <value>The cro.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.AACECF.CNI">
+            <summary>
+            Gets or sets the cni.
+            </summary>
+            <value>The cni.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.AACECF.DtHrAtualizado">
+            <summary>
+            Gets the dt hr atualizado.
+            </summary>
+            <value>The dt hr atualizado.</value>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.Arquivo">
+            <summary>
+            Class Arquivo. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Arquivo.Nome">
+            <summary>
+            Gets or sets the nome.
+            </summary>
+            <value>The nome.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Arquivo.MD5">
+            <summary>
+            Gets or sets the m d5.
+            </summary>
+            <value>The m d5.</value>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.ArquivoListaAutenticados">
+            <summary>
+            Class ArquivoListaAutenticados. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.ArquivoListaAutenticados.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:ACBr.Net.Core.AAC.ArquivoListaAutenticados"/> class.
+            </summary>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.ArquivoListaAutenticados.Nome">
+            <summary>
+            Gets or sets the nome.
+            </summary>
+            <value>The nome.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.ArquivoListaAutenticados.MD5">
+            <summary>
+            Gets or sets the m d5.
+            </summary>
+            <value>The m d5.</value>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.Arquivos">
+            <summary>
+            Class Arquivos. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.Arquivos.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:ACBr.Net.Core.AAC.Arquivos"/> class.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.Arquivos.New">
+            <summary>
+            News this instance.
+            </summary>
+            <returns>Arquivo.</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.Arquivos.System#Collections#Generic#IEnumerable{ACBr#Net#Core#AAC#Arquivo}#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.Arquivos.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.ECFs">
+            <summary>
+            Class ECFs. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.ECFs.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:ACBr.Net.Core.AAC.ECFs"/> class.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.ECFs.System#Collections#Generic#IEnumerable{ACBr#Net#Core#AAC#AACECF}#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.ECFs.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.Empresa">
+            <summary>
+            Class Empresa. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.Empresa.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:ACBr.Net.Core.AAC.Empresa"/> class.
+            </summary>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.CNPJ">
+            <summary>
+            Gets or sets the CNPJ.
+            </summary>
+            <value>The CNPJ.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.RazaoSocial">
+            <summary>
+            Gets or sets the razao social.
+            </summary>
+            <value>The razao social.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.Endereco">
+            <summary>
+            Gets or sets the endereco.
+            </summary>
+            <value>The endereco.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.Cep">
+            <summary>
+            Gets or sets the cep.
+            </summary>
+            <value>The cep.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.Cidade">
+            <summary>
+            Gets or sets the cidade.
+            </summary>
+            <value>The cidade.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.Uf">
+            <summary>
+            Gets or sets the uf.
+            </summary>
+            <value>The uf.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.Telefone">
+            <summary>
+            Gets or sets the telefone.
+            </summary>
+            <value>The telefone.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.Contato">
+            <summary>
+            Gets or sets the contato.
+            </summary>
+            <value>The contato.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.Email">
+            <summary>
+            Gets or sets the email.
+            </summary>
+            <value>The email.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.IE">
+            <summary>
+            Gets or sets the ie.
+            </summary>
+            <value>The ie.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.Empresa.IM">
+            <summary>
+            Gets or sets the im.
+            </summary>
+            <value>The im.</value>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.IdenticacaoPaf">
+            <summary>
+            Class IdenticacaoPaf. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.IdenticacaoPaf.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:ACBr.Net.Core.AAC.IdenticacaoPaf"/> class.
+            </summary>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.IdenticacaoPaf.Empresa">
+            <summary>
+            Gets the empresa.
+            </summary>
+            <value>The empresa.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.IdenticacaoPaf.Paf">
+            <summary>
+            Gets the paf.
+            </summary>
+            <value>The paf.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.IdenticacaoPaf.ECFsAutorizados">
+            <summary>
+            Gets the ec fs autorizados.
+            </summary>
+            <value>The ec fs autorizados.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.IdenticacaoPaf.OutrosArquivos">
+            <summary>
+            Gets the outros arquivos.
+            </summary>
+            <value>The outros arquivos.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.IdenticacaoPaf.ArquivoListaAutenticados">
+            <summary>
+            Gets the arquivo lista autenticados.
+            </summary>
+            <value>The arquivo lista autenticados.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.IdenticacaoPaf.NumeroLaudo">
+            <summary>
+            Gets or sets the numero laudo.
+            </summary>
+            <value>The numero laudo.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.IdenticacaoPaf.VersaoER">
+            <summary>
+            Gets or sets the versao er.
+            </summary>
+            <value>The versao er.</value>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.InfoPaf">
+            <summary>
+            Class InfoPaf. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.AAC.InfoPaf.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:ACBr.Net.Core.AAC.InfoPaf"/> class.
+            </summary>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.NomeAplicativo">
+            <summary>
+            Gets or sets the nome aplicativo.
+            </summary>
+            <value>The nome aplicativo.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.LinguagemAplicativo">
+            <summary>
+            Gets or sets the linguagem aplicativo.
+            </summary>
+            <value>The linguagem aplicativo.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.BancoDeDadosAplicativo">
+            <summary>
+            Gets or sets the banco de dados aplicativo.
+            </summary>
+            <value>The banco de dados aplicativo.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.SistemaOperacionalAplicativo">
+            <summary>
+            Gets or sets the sistema operacional aplicativo.
+            </summary>
+            <value>The sistema operacional aplicativo.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.VersaoAplicativo">
+            <summary>
+            Gets or sets the versao aplicativo.
+            </summary>
+            <value>The versao aplicativo.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.PrincipalExeAplicativo">
+            <summary>
+            Gets or sets the principal executable aplicativo.
+            </summary>
+            <value>The principal executable aplicativo.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.MD5Aplicativo">
+            <summary>
+            Gets or sets the m d5 aplicativo.
+            </summary>
+            <value>The m d5 aplicativo.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.TipoFuncionamento">
+            <summary>
+            Gets or sets the tipo funcionamento.
+            </summary>
+            <value>The tipo funcionamento.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.TipoIntegracao">
+            <summary>
+            Gets or sets the tipo integracao.
+            </summary>
+            <value>The tipo integracao.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.TipoDesenvolvimento">
+            <summary>
+            Gets or sets the tipo desenvolvimento.
+            </summary>
+            <value>The tipo desenvolvimento.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.RealizaPreVenda">
+            <summary>
+            Gets or sets a value indicating whether [realiza pre venda].
+            </summary>
+            <value><c>true</c> if [realiza pre venda]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.RealizaDAVECF">
+            <summary>
+            Gets or sets a value indicating whether [realiza davecf].
+            </summary>
+            <value><c>true</c> if [realiza davecf]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.RealizaDAVNaoFiscal">
+            <summary>
+            Gets or sets a value indicating whether [realiza dav nao fiscal].
+            </summary>
+            <value><c>true</c> if [realiza dav nao fiscal]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.RealizaDAVOS">
+            <summary>
+            Gets or sets a value indicating whether [realiza davos].
+            </summary>
+            <value><c>true</c> if [realiza davos]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.RealizaLancamentoMesa">
+            <summary>
+            Gets or sets a value indicating whether [realiza lancamento mesa].
+            </summary>
+            <value><c>true</c> if [realiza lancamento mesa]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.RealizaDAVConfAnexoII">
+            <summary>
+            Gets or sets a value indicating whether [realiza dav conf anexo ii].
+            </summary>
+            <value><c>true</c> if [realiza dav conf anexo ii]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.IndiceTecnicoProducao">
+            <summary>
+            Gets or sets a value indicating whether [indice tecnico producao].
+            </summary>
+            <value><c>true</c> if [indice tecnico producao]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.BarSimiliarECFRestaurante">
+            <summary>
+            Gets or sets a value indicating whether [bar similiar ecf restaurante].
+            </summary>
+            <value><c>true</c> if [bar similiar ecf restaurante]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.BarSimiliarECFComum">
+            <summary>
+            Gets or sets a value indicating whether [bar similiar ecf comum].
+            </summary>
+            <value><c>true</c> if [bar similiar ecf comum]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.BarSimiliarBalanca">
+            <summary>
+            Gets or sets a value indicating whether [bar similiar balanca].
+            </summary>
+            <value><c>true</c> if [bar similiar balanca]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.UsaImpressoraNaoFiscal">
+            <summary>
+            Gets or sets a value indicating whether [usa impressora nao fiscal].
+            </summary>
+            <value><c>true</c> if [usa impressora nao fiscal]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.DAVDiscrFormula">
+            <summary>
+            Gets or sets a value indicating whether [dav discr formula].
+            </summary>
+            <value><c>true</c> if [dav discr formula]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.TotalizaValoresLista">
+            <summary>
+            Gets or sets a value indicating whether [totaliza valores lista].
+            </summary>
+            <value><c>true</c> if [totaliza valores lista]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.TransPreVenda">
+            <summary>
+            Gets or sets a value indicating whether [trans pre venda].
+            </summary>
+            <value><c>true</c> if [trans pre venda]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.TransDAV">
+            <summary>
+            Gets or sets a value indicating whether [trans dav].
+            </summary>
+            <value><c>true</c> if [trans dav]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.RecompoeGT">
+            <summary>
+            Gets or sets a value indicating whether [recompoe gt].
+            </summary>
+            <value><c>true</c> if [recompoe gt]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.RecompoeNumSerie">
+            <summary>
+            Gets or sets a value indicating whether [recompoe number serie].
+            </summary>
+            <value><c>true</c> if [recompoe number serie]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.EmitePED">
+            <summary>
+            Gets or sets a value indicating whether [emite ped].
+            </summary>
+            <value><c>true</c> if [emite ped]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.CupomMania">
+            <summary>
+            Gets or sets a value indicating whether [cupom mania].
+            </summary>
+            <value><c>true</c> if [cupom mania]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.MinasLegal">
+            <summary>
+            Gets or sets a value indicating whether [minas legal].
+            </summary>
+            <value><c>true</c> if [minas legal]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.ParaibaLegal">
+            <summary>
+            Gets or sets a value indicating whether [paraiba legal].
+            </summary>
+            <value><c>true</c> if [paraiba legal]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.NotaLegalDF">
+            <summary>
+            Gets or sets a value indicating whether [nota legal df].
+            </summary>
+            <value><c>true</c> if [nota legal df]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.TrocoEmCartao">
+            <summary>
+            Gets or sets a value indicating whether [troco em cartao].
+            </summary>
+            <value><c>true</c> if [troco em cartao]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.AcumulaVolumeDiario">
+            <summary>
+            Gets or sets a value indicating whether [acumula volume diario].
+            </summary>
+            <value><c>true</c> if [acumula volume diario]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.ArmazenaEncerranteIniFinal">
+            <summary>
+            Gets or sets a value indicating whether [armazena encerrante ini final].
+            </summary>
+            <value><c>true</c> if [armazena encerrante ini final]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.CadastroPlacaBomba">
+            <summary>
+            Gets or sets a value indicating whether [cadastro placa bomba].
+            </summary>
+            <value><c>true</c> if [cadastro placa bomba]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.EmiteContrEncerrAposREDZLEIX">
+            <summary>
+            Gets or sets a value indicating whether [emite contr encerr apos redzleix].
+            </summary>
+            <value><c>true</c> if [emite contr encerr apos redzleix]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.ImpedeVendaVlrZero">
+            <summary>
+            Gets or sets a value indicating whether [impede venda VLR zero].
+            </summary>
+            <value><c>true</c> if [impede venda VLR zero]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.IntegradoComBombas">
+            <summary>
+            Gets or sets a value indicating whether [integrado COM bombas].
+            </summary>
+            <value><c>true</c> if [integrado COM bombas]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.CriaAbastDivergEncerrante">
+            <summary>
+            Gets or sets a value indicating whether [cria abast diverg encerrante].
+            </summary>
+            <value><c>true</c> if [cria abast diverg encerrante]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.AAC.InfoPaf.TransportePassageiro">
+            <summary>
+            Gets or sets a value indicating whether [transporte passageiro].
+            </summary>
+            <value><c>true</c> if [transporte passageiro]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.TipoDesenvolvimento">
+            <summary>
+            Enum TipoDesenvolvimento
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.AAC.TipoDesenvolvimento.Comercial">
+            <summary>
+            The comercial
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.AAC.TipoDesenvolvimento.ExclusivoProprio">
+            <summary>
+            The exclusivo proprio
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.AAC.TipoDesenvolvimento.ExclusivoTerceirizado">
+            <summary>
+            The exclusivo terceirizado
+            </summary>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.TipoFuncionamento">
+            <summary>
+            Enum TipoFuncionamento
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.AAC.TipoFuncionamento.StandAlone">
+            <summary>
+            The stand alone
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.AAC.TipoFuncionamento.EmRede">
+            <summary>
+            The em rede
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.AAC.TipoFuncionamento.Parametrizavel">
+            <summary>
+            The parametrizavel
+            </summary>
+        </member>
+        <member name="T:ACBr.Net.Core.AAC.TipoIntegracao">
+            <summary>
+            Enum TipoIntegracao
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.AAC.TipoIntegracao.Retaguarda">
+            <summary>
+            The retaguarda
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.AAC.TipoIntegracao.PED">
+            <summary>
+            The ped
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.AAC.TipoIntegracao.Ambos">
+            <summary>
+            The ambos
+            </summary>
+        </member>
+        <member name="F:ACBr.Net.Core.AAC.TipoIntegracao.NaoIntegra">
+            <summary>
+            The nao integra
+            </summary>
+        </member>
+        <member name="T:ACBr.Net.Core.StringExtensions">
+            <summary>
+            Class StringExtensions.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.Encrypt(System.String,System.String)">
+            <summary>
+            Encrypts the specified data.
+            </summary>
+            <param name="data">The data.</param>
+            <param name="key">The key.</param>
+            <returns>System.String.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao criptografar string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.Decrypt(System.String,System.String)">
+            <summary>
+            Decrypts the specified data.
+            </summary>
+            <param name="data">The data.</param>
+            <param name="key">The key.</param>
+            <returns>System.String.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao descriptografar string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.ToMD5Hash(System.String)">
+            <summary>
+            To the m d5 hash.
+            </summary>
+            <param name="input">The input.</param>
+            <returns>System.String.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao gerar hash MD5</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.ToSHA1Hash(System.String)">
+            <summary>
+            To the sh a1 hash.
+            </summary>
+            <param name="input">The input.</param>
+            <returns>System.String.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao gerar SHA1 hash</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.StringReverse(System.String)">
+            <summary>
+            Strings the reverse.
+            </summary>
+            <param name="ToReverse">To reverse.</param>
+            <returns>System.String.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao reverter string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.Formatar(System.String,System.String)">
+            <summary>
+            Formatars the specified valor.
+            </summary>
+            <param name="valor">The valor.</param>
+            <param name="mascara">The mascara.</param>
+            <returns>System.String.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao formatar string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.ToDouble(System.String,System.Double)">
+            <summary>
+            To the double.
+            </summary>
+            <param name="dados">The dados.</param>
+            <param name="def">The definition.</param>
+            <returns>System.Double.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao converter string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.ToDecimal(System.String,System.Decimal)">
+            <summary>
+            To the decimal.
+            </summary>
+            <param name="dados">The dados.</param>
+            <param name="def">The definition.</param>
+            <returns>System.Decimal.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao converter string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.ToInt32(System.String,System.Int32)">
+            <summary>
+            To the int32.
+            </summary>
+            <param name="dados">The dados.</param>
+            <param name="def">The definition.</param>
+            <returns>System.Int32.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao converter string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.ToInt64(System.String,System.Int64)">
+            <summary>
+            To the int64.
+            </summary>
+            <param name="dados">The dados.</param>
+            <param name="def">The definition.</param>
+            <returns>Int64.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao converter string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.ToData(System.String)">
+            <summary>
+            To the data.
+            </summary>
+            <param name="dados">The dados.</param>
+            <returns>DateTime.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao converter string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.OnlyNumbers(System.String)">
+            <summary>
+            Called when [numbers].
+            </summary>
+            <param name="toNormalize">To normalize.</param>
+            <returns>System.String.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.IsCep(System.String)">
+            <summary>
+            Determines whether the specified cep is cep.
+            </summary>
+            <param name="cep">The cep.</param>
+            <returns><c>true</c> if the specified cep is cep; otherwise, <c>false</c>.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar CEP</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.IsCPFOrCNPJ(System.String)">
+            <summary>
+            Determines whether [is CPF or CNPJ] [the specified CPFCNPJ].
+            </summary>
+            <param name="cpfcnpj">The CPFCNPJ.</param>
+            <returns><c>true</c> if [is CPF or CNPJ] [the specified CPFCNPJ]; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.IsCNPJ(System.String)">
+            <summary>
+            Determines whether the specified vr CNPJ is CNPJ.
+            </summary>
+            <param name="vrCNPJ">The vr CNPJ.</param>
+            <returns><c>true</c> if the specified vr CNPJ is CNPJ; otherwise, <c>false</c>.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar CNPJ</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.IsIE(System.String,System.String)">
+            <summary>
+            Determines whether the specified p inscr is ie.
+            </summary>
+            <param name="pInscr">The p inscr.</param>
+            <param name="pUF">The p uf.</param>
+            <returns><c>true</c> if the specified p inscr is ie; otherwise, <c>false</c>.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao IE</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.IsCPF(System.String)">
+            <summary>
+            Determines whether the specified vr CPF is CPF.
+            </summary>
+            <param name="vrCPF">The vr CPF.</param>
+            <returns><c>true</c> if the specified vr CPF is CPF; otherwise, <c>false</c>.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar CPF</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.IsPIS(System.String)">
+            <summary>
+            Determines whether the specified pis is pis.
+            </summary>
+            <param name="pis">The pis.</param>
+            <returns><c>true</c> if the specified pis is pis; otherwise, <c>false</c>.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar PIS</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.IsEmail(System.String)">
+            <summary>
+            Determines whether the specified email is email.
+            </summary>
+            <param name="email">The email.</param>
+            <returns><c>true</c> if the specified email is email; otherwise, <c>false</c>.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar Email</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.IsSite(System.String)">
+            <summary>
+            Determines whether the specified site is site.
+            </summary>
+            <param name="site">The site.</param>
+            <returns><c>true</c> if the specified site is site; otherwise, <c>false</c>.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar endereço web</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.IsNumeric(System.String)">
+            <summary>
+            Verifica se a string é numerica.
+            </summary>
+            <param name="StrNum">The string number.</param>
+            <returns>Retorna true/false se a string é numerica</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.ToUTF8(System.String)">
+            <summary>
+            Converte a string para UTF8.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>Uma string com a codificação UTF8</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao codificar string</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.AsString(System.String[])">
+            <summary>
+            Transforma um array de string em uma unica string.
+            </summary>
+            <param name="array">The array.</param>
+            <returns>String com todos os dados do array de strings</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao converter array</exception>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.AsString(System.Collections.Generic.List{System.String})">
+            <summary>
+            Transforma uma lista de string em uma unica string.
+            </summary>
+            <param name="array">The array.</param>
+            <returns>String com todos os dados da lista de strings</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.StringFill(System.String,System.Char,System.Int32,System.Boolean)">
+            <summary>
+            Preenche uma string com caractere informado a direita/esquerda ate ficar do tamanho especificado.
+            </summary>
+            <param name="text">The text.</param>
+            <param name="with">Caractere para preencher</param>
+            <param name="length">Tamanho final desejado</param>
+            <param name="esquerda">Direção do preenchimento</param>
+            <returns>String do tamanho especificado e se menor complementada com o caractere informado a direita/esquerda</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.ZeroFill(System.String,System.Int32,System.Boolean)">
+            <summary>
+            Preenche uma string com zero a direita/esquerda ate ficar do tamanho especificado.
+            </summary>
+            <param name="text">The text.</param>
+            <param name="length">Tamanho final desejado</param>
+            <param name="esquerda">Direção do preenchimento</param>
+            <returns>String do tamanho especificado e se menor complementada com zero a direita/esquerda</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.RemoveCE(System.String)">
+            <summary>
+            Normalize e substitui os caracteres especiais de uma string.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>String sem carateres especiais e normalizada</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.SubstituiCE(System.String)">
+            <summary>
+            Substitue os caracteres especiais de uma string.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>String sem carateres especiais</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.FormataCPFCNPJ(System.String)">
+            <summary>
+            Formata o CPF ou CNPJ no formato: 000.000.000-00, 00.000.000/0001-00 respectivamente.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>CPF/CNPJ Formatado</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.FormataCPF(System.String)">
+            <summary>
+            Formata o número do CPF 92074286520 para 920.742.865-20
+            </summary>
+            <param name="cpf">Sequencia numérica de 11 dígitos. Exemplo: 00000000000</param>
+            <returns>CPF formatado</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.FormataCNPJ(System.String)">
+            <summary>
+            Formata o CNPJ. Exemplo 00.316.449/0001-63
+            </summary>
+            <param name="cnpj">Sequencia numérica de 14 dígitos. Exemplo: 00000000000000</param>
+            <returns>CNPJ formatado</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.FormataCEP(System.String)">
+            <summary>
+            Formato o CEP em 00.000-000
+            </summary>
+            <param name="cep">Sequencia numérica de 8 dígitos. Exemplo: 00000000</param>
+            <returns>CEP formatado</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.FormataAgenciaConta(System.String,System.String,System.String,System.String)">
+            <summary>
+            Formata agência e conta
+            </summary>
+            <param name="agencia">Código da agência</param>
+            <param name="digitoAgencia">Dígito verificador da agência. Pode ser vazio.</param>
+            <param name="conta">Código da conta</param>
+            <param name="digitoConta">dígito verificador da conta. Pode ser vazio.</param>
+            <returns>Agência e conta formatadas</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.Right(System.String,System.Int32)">
+            <summary>
+            Get substring of specified number of characters on the right.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="length">The length.</param>
+            <returns>System.String.</returns>
+        </member>
+    </members>
+</doc>
