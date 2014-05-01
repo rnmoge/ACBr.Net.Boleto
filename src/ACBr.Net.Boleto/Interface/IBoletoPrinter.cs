@@ -4,9 +4,9 @@
 // Created          : 04-17-2014
 //
 // Last Modified By : RFTD
-// Last Modified On : 04-23-2014
+// Last Modified On : 04-29-2014
 // ***********************************************************************
-// <copyright file="IBoletoFCClass.cs" company="ACBr.Net">
+// <copyright file="IBoletoPrinter.cs" company="ACBr.Net">
 //     Copyright (c) ACBr.Net. All rights reserved.
 // </copyright>
 // <summary></summary>
@@ -14,20 +14,19 @@
 using System;
 using System.Linq;
 using System.Drawing;
-using System.ComponentModel;
 using System.Collections.Generic;
 
 /// <summary>
-/// The Interfaces namespace.
+/// ACBr.Net.Boleto.Interfaces namespace.
 /// </summary>
 namespace ACBr.Net.Boleto.Interfaces
 {
     /// <summary>
-    /// Interface IBoletoFCClass
+    /// Interface IBoletoPrinter
     /// </summary>
     public interface IBoletoPrinter
     {
-        #region Propriedades
+       #region Propriedades
 
         /// <summary>
         /// Gets or sets the layout.
@@ -76,7 +75,7 @@ namespace ACBr.Net.Boleto.Interfaces
         string SoftwareHouse { get; set; }
 
         #endregion Propriedades
-
+        
         #region Methods
 
         /// <summary>

@@ -1428,10 +1428,9 @@ namespace ACBr.Net.Boleto
                 
                 // se for segmento T cria um novo titulo                
                 if(Linha.ExtrairDaPosicao(14, 14) == "T")
-                    titulo = Banco.Parent.CriarTituloNaLista();
-                
-                if(Linha.ExtrairDaPosicao(14, 14) == "T")
                 {
+                    titulo = Banco.Parent.CriarTituloNaLista();
+
                     titulo.SeuNumero = Linha.ExtrairDaPosicao(106, 130);
                     titulo.NumeroDocumento = Linha.ExtrairDaPosicao(59, 73);
                     titulo.Carteira = Linha.ExtrairDaPosicao(58, 58);

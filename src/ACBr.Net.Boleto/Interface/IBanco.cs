@@ -4,9 +4,9 @@
 // Created          : 04-14-2014
 //
 // Last Modified By : RFTD
-// Last Modified On : 04-21-2014
+// Last Modified On : 04-29-2014
 // ***********************************************************************
-// <copyright file="IBancoClass.cs" company="ACBr.Net">
+// <copyright file="IBanco.cs" company="ACBr.Net">
 //     Copyright (c) ACBr.Net. All rights reserved.
 // </copyright>
 // <summary></summary>
@@ -14,15 +14,14 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using ACBr.Net.Core;
 
 /// <summary>
-/// The Interfaces namespace.
+/// ACBr.Net.Boleto.Interfaces namespace.
 /// </summary>
 namespace ACBr.Net.Boleto.Interfaces
 {
     /// <summary>
-    /// Interface IBancoClass
+    /// Interface IBanco
     /// </summary>
     public interface IBanco
     {

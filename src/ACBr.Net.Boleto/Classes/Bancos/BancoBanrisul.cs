@@ -48,14 +48,17 @@ namespace ACBr.Net.Boleto
     public sealed class BancoBanrisul : BancoBase
     {
         #region Fields
+
+        decimal aTotal;
+
         #endregion Fields
 
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BancoBanrisul" /> class.
+        /// Inicializa uma nova instancia da classe <see cref="BancoBanrisul" />.
         /// </summary>
-        /// <param name="parent">The parent.</param>
+        /// <param name="parent">Classe Banco.</param>
         internal BancoBanrisul(Banco parent)
             : base(parent)
         {
@@ -80,7 +83,7 @@ namespace ACBr.Net.Boleto
         #region Methods
 
         /// <summary>
-        /// Tipoes the ocorrencia to descricao.
+        /// Retorna a descrição do TipoOcorrencia.
         /// </summary>
         /// <param name="Tipo">The tipo.</param>
         /// <returns>System.String.</returns>
@@ -180,9 +183,9 @@ namespace ACBr.Net.Boleto
         }
 
         /// <summary>
-        /// Cods the ocorrencia to tipo.
+        /// Codigo de ocorrencia para TipoOcorrencia.
         /// </summary>
-        /// <param name="CodOcorrencia">The cod ocorrencia.</param>
+        /// <param name="CodOcorrencia">Codigo.</param>
         /// <returns>TipoOcorrencia.</returns>
         public override TipoOcorrencia CodOcorrenciaToTipo(int CodOcorrencia)
         {
@@ -235,7 +238,7 @@ namespace ACBr.Net.Boleto
         }
 
         /// <summary>
-        /// Tipoes the o correncia to cod.
+        /// TipoOcorrencia para codigo.
         /// </summary>
         /// <param name="Tipo">The tipo.</param>
         /// <returns>System.String.</returns>
@@ -290,7 +293,7 @@ namespace ACBr.Net.Boleto
         /// <param name="Tipo">The tipo.</param>
         /// <param name="CodMotivo">The cod motivo.</param>
         /// <returns>System.String.</returns>
-        public string CodMotivoRejeicaoToDescricao(TipoOcorrencia Tipo, string CodMotivo)
+        public static string CodMotivoRejeicaoToDescricao(TipoOcorrencia Tipo, string CodMotivo)
         {
             switch (Tipo)
             {
@@ -440,36 +443,31 @@ namespace ACBr.Net.Boleto
             //número de dígitos de cada subproduto.
             //Se o resultado da operação for 0 (ZERO) o dígito será 0 (ZERO). Caso contrário,
             //o dígito será igual a 10 - Resultado.    
-            Func<string, int> CalcularDigito1 = null;
-            CalcularDigito1 = new Func<string, int>((ChaveASBACE) =>
+            Func<string, int> CalcularDigito1 = (ChaveASBACE) =>
             {
                 var Soma = 0;
                 var Peso = 2;
                 var tamanho = ChaveASBACE.Length - 1;
-                for(int i = 0; i < tamanho; i++)
+                for (int i = 0; i < tamanho; i++)
                 {
                     var Auxiliar = ChaveASBACE[tamanho - i].ToInt32() * Peso;
-                    
-                    if(Auxiliar > 9)
+                    if (Auxiliar > 9)
                         Auxiliar -= 9;
-                    
                     Soma += Auxiliar;
-                    
-                    if(Peso == 1)
+                    if (Peso == 1)
                         Peso = 2;
                     else
                         Peso = 1;
                 }
-                
                 var Digito = Soma % 10;
                 if (Digito == 0)
                     return Digito;
                 else
                     return 10 - Digito;
-            });
+            };
 
             Func<string, int, int> CalcularDigito2 = null;
-            CalcularDigito2 = new Func<string, int, int>((ChaveASBACE, Digito) =>
+            CalcularDigito2 = (ChaveASBACE, Digito) =>
             {
                 var cDigito = new CalcDigito();
                 cDigito.CalculoPadrao();
@@ -477,21 +475,22 @@ namespace ACBr.Net.Boleto
                 cDigito.Documento = String.Format("{0}{1}", ChaveASBACE, Digito);
                 cDigito.Calcular();
                 int dig2 = cDigito.DigitoFinal;
+
                 //Se dígito2 = 1, deve-se incrementar o dígito1 e recalcular o dígito2}
-                if(dig2 == 1)
+                if (dig2 == 1)
                 {
                     Digito++;
                     //Se, após incrementar o dígito1, ele ficar maior que 9, deve-se substituí-lo por 0
-                    if(Digito > 9)
+                    if (Digito > 9)
                         Digito = 0;
 
-                    dig2 = CalcularDigito2(ChaveASBACESemDigito, Digito);    
+                    dig2 = CalcularDigito2(ChaveASBACESemDigito, Digito);
                 }
-                else if(dig2 > 1)
-                    dig2 = 11 - dig2;
-                
+                else
+                    if (dig2 > 1)
+                        dig2 = 11 - dig2;
                 return dig2;
-            });
+            };
 
             var Digito1 = CalcularDigito1(ChaveASBACESemDigito);
             var Digito2 = CalcularDigito2(ChaveASBACESemDigito, Digito1);
@@ -500,13 +499,13 @@ namespace ACBr.Net.Boleto
         }
 
         /// <summary>
-        /// Gerars the registro header400.
+        /// Gerar registro header do arquivo CNAB400.
         /// </summary>
-        /// <param name="NumeroRemessa">The numero remessa.</param>
+        /// <param name="NumeroRemessa">Numero da remessa.</param>
         /// <param name="ARemessa">A remessa.</param>
-        /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public override void GerarRegistroHeader400(int NumeroRemessa, List<string> ARemessa)
         {
+            aTotal = 0;
             var cd = Banco.Parent.Cedente.CodigoCedente.OnlyNumbers();
             var wLinha = new StringBuilder();
             wLinha.Append('0');                                                     // ID do Registro
@@ -540,17 +539,158 @@ namespace ACBr.Net.Boleto
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public override void GerarRegistroTransacao400(Titulo Titulo, List<string> ARemessa)
         {
-            throw new NotImplementedException("Esta função não esta implementada para este banco");
+            //Pegando Código da Ocorrencia
+            string Ocorrencia;
+            switch (Titulo.OcorrenciaOriginal.Tipo)
+            {
+                case TipoOcorrencia.RemessaBaixar: Ocorrencia = "02"; break; //Pedido de Baixa
+                case TipoOcorrencia.RemessaConcederAbatimento: Ocorrencia = "04"; break;//Concessão de Abatimento
+                case TipoOcorrencia.RemessaCancelarAbatimento: Ocorrencia = "05"; break;//Cancelamento de Abatimento concedido
+                case TipoOcorrencia.RemessaAlterarVencimento: Ocorrencia = "06"; break;//Alteração de vencimento
+                case TipoOcorrencia.RemessaProtestar: Ocorrencia = "09"; break;//Pedido de protesto
+                case TipoOcorrencia.RemessaSustarProtesto: Ocorrencia = "10"; break;//Sustação de protesto
+                default: Ocorrencia = "01"; break;
+            }
+
+            //Pegando o tipo de boleto
+            string TipoBoleto;
+            switch (Titulo.Parent.Cedente.ResponEmissao)
+            {
+                case ResponEmissao.BancoReemite: TipoBoleto = "04"; break; //Cobrança Direta
+                default: TipoBoleto = "08"; break; //Cobrança credenciada Banrisul
+            }
+
+            //Pegando o Aceite do Titulo }
+            string TipoAceite = string.Empty;
+            switch (Titulo.Aceite)
+            {
+                case AceiteTitulo.Sim: TipoAceite = "A"; break;
+                case AceiteTitulo.Nao: TipoAceite = "N"; break;
+            }
+
+            //Pegando Tipo de Sacado
+            string TipoSacado;
+            switch (Titulo.Sacado.Pessoa)
+            {
+                case Pessoa.Fisica:
+                    TipoSacado = "01";
+                    break;
+
+                case Pessoa.Juridica:
+                    TipoSacado = "02";
+                    break;
+
+                default:
+                    TipoSacado = "99";
+                    break;
+            }
+
+            //Pegando Tipo de Cobrança - Tipo de Carteira
+            string TipoCobranca;
+            switch (Titulo.Parent.Cedente.CaracTitulo)
+            {
+                case CaracTitulo.Vendor:
+                    TipoCobranca = "F";
+                    break;
+
+                case CaracTitulo.Vinculada:
+                    TipoCobranca = "C";
+                    break;
+
+                default:
+                    TipoCobranca = "1";
+                    break;
+            }
+
+            if (string.IsNullOrEmpty(Titulo.CodigoMora))
+                Titulo.CodigoMora = "0";      //0-Valor Diario, 1-Taxa Mensal
+
+            //Instruções
+            //Se tiver protesto
+            if (Titulo.DataProtesto.HasValue && Titulo.DataProtesto.Value > Titulo.Vencimento)
+            {
+                if (string.IsNullOrEmpty(Titulo.Instrucao1.Trim()))
+                    Titulo.Instrucao1 = "09"; //Protestar caso não pago em NN dias após vencimento.
+            }
+            else
+                Titulo.Instrucao3 = "23"; //Não Protestar
+
+            if(Titulo.PercentualMulta > 0)
+                if (string.IsNullOrEmpty(Titulo.Instrucao2.Trim()))
+                    Titulo.Instrucao2 = "18"; //Apos NN dias vencimento com percentual multa
+
+            var cd = Titulo.Parent.Cedente.CodigoCedente.OnlyNumbers();
+            var wLinha = new StringBuilder();
+            wLinha.Append('1');                                                                      // ID Registro(1-Constante)
+            wLinha.Append("".PadRight(16));                                                          // Brancos
+            wLinha.Append((Titulo.Parent.Cedente.Agencia.Substring(0, 4) + cd).PadRight(13, '0'));   // Codigo da Agencia e Cedente AAAACCCCCCCCC
+            wLinha.Append("".PadRight(7));                                                           // Brancos
+            wLinha.Append("".PadRight(25));                                                          // Identificação do título para o cedente (usado no arquivo de retorno)
+            wLinha.Append(Titulo.NossoNumero.PadLeft(8, '0'));
+            wLinha.Append(CalculaDigitosChaveASBACE(Titulo.NossoNumero));                            // Nosso Número
+            wLinha.Append("".PadRight(32));                                                          // Mensagem no bloqueto
+            wLinha.Append("".PadRight(3));                                                           // Brancos
+            wLinha.Append(TipoCobranca);                                                             // Tipo de Carteira (Simples, Vinculada, Descontada, Vendor)
+            wLinha.Append(Ocorrencia);                                                               // Código de ocorrência
+            wLinha.Append(Titulo.NumeroDocumento.PadLeft(10));                                       // Seu Número
+            wLinha.AppendFormat("{0:ddmmyy}", Titulo.Vencimento);                                    // Data de vencimento do título
+            wLinha.Append(Titulo.ValorDocumento.ToRemessaString());                                  // Valor do título
+            wLinha.Append("041");                                                                    // Constante (041)
+            wLinha.Append("".PadRight(5));                                                           // Brancos
+            wLinha.Append(TipoBoleto);                                                               // Tipo de Documento (04-Cobrança Direta, 06-Cobrança Escritural, 08-Cobrança credenciada Banrisul, 09-Títulos de terceiros)
+            wLinha.Append(TipoAceite);                                                               // Código de aceite (A, N)
+            wLinha.AppendFormat("{0:ddmmyy}", Titulo.DataDocumento);                                 // Data de Emissão do título
+            wLinha.Append(Titulo.Instrucao1.Trim().PadRight(2));                                     // 1ª Instrução
+            wLinha.Append(Titulo.Instrucao2.Trim().PadRight(2));                                     // 2ª Instrução
+            wLinha.Append(Titulo.CodigoMora.Trim().PadRight(1));                                     // Código de mora (0=Valor diário; 1=Taxa Mensal)
+            wLinha.Append(Titulo.ValorMoraJuros.ToRemessaString(12));                                // Valor ao dia ou Taxa Mensal de juros
+            
+            wLinha.Append(Titulo.DataDesconto.HasValue ?
+                string.Format("{0:ddmmyy}", Titulo.DataDesconto) : "000000");                       // Data para concessão de desconto
+
+            wLinha.Append(Titulo.ValorDesconto.ToRemessaString());                                  // Valor do desconto a ser concedido
+            wLinha.Append(Titulo.ValorIOF.ToRemessaString());                                       // Valor IOF (para carteira "X" é: taxa juros + IOF + zeros)
+            wLinha.Append(Titulo.ValorAbatimento.ToRemessaString());                                // Valor do abatimento
+            wLinha.Append(TipoSacado);                                                              // Tipo do Sacado (01-CPF, 02-CNPJ, 03-Outros)
+            wLinha.Append(Titulo.Sacado.CNPJCPF.OnlyNumbers().PadRight(14, '0'));                   // Número da inscrição do Sacado (CPF, CNPJ)
+            wLinha.Append(Titulo.Sacado.NomeSacado.PadLeft(35));                                    // Nome do Sacado
+            wLinha.Append("".PadRight(5));                                                          // Brancos
+            wLinha.Append((Titulo.Sacado.Logradouro+' '+
+                    Titulo.Sacado.Numero+' '+
+                    Titulo.Sacado.Complemento).PadLeft(40));                                        // Endereço Sacado
+            wLinha.Append("".PadRight(7));                                                          // Brancos
+            wLinha.Append(Math.Round(Titulo.PercentualMulta * 10).ToString().ZeroFill(3));          // Taxa de multa após o Vencimento -- estava '000' é apenas uma casa decimal
+            wLinha.Append("00");                                                                    // Nº dias para multa após o vencimento (00 considera-se Após Vencimento)
+            wLinha.Append(Titulo.Sacado.CEP.OnlyNumbers().PadLeft(8, '0'));                         // CEP
+            wLinha.Append(Titulo.Sacado.Cidade.PadLeft(15));                                        // Cidade do Sacado
+            wLinha.Append(Titulo.Sacado.UF.PadLeft(2));                                             // UF do Sacado
+            wLinha.Append("0000");                                                                  // Taxa ao dia para pagamento antecipado
+            wLinha.Append("".PadRight(1));                                                          // Brancos
+            wLinha.Append("0000000000000");                                                         // Valor para cálculo de desconto
+            wLinha.Append(Titulo.DataProtesto.HasValue && Titulo.DataProtesto > Titulo.Vencimento ?
+                      (Titulo.DataProtesto.Value - Titulo.Vencimento).Days.ToString().PadRight(2, '0')
+                      : "00");                                                                      // Dias para protesto/devolução automática
+             wLinha.Append("".PadRight(23));                                                        // Brancos
+             wLinha.AppendFormat("{0:000000}", ARemessa.Count + 1);  
+
+            aTotal += Titulo.ValorDocumento;
+            ARemessa.Add(wLinha.ToString().ToUpper()); 
         }
 
         /// <summary>
-        /// Gerars the registro trailler400.
+        /// Gerar registro trailler CNAB400.
         /// </summary>
         /// <param name="ARemessa">A remessa.</param>
-        /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public override void GerarRegistroTrailler400(List<string> ARemessa)
         {
-            throw new NotImplementedException("Esta função não esta implementada para este banco");
+            var wLinha = new StringBuilder();
+            wLinha.Append('9');                                   // Constante (9)
+            wLinha.Append("".PadRight(26));                       // Brancos
+            wLinha.Append(aTotal.ToRemessaString());              // Total Somatório dos valores dos títulos
+            wLinha.Append("".PadRight(354));                      // Brancos
+            wLinha.AppendFormat("{0:000000}", ARemessa.Count + 1);  // Número sequencial do Registro
+
+            ARemessa.Add(wLinha.ToString().ToUpper());
         }
 
         /// <summary>
