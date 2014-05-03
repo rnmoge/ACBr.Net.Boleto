@@ -1071,7 +1071,7 @@ namespace ACBr.Net.Boleto
             Banco.Parent.ListadeBoletos.Clear();
             string Linha;
             Titulo Titulo;
-            for(int ContLinha = 1; ContLinha < ARetorno.Count - 2; ContLinha++)
+            for(int ContLinha = 1; ContLinha < ARetorno.Count - 1; ContLinha++)
             {
                 Linha = ARetorno[ContLinha];
                 

@@ -484,7 +484,7 @@ namespace ACBr.Net.Boleto
                     if (Digito > 9)
                         Digito = 0;
 
-                    dig2 = CalcularDigito2(ChaveASBACESemDigito, Digito);
+                    dig2 = CalcularDigito2(ChaveASBACE, Digito);
                 }
                 else
                     if (dig2 > 1)
@@ -700,7 +700,83 @@ namespace ACBr.Net.Boleto
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public override void LerRetorno400(List<string> ARetorno)
         {
-            throw new NotImplementedException("Esta função não esta implementada para este banco");
+            if (ARetorno[0].ExtrairInt32DaPosicao(77, 79) != Numero)
+                throw new ACBrException(string.Format("{0} não é um arquivo de retorno do {1}",
+                                                       Banco.Parent.NomeArqRetorno, Nome));
+
+            TamanhoMaximoNossoNum = 10;
+            var rCedente = ARetorno[0].ExtrairDaPosicao(47, 76);
+            var rAgencia = ARetorno[0].ExtrairDaPosicao(27, 30).Trim();
+            var rConta = ARetorno[0].ExtrairDaPosicao(31, 39).Trim();
+                        
+            Banco.Parent.NumeroArquivo = ARetorno[0].ExtrairInt32DaPosicao(386, 395);
+            Banco.Parent.DataArquivo = ARetorno[0].ExtrairDataDaPosicao(95, 100);
+
+            if(Banco.Parent.LeCedenteRetorno && (rAgencia != Banco.Parent.Cedente.Agencia.OnlyNumbers() ||
+                rConta != Banco.Parent.Cedente.Conta.OnlyNumbers()))
+                throw new ACBrException("Agência\\Conta do arquivo inválido");
+        
+            Banco.Parent.Cedente.Nome = rCedente;
+            Banco.Parent.Cedente.CNPJCPF = string.Empty;
+            Banco.Parent.Cedente.Convenio = string.Empty;
+            Banco.Parent.Cedente.Agencia = rAgencia;
+            Banco.Parent.Cedente.AgenciaDigito = string.Empty;
+            Banco.Parent.Cedente.Conta = rConta;
+            Banco.Parent.Cedente.ContaDigito = string.Empty;
+            
+            Banco.Parent.ListadeBoletos.Clear();
+
+            for (int i = 1; i < ARetorno.Count - 1; i++)
+            {
+                var Linha = ARetorno[i];
+                if (Linha.ExtrairDaPosicao(1, 1) != "1")
+                    continue;
+
+                var titulo = Banco.Parent.CriarTituloNaLista();
+                titulo.NossoNumero = Linha.ExtrairDaPosicao(63, 72);
+                titulo.SeuNumero = Linha.ExtrairDaPosicao(117, 126);
+                titulo.NumeroDocumento = Linha.ExtrairDaPosicao( 117, 126);
+
+                titulo.ValorDocumento = Linha.ExtrairDecimalDaPosicao(153, 165);
+                titulo.ValorAbatimento = Linha.ExtrairDecimalDaPosicao(228, 240);
+                titulo.ValorDesconto = Linha.ExtrairDecimalDaPosicao(241, 253);
+                titulo.ValorRecebido = Linha.ExtrairDecimalDaPosicao(254, 266);
+                titulo.ValorMoraJuros = Linha.ExtrairDecimalDaPosicao(267, 279);
+                titulo.ValorOutrosCreditos = Linha.ExtrairDecimalDaPosicao(280, 292);    //Multa estava faltando
+                //Anderson
+                titulo.ValorDespesaCobranca = Linha.ExtrairDecimalDaPosicao(176, 188);
+                titulo.ValorOutrasDespesas = Linha.ExtrairDecimalDaPosicao(189, 201);
+
+                var tempvenc = Linha.ExtrairDataOpcionalDaPosicao(247, 252);
+                if (tempvenc.HasValue)
+                    titulo.Vencimento = tempvenc.Value;
+
+                var tempcredt = Linha.ExtrairDataOpcionalDaPosicao(296, 301);
+                if (tempcredt.HasValue)
+                    titulo.DataCredito = tempcredt.Value;
+
+                titulo.DataOcorrencia = Linha.ExtrairDataDaPosicao(111, 116);
+
+                var CodOcorrencia = Linha.ExtrairInt32DaPosicao(109, 110);
+                titulo.OcorrenciaOriginal.Tipo = CodOcorrenciaToTipo(CodOcorrencia);
+              
+                if(CodOcorrencia == 3 || CodOcorrencia == 16 || CodOcorrencia == 18)
+                {
+                    titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(titulo.OcorrenciaOriginal.Tipo, 0));
+                    var IdxMotivo = 383;
+                    while (IdxMotivo < 392)
+                    {
+                        if (Linha.ExtrairDaPosicao(IdxMotivo, IdxMotivo + 1) != "  ")
+                        {
+                            titulo.MotivoRejeicaoComando.Add(Linha.ExtrairDaPosicao(IdxMotivo, IdxMotivo + 1));
+                            titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(titulo.OcorrenciaOriginal.Tipo,
+                            Linha.ExtrairInt32DaPosicao(IdxMotivo, IdxMotivo + 1)));
+                        }
+                        
+                        IdxMotivo += 2;
+                    }
+                }
+            }
         }
 
         /// <summary>

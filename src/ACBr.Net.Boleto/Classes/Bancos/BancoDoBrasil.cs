@@ -878,12 +878,12 @@ namespace ACBr.Net.Boleto
         /// <param name="ARetorno">A retorno.</param>
         /// <exception cref="ACBrException">@Agencia\Conta do arquivo inválido</exception>
         public override void LerRetorno400(List<string> ARetorno)
-        {
-            TamanhoMaximoNossoNum = 20;
+        {            
             if(ARetorno[0].ExtrairInt32DaPosicao(77,79) != Numero)
                 throw new ACBrException(string.Format("{0} não é um arquivo de retorno do {1}",
                                                        Banco.Parent.NomeArqRetorno, Nome));
-            
+
+            TamanhoMaximoNossoNum = 20;
             var rCedente = ARetorno[0].ExtrairDaPosicao(47, 76);
             var rAgencia = ARetorno[0].ExtrairDaPosicao(27, 30).Trim();
             var rDigitoAgencia = ARetorno[0].ExtrairDaPosicao(31, 31);
@@ -908,7 +908,7 @@ namespace ACBr.Net.Boleto
             
             TamanhoMaximoNossoNum = 20;
             Titulo Titulo;
-            for (int ContLinha = 1; ContLinha < ARetorno.Count - 2; ContLinha++)
+            for (int ContLinha = 1; ContLinha < ARetorno.Count - 1; ContLinha++)
             {
                 var Linha = ARetorno[ContLinha];
 
@@ -1418,7 +1418,7 @@ namespace ACBr.Net.Boleto
             TamanhoMaximoNossoNum = 20;
             Titulo titulo = null;
 
-            for(int ContLinha = 1; ContLinha < ARetorno.Count - 2; ContLinha++)
+            for(int ContLinha = 1; ContLinha < ARetorno.Count - 1; ContLinha++)
             {
                var Linha = ARetorno[ContLinha];
                 
