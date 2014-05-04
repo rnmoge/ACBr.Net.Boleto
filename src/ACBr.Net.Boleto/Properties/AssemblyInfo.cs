@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 #endif
 
 [assembly: AssemblyCopyright("Copyright © ACBr.Net 2014")]
-[assembly: AssemblyTrademark("Projeto ACBr.Net https://github.com/ACBrNet/ACBr.Net")]
+[assembly: AssemblyTrademark("Projeto ACBr.Net https://github.com/ACBrNet")]
 [assembly: AssemblyKeyFile(@"../acbr.net.snk")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
