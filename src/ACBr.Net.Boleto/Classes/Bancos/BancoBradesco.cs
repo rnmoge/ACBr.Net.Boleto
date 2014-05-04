@@ -747,7 +747,7 @@ namespace ACBr.Net.Boleto
             wLinha.Append(ced.CodigoCedente.PadRight(20, '0'));                      // Codigo da Empresa no Banco
             wLinha.Append(ced.Nome.RemoveCE().PadLeft(30));                          // Nome da Empresa
             wLinha.Append(Numero + "BRADESCO".PadLeft(15));                          // Código e Nome do Banco(237 - Bradesco)
-            wLinha.AppendFormat("{0:ddmmyy}        MX", DateTime.Now);               // Data de geração do arquivo + brancos
+            wLinha.AppendFormat("{0:ddMMyy}        MX", DateTime.Now);               // Data de geração do arquivo + brancos
             wLinha.AppendFormat("{0:0000000}{1}", NumeroRemessa, "".PadRight(277));  // Nr. Sequencial de Remessa + brancos
             wLinha.AppendFormat("{0:000000}", 1);                                    // Nr. Sequencial de Remessa + brancos + Contador
             ARemessa.Add(wLinha.ToString().ToUpper());
@@ -953,14 +953,14 @@ namespace ACBr.Net.Boleto
             wLinha.AppendFormat("{0} {1}", TipoBoleto, "".PadRight(10));                              // Tipo Boleto(Quem emite) + Identificação se emite boleto para débito automático.                  
             wLinha.AppendFormat(" 2  {0}", Ocorrencia);                             // Ind. Rateio de Credito + Aviso de Debito Aut.: 2=Não emite aviso + Ocorrência
             wLinha.Append(Titulo.NumeroDocumento.PadLeft(10));
-            wLinha.AppendFormat("{0:ddmmyy}", Titulo.Vencimento);
+            wLinha.AppendFormat("{0:ddMMyy}", Titulo.Vencimento);
             wLinha.Append(Titulo.ValorDocumento.ToRemessaString());
             wLinha.AppendFormat("{0}{1}N", "".ZeroFill(8), aEspecie.PadLeft(2));     // Zeros + Especie do documento + Idntificação(valor fixo N)
-            wLinha.AppendFormat("{0:ddmmyy}", Titulo.DataDocumento);                 // Data de Emissão
+            wLinha.AppendFormat("{0:ddMMyy}", Titulo.DataDocumento);                 // Data de Emissão
             wLinha.Append(Protesto);
             wLinha.Append(Titulo.ValorMoraJuros.ToRemessaString());
             wLinha.Append(Titulo.DataDesconto.HasValue && Titulo.DataDesconto < new DateTime(2000, 01, 01) ?
-                "000000" : string.Format("{0:ddmmyy}", Titulo.DataDesconto.Value));
+                "000000" : string.Format("{0:ddMMyy}", Titulo.DataDesconto.Value));
             wLinha.Append(Titulo.ValorDesconto.ToRemessaString());
             wLinha.Append(Titulo.ValorIOF.ToRemessaString());
             wLinha.Append(Titulo.ValorAbatimento.ToRemessaString());

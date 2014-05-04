@@ -520,7 +520,7 @@ namespace ACBr.Net.Boleto
             wLinha.Append(Banco.Parent.Cedente.Nome.RemoveCE().PadLeft(30));    // Nome da Empresa
             wLinha.AppendFormat("{0:000}", Numero);                             // Código do Banco
             wLinha.Append("BANCO DO BRASIL".PadLeft(15));                       // Nome do Banco(BANCO DO BRASIL)
-            wLinha.AppendFormat("{0:ddmmyy}", DateTime.Now);                    // Data de geração do arquivo
+            wLinha.AppendFormat("{0:ddMMyy}", DateTime.Now);                    // Data de geração do arquivo
             wLinha.AppendFormat("{0:0000000}", NumeroRemessa);                  // Numero Remessa
             
             if(TamConvenioMaior6)
@@ -741,7 +741,7 @@ namespace ACBr.Net.Boleto
             if(Titulo.ValorDesconto > 0)
             {
                 if(Titulo.DataDesconto > new DateTime(2000,01,01))
-                    aDataDesconto = string.Format("{0:ddmmyy}", Titulo.DataDesconto);
+                    aDataDesconto = string.Format("{0:ddMMyy}", Titulo.DataDesconto);
                 else
                     aDataDesconto = "777777";
             }
@@ -819,11 +819,11 @@ namespace ACBr.Net.Boleto
             wLinha.Append(Titulo.Carteira);                                                // Carteira
             wLinha.Append(ATipoOcorrencia);                                                // Ocorrência "Comando"
             wLinha.Append(Titulo.NumeroDocumento.PadLeft(10));                             // Seu Numero - Nr. titulo dado pelo cedente
-            wLinha.AppendFormat("{0:ddmmyy}", Titulo.Vencimento);                          // Data de vencimento
+            wLinha.AppendFormat("{0:ddMMyy}", Titulo.Vencimento);                          // Data de vencimento
             wLinha.Append(Titulo.ValorDocumento.ToRemessaString());                        // Valor do titulo
             wLinha.Append("0010000 ");                                                     // Numero do Banco - 001 + Prefixo da agencia cobradora + DV-pref. agencia cobradora
             wLinha.Append(ATipoEspecieDoc.PadRight(2, '0') + ATipoAceite);                 // Especie de titulo + Aceite
-            wLinha.AppendFormat("{0:ddmmyy}", Titulo.DataDocumento);                       // Data de Emissão
+            wLinha.AppendFormat("{0:ddMMyy}", Titulo.DataDocumento);                       // Data de Emissão
             wLinha.Append(AInstrucao);                                                     // 1ª e 2ª instrução codificada
             wLinha.Append(Titulo.ValorMoraJuros.ToRemessaString());                        // Juros de mora por dia
             wLinha.Append(aDataDesconto);                                                  // Data limite para concessao de desconto
@@ -849,7 +849,7 @@ namespace ACBr.Net.Boleto
             wLinha.Append("99");                                                          //Tipo de Serviço (Cobrança de Multa)
             wLinha.Append(Titulo.PercentualMulta > 0 ?  '2' : '9');                       //Cod. Multa 2- Percentual 9-Sem Multa
             wLinha.Append(Titulo.PercentualMulta > 0 ?
-                string.Format("{0:ddmmyy}", Titulo.DataMoraJuros) :
+                string.Format("{0:ddMMyy}", Titulo.DataMoraJuros) :
                 "000000");                                                                //Data Multa
             wLinha.Append(Titulo.PercentualMulta.ToRemessaString(12));                    //Perc. Multa
             wLinha.Append("".PadRight(372));                                              //Brancos
@@ -1003,7 +1003,7 @@ namespace ACBr.Net.Boleto
             Result.Append("BANCO DO BRASIL".PadLeft(30));                                    //103 a 132 - Nome do banco
             Result.Append("".PadLeft(10));                                                   //133 a 142 - Uso exclusivo FEBRABAN/CNAB
             Result.Append('1');                                                              //143 - Código de Remessa (1) / Retorno (2)
-            Result.AppendFormat("{0:ddmmyyyy}", DateTime.Now);                               //144 a 151 - Data do de geração do arquivo
+            Result.AppendFormat("{0:ddMMyyyy}", DateTime.Now);                               //144 a 151 - Data do de geração do arquivo
             Result.AppendFormat("{0:hhmmss}", DateTime.Now);                                 //152 a 157 - Hora de geração do arquivo
             Result.Append(NumeroRemessa.ToString().PadRight(6, '0'));                        //158 a 163 - Número seqüencial do arquivo
             Result.Append("030");                                                            //164 a 166 - Número da versão do layout do arquivo
@@ -1040,7 +1040,7 @@ namespace ACBr.Net.Boleto
             Result.Append("".PadLeft(40));                                                   //104 a 143 - Mensagem 1 para todos os boletos do lote
             Result.Append("".PadLeft(40));                                                   //144 a 183 - Mensagem 2 para todos os boletos do lote
             Result.Append(NumeroRemessa.ToString().PadRight(8, '0'));                        //184 a 191 - Número do arquivo
-            Result.AppendFormat("{0:ddmmyyyy}", DateTime.Now);                               //192 a 199 - Data de geração do arquivo
+            Result.AppendFormat("{0:ddMMyyyy}", DateTime.Now);                               //192 a 199 - Data de geração do arquivo
             Result.Append("".PadLeft(8, '0'));                                               //200 a 207 - Data do crédito - Só para arquivo retorno
             Result.Append("".PadLeft(33));                                                   //208 a 240 - Uso exclusivo FEBRABAN/CNAB  
 
@@ -1215,7 +1215,7 @@ namespace ACBr.Net.Boleto
             if (Titulo.ValorMoraJuros > 0)
             {
                 if (Titulo.DataMoraJuros.HasValue && Titulo.DataMoraJuros > DateTime.Now)
-                    ADataMoraJuros = string.Format("{0:ddmmyyyy}", Titulo.DataMoraJuros);
+                    ADataMoraJuros = string.Format("{0:ddMMyyyy}", Titulo.DataMoraJuros);
                 else
                     ADataMoraJuros = "".PadLeft(8, '0');
             }
@@ -1227,7 +1227,7 @@ namespace ACBr.Net.Boleto
             if (Titulo.ValorDesconto > 0)
             {
                 if (Titulo.DataDesconto.HasValue && Titulo.DataDesconto > DateTime.Now)
-                    ADataDesconto = string.Format("{0:ddmmyyyy}", Titulo.DataDesconto);
+                    ADataDesconto = string.Format("{0:ddMMyyyy}", Titulo.DataDesconto);
                 else
                     ADataDesconto = "".PadLeft(8, '0');
             }
@@ -1254,12 +1254,12 @@ namespace ACBr.Net.Boleto
             Result.Append(((int)Titulo.Parent.Cedente.TipoDocumento).ToString());                         //60 - Tipo de documento: Tradicional
             Result.Append(ATipoBoleto);                                                                   //61 a 62 - Quem emite e quem distribui o boleto?
             Result.Append(Titulo.NumeroDocumento.PadLeft(15));                                            //63 a 77 - Número que identifica o título na empresa [ Alterado conforme instruções da CSO Brasília ] {27-07-09}
-            Result.AppendFormat("{0:ddmmyyyy}", Titulo.Vencimento);                                       //78 a 85 - Data de vencimento do título
+            Result.AppendFormat("{0:ddMMyyyy}", Titulo.Vencimento);                                       //78 a 85 - Data de vencimento do título
             Result.Append(Titulo.ValorDocumento.ToRemessaString(15));                                     //86 a 100 - Valor nominal do título
             Result.Append("000000");                                                                      //101 a 106 - Agência cobradora + Digito. Se ficar em branco, a caixa determina automaticamente pelo CEP do sacado
             Result.Append(ATipoEspecieDoc.PadLeft(2));                                                    //107 a 108 - Espécie do documento
             Result.Append(ATipoAceite);                                                                   //109 - Identificação de título Aceito / Não aceito
-            Result.AppendFormat("{0:ddmmyyyy}", Titulo.DataDocumento);                                    //110 a 117 - Data da emissão do documento
+            Result.AppendFormat("{0:ddMMyyyy}", Titulo.DataDocumento);                                    //110 a 117 - Data da emissão do documento
             Result.Append(Titulo.ValorMoraJuros > 0 ? '1' : '3');                                         //118 - Código de juros de mora: Valor por dia
             Result.Append(ADataMoraJuros);                                                                //119 a 126 - Data a partir da qual serão cobrados juros
             Result.Append(Titulo.ValorMoraJuros > 0 ? Titulo.ValorMoraJuros.ToRemessaString(15) :
@@ -1328,7 +1328,7 @@ namespace ACBr.Net.Boleto
             Result.Append("".PadRight(48, '0'));                                                          // 18 - 65 Brancos (Não definido pelo FEBRAN)
             Result.Append(Titulo.PercentualMulta > 0 ? '2' : '0');                                        // 66 - 66 1-Cobrar Multa / 0-Não cobrar multa
             Result.Append(Titulo.PercentualMulta > 0 ?
-                string.Format("{0:ddmmyyyy}", Titulo.DataMoraJuros) : "00000000");                        // 67 - 74 Se cobrar informe a data para iniciar a cobrança ou informe zeros se não cobrar
+                string.Format("{0:ddMMyyyy}", Titulo.DataMoraJuros) : "00000000");                        // 67 - 74 Se cobrar informe a data para iniciar a cobrança ou informe zeros se não cobrar
 
             Result.Append(Titulo.PercentualMulta > 0 ? Titulo.PercentualMulta.ToRemessaString(15) :
                     "".PadLeft(15, '0'));                                                                 // 75 - 89 Percentual de multa. Informar zeros se não cobrar

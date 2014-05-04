@@ -787,7 +787,65 @@ namespace ACBr.Net.Boleto
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public override string GerarRegistroHeader240(int NumeroRemessa)
         {
-            throw new NotImplementedException("Esta função não esta implementada para este banco");
+            string TipoInsc;
+            switch(Banco.Parent.Cedente.TipoInscricao)
+            {
+                case PessoaCedente.Fisica: TipoInsc = "1"; break;
+                case PessoaCedente.Juridica: TipoInsc = "2"; break;
+                default: TipoInsc = "9"; break;
+            }
+
+            var wLinha = new StringBuilder();
+            wLinha.Append("041");                                                             //   1 -   3   Código do banco
+            wLinha.Append("".ZeroFill(4));                                                    //   4 -   7   Lote de serviço
+            wLinha.Append('0');                                                               //   8 -   8   Registro header de arquivo
+            wLinha.Append("".PadRight(9));                                                    //   9 -  17   Uso exclusivo FEBRABAN/CNAB
+            wLinha.Append(TipoInsc);                                                          //  18 -  18   Tipo de inscrição
+            wLinha.Append(Banco.Parent.Cedente.CNPJCPF.OnlyNumbers().ZeroFill(14));           //  19 -  32   Número de inscrição da empresa (Não considerado)
+            wLinha.Append(Banco.Parent.Cedente.Convenio.OnlyNumbers().PadRight(13, '0'));     //  33 -  45   Código do convênio
+            wLinha.Append("".PadRight(7));                                                    //  46 -  52   Brancos
+            wLinha.Append("00");                                                              //  53 -  54   Zeros
+            wLinha.Append(Banco.Parent.Cedente.Agencia.OnlyNumbers().PadRight(3, '0'));       //  55 -  57   Agência (Não considerado)
+            wLinha.Append(Banco.Parent.Cedente.AgenciaDigito.OnlyNumbers().PadRight(1, '0')); //  58 -  58   Dígito agência (Não considerado)
+            wLinha.Append(Banco.Parent.Cedente.Conta.OnlyNumbers().PadRight(12, '0'));        //  59 -  70   Número da conta (Não considerado)
+            wLinha.Append(Banco.Parent.Cedente.ContaDigito.OnlyNumbers().PadRight(1, '0'));   //  71 -  71   Dígito da conta (Não considerado)
+            wLinha.Append("".PadRight(1));                                                    //  72 -  72   Dígito verificador da agência/conta (Não considerado)
+            wLinha.Append(Banco.Parent.Cedente.Nome.PadLeft(30));                             //  73 - 102   Nome do cedente
+            wLinha.Append(Banco.Parent.Banco.Nome.PadLeft(30).ToUpper());                     // 103 - 132   Nome do banco
+            wLinha.Append("".PadRight(10));                                                   // 133 - 142   Uso exclusivo FEBRABAN/CNAB
+            wLinha.Append('1');                                                               // 143 - 143   Código remessa
+            wLinha.AppendFormat("{0:ddMMyyyyhhmmss}", DateTime.Now);                          // 144 - 157   Data e hora da geração do arquivo
+            wLinha.AppendFormat("{0:000000}", NumeroRemessa);                                 // 158 - 163   Número sequencial do arquivo
+            wLinha.Append("040");                                                             // 164 - 166   Número da versão do layout do arquivo
+            wLinha.Append("".ZeroFill(5));                                                    // 167 - 171   Densidade de gravação do arquivo
+            wLinha.Append("".PadRight(60));                                                   // 172 - 240   Outros campos  
+
+            wLinha.Append(Environment.NewLine);
+            wLinha.Append("041");                                                             //   1 -   3   Código do banco
+            wLinha.Append("0001");                                                            //   4 -   7   Lote de serviço
+            wLinha.Append('1');                                                               //   8 -   8   Registro header de lote
+            wLinha.Append('R');                                                               //   9 -   9   Tipo de operação
+            wLinha.Append("01");                                                              //  10 -  11   Tipo de serviço
+            wLinha.Append("00");                                                              //  12 -  13   Forma de lançamento
+            wLinha.Append("020");                                                             //  14 -  16   Número da versão do layout do lote
+            wLinha.Append("".PadRight(1));                                                    //  17 -  17   Uso exclusivo FEBRABAN/CNAB
+            wLinha.Append(TipoInsc);                                                          //  18 -  18   Tipo de inscrição da empresa
+            wLinha.Append(Banco.Parent.Cedente.CNPJCPF.OnlyNumbers().ZeroFill(15));           //  19 -  33   Número de inscrição da empresa
+            wLinha.Append(Banco.Parent.Cedente.Convenio.OnlyNumbers().PadRight(13, '0'));     //  34 -  46   Código do convênio
+            wLinha.Append("".PadRight(7));                                                    //  47 -  53   Brancos
+            wLinha.Append(Banco.Parent.Cedente.Agencia.OnlyNumbers().PadRight(5, '0'));       //  54 -  58   Agência
+            wLinha.Append(Banco.Parent.Cedente.AgenciaDigito.OnlyNumbers().PadRight(1, '0')); //  59 -  59   Dígito da agência
+            wLinha.Append(Banco.Parent.Cedente.Conta.OnlyNumbers().PadRight(12, '0'));        //  60 -  71   Número da conta
+            wLinha.Append(Banco.Parent.Cedente.ContaDigito.OnlyNumbers().PadRight(1, '0'));   //  72 -  72   Dígito da conta
+            wLinha.Append("".PadRight(1));                                                    //  73 -  73   Dígito verificador da agência/conta
+            wLinha.Append(Banco.Parent.Cedente.Nome.PadLeft(30));                             //  74 - 103   Nome da empresa
+            wLinha.Append("".PadRight(80));                                                   // 104 - 183   Mensagens
+            wLinha.AppendFormat("{0:00000000}", NumeroRemessa);                               // 184 - 191   Número sequencial do arquivo
+            wLinha.AppendFormat("{0:ddMMyyyy}", DateTime.Now);                                // 192 - 199   Data de geração do arquivo
+            wLinha.Append("".ZeroFill(8));                                                    // 200 - 207   Data do crédito
+            wLinha.Append("".PadRight(33));                                                   // 208 - 240   Uso exclusivo FEBRABAN/CNAB
+
+            return wLinha.ToString();
         }
         
         /// <summary>
