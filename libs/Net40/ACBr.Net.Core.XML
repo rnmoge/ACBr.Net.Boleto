@@ -1217,17 +1217,37 @@
             <param name="array">The array.</param>
             <returns>String com todos os dados da lista de strings</returns>
         </member>
-        <member name="M:ACBr.Net.Core.StringExtensions.StringFill(System.String,System.Char,System.Int32,System.Boolean)">
+        <member name="M:ACBr.Net.Core.StringExtensions.StringFill(System.String,System.Int32,System.Char,System.Boolean)">
             <summary>
-            Preenche uma string com caractere informado a direita/esquerda ate ficar do tamanho especificado.
+            Alinha a string a direita/esquerda e preenche com caractere informado ate ficar do tamanho especificado.
             </summary>
-            <param name="text">The text.</param>
+            <param name="text">O texto</param>
             <param name="with">Caractere para preencher</param>
             <param name="length">Tamanho final desejado</param>
             <param name="esquerda">Direção do preenchimento</param>
             <returns>String do tamanho especificado e se menor complementada com o caractere informado a direita/esquerda</returns>
         </member>
-        <member name="M:ACBr.Net.Core.StringExtensions.ZeroFill(System.String,System.Int32,System.Boolean)">
+        <member name="M:ACBr.Net.Core.StringExtensions.FillRight(System.String,System.Int32,System.Char)">
+            <summary>
+            Alinha a string a direita e preenche a esquerda com o caracter informado até ficar do tamanho especificado.
+            Se tamanho menor que a string atual retorna uma string do tamanho especificado.
+            </summary>
+            <param name="text">O texto.</param>
+            <param name="with">Caractere para preencher</param>
+            <param name="length">Tamanho final desejado</param>
+            <returns>String do tamanho especificado e se menor complementada com o caractere informado a esquerda</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.FillLeft(System.String,System.Int32,System.Char)">
+            <summary>
+            Alinha a string a esquerda e preenche a direita com o caracter informado até ficar do tamanho especificado.
+            Se tamanho menor que a string atual retorna uma string do tamanho especificado.
+            </summary>
+            <param name="text">O texto.</param>
+            <param name="with">Caractere para preencher</param>
+            <param name="length">Tamanho final desejado</param>
+            <returns>String do tamanho especificado e se menor complementada com o caractere informado a direita</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.ZeroFill(System.String,System.Int32)">
             <summary>
             Preenche uma string com zero a direita/esquerda ate ficar do tamanho especificado.
             </summary>

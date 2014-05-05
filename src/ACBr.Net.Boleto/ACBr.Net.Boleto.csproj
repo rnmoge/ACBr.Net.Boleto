@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\bin\Release\ACBr.Net.Boleto.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'COM Interop|AnyCPU'">
     <OutputPath>..\..\bin\COM Interop\</OutputPath>
@@ -91,7 +92,7 @@
     <Compile Include="Classes\Titulo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ico.bmp" />
+    <EmbeddedResource Include="ico.bmp" />
     <Content Include="Logos\Colorido\001.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

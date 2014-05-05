@@ -329,96 +329,118 @@ namespace ACBr.Net.Boleto
         }
 
         /// <summary>
-        /// Envia os boleto por email em PDF ou HTML.
+        /// Enviars the email.
         /// </summary>
-        /// <param name="SmtpHost">Endereço do servidor SMTP.</param>
-        /// <param name="SmtpPort">Porta do servidor SMTP.</param>
-        /// <param name="SmtpUser">Usuario do servidor SMTP.</param>
-        /// <param name="SmtpPasswd">Senha do servidor SMTP.</param>
-        /// <param name="From">Email do remetente.</param>
-        /// <param name="sTo">Email do destinatario.</param>
-        /// <param name="Assunto">Assunto do email.</param>
-        /// <param name="Mensagem">Mensagem do email.</param>
-        /// <param name="SSL">Usar criptografia SSL na conexão ao servidor.</param>
-        /// <param name="EnviaPDF">Enviar PDF.</param>
-        /// <param name="CC">Endereços de email para CC.</param>
-        /// <param name="Anexos">Anexos do email.</param>
-        /// <param name="AguardarEnvio">Aguarda o envio dos emails.</param>
-        /// <param name="NomeRemetente">Nome do remetente.</param>
+        /// <param name="SmtpHost">The SMTP host.</param>
+        /// <param name="SmtpPort">The SMTP port.</param>
+        /// <param name="SmtpUser">The SMTP user.</param>
+        /// <param name="SmtpPasswd">The SMTP passwd.</param>
+        /// <param name="From">From.</param>
+        /// <param name="sTo">The s to.</param>
+        /// <param name="Assunto">The assunto.</param>
+        /// <param name="Mensagem">The mensagem.</param>
+        /// <param name="SSL">if set to <c>true</c> [SSL].</param>
+        /// <param name="EnviaPDF">if set to <c>true</c> [envia PDF].</param>
+        /// <param name="CC">The cc.</param>
+        /// <param name="Anexos">The anexos.</param>
+        /// <param name="PedeConfirma">if set to <c>true</c> [pede confirma].</param>
+        /// <param name="AguardarEnvio">if set to <c>true</c> [aguardar envio].</param>
+        /// <param name="NomeRemetente">The nome remetente.</param>
+        /// <param name="TLS">if set to <c>true</c> [TLS].</param>
         public void EnviarEmail(string SmtpHost, int SmtpPort, string SmtpUser, string SmtpPasswd, string From, string sTo,
                                 string Assunto, string[] Mensagem, bool SSL, bool EnviaPDF = true, string[] CC = null,
-                                string[] Anexos = null, bool AguardarEnvio = false, string NomeRemetente = "")
+                                string[] Anexos = null, bool PedeConfirma = false,
+                                bool AguardarEnvio = false, string NomeRemetente = "", bool TLS = true)
         {
-            if (string.IsNullOrEmpty(From) || string.IsNullOrEmpty(sTo) ||
-                string.IsNullOrEmpty(SmtpHost) || string.IsNullOrEmpty(SmtpUser) ||
-                string.IsNullOrEmpty(SmtpPasswd) || string.IsNullOrEmpty(Assunto))
-                return;
-                        
-            if (SmtpPort <= 0)
-                SmtpPort = SSL ? 465 : 25;
-
-            using (var smtpClient = new SmtpClient(SmtpHost, SmtpPort))
+            try
             {
-                using (var message = new MailMessage())
+                if (string.IsNullOrEmpty(From) || string.IsNullOrEmpty(sTo) ||
+                    string.IsNullOrEmpty(SmtpHost) || string.IsNullOrEmpty(SmtpUser) ||
+                    string.IsNullOrEmpty(SmtpPasswd) || string.IsNullOrEmpty(Assunto))
+                    return;
+
+                if (SmtpPort <= 0)
+                    SmtpPort = SSL ? 465 : 25;
+
+                using (var smtpClient = new SmtpClient(SmtpHost, SmtpPort))
                 {
-                    smtpClient.Credentials = new NetworkCredential(SmtpUser, SmtpPasswd);
-                    smtpClient.EnableSsl = SSL;
-
-                    if (CC.Length > 0)
+                    using (var message = new MailMessage())
                     {
-                        foreach(var cc in CC)
-                            message.CC.Add(cc);
-                    }
-
-                    message.Priority = MailPriority.High;                    
-
-                    message.To.Add(sTo);
-                    message.ReplyToList.Add(sTo);
-                    message.From = !string.IsNullOrEmpty(NomeRemetente) ? new MailAddress(From, NomeRemetente) : new MailAddress(From);
-
-                    if (Anexos.Length > 0)
-                    {
-                        foreach (var anexo in Anexos)
+                        smtpClient.Credentials = new NetworkCredential(SmtpUser, SmtpPasswd);                        
+                        if (TLS)
                         {
-                            if (File.Exists(anexo))
-                                continue;
-
-                            var file = File.Open(anexo, FileMode.Open);
-                            var fileName = Path.GetFileName(anexo);
-                            message.Attachments.Add(new Attachment(file, fileName));
+                            smtpClient.EnableSsl = true;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
                         }
+                        else
+                            smtpClient.EnableSsl = SSL;
+
+                        if (CC.Length > 0)
+                        {
+                            foreach (var cc in CC)
+                                message.CC.Add(cc);
+                        }
+
+                        message.Priority = MailPriority.High;
+                        if (PedeConfirma)
+                        {
+                            message.Headers.Add("Disposition-Notification-To", string.Format("<{0}>", From));
+                            message.DeliveryNotificationOptions = DeliveryNotificationOptions.OnSuccess;
+                        }
+
+                        message.To.Add(sTo);
+                        message.ReplyToList.Add(From);
+                        message.From = !string.IsNullOrEmpty(NomeRemetente) ? 
+                            new MailAddress(From, NomeRemetente) : new MailAddress(From);
+
+                        if (Anexos.Length > 0)
+                        {
+                            foreach (var anexo in Anexos)
+                            {
+                                if (File.Exists(anexo))
+                                    continue;
+
+                                var file = File.Open(anexo, FileMode.Open);
+                                var fileName = Path.GetFileName(anexo);
+                                message.Attachments.Add(new Attachment(file, fileName));
+                            }
+                        }
+
+                        if (EnviaPDF)
+                        {
+                            if (string.IsNullOrEmpty(BoletoPrinter.NomeArquivo))
+                                BoletoPrinter.NomeArquivo = "boleto.pdf";
+
+                            GerarPDF();
+                        }
+                        else
+                        {
+                            if (string.IsNullOrEmpty(BoletoPrinter.NomeArquivo))
+                                BoletoPrinter.NomeArquivo = "boleto.html";
+
+                            GerarHTML();
+                        }
+
+                        var boleto = File.Open(BoletoPrinter.NomeArquivo, FileMode.Open);
+                        var boletoName = Path.GetFileName(BoletoPrinter.NomeArquivo);
+                        message.Attachments.Add(new Attachment(boleto, boletoName));
+
+                        if (!string.IsNullOrEmpty(Assunto))
+                        {
+                            message.Subject = Assunto;
+                        }
+
+                        message.Body = Mensagem.AsString();
+                        if (AguardarEnvio)
+                            smtpClient.Send(message);
+                        else
+                            smtpClient.SendAsync(message, null);
                     }
-
-                    if (EnviaPDF)
-                    {
-                        if (string.IsNullOrEmpty(BoletoPrinter.NomeArquivo))
-                            BoletoPrinter.NomeArquivo = "boleto.pdf";
-
-                        GerarPDF();
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(BoletoPrinter.NomeArquivo))
-                            BoletoPrinter.NomeArquivo = "boleto.html";
-
-                        GerarHTML();
-                    }
-
-                    var boleto = File.Open(BoletoPrinter.NomeArquivo, FileMode.Open);
-                    var boletoName = Path.GetFileName(BoletoPrinter.NomeArquivo);
-                    message.Attachments.Add(new Attachment(boleto, boletoName));
-
-                    if (!string.IsNullOrEmpty(Assunto))
-                    {
-                        message.Subject = Assunto;
-                    }
-
-                    message.Body = Mensagem.AsString();
-                    if (AguardarEnvio)
-                        smtpClient.Send(message);
-                    else
-                        smtpClient.SendAsync(message, null);
                 }
+            }
+            finally
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
             }
         }
 
@@ -518,14 +540,16 @@ namespace ACBr.Net.Boleto
         }
 
         /// <summary>
-        /// Le o arquivo de retorno e adicionar o titulos a lista.
+        /// Lers the retorno.
         /// </summary>
-        /// <exception cref="ACBrException">NomeArqRetorno deve ser informado.
+        /// <exception cref="ACBr.Net.Core.ACBrException">
+        /// NomeArqRetorno deve ser informado.
         /// or
         /// or
         /// or
         /// or
-        /// or</exception>
+        /// or
+        /// </exception>
         public void LerRetorno()
         {
             if(string.IsNullOrEmpty(NomeArqRetorno))

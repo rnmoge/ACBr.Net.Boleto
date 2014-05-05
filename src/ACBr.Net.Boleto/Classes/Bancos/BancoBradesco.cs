@@ -681,8 +681,8 @@ namespace ACBr.Net.Boleto
         {
             var  FatorVencimento = Titulo.Vencimento.CalcularFatorVencimento();
             var CodigoBarras = string.Format("{0}9{1}{2}{3}{4}{5}{6}0", Numero, FatorVencimento, Titulo.ValorDocumento.ToRemessaString(10),
-                                Titulo.Parent.Cedente.Agencia.OnlyNumbers().PadRight(TamanhoAgencia,'0'), Titulo.Carteira, Titulo.NossoNumero,
-                                Titulo.Parent.Cedente.Conta.Right(7).PadRight(7,'0'));
+                                Titulo.Parent.Cedente.Agencia.OnlyNumbers().FillRight(TamanhoAgencia,'0'), Titulo.Carteira, Titulo.NossoNumero,
+                                Titulo.Parent.Cedente.Conta.Right(7).FillRight(7,'0'));
             
             var DigitoCodBarras = CalcularDigitoCodigoBarras(CodigoBarras);
             
@@ -743,12 +743,12 @@ namespace ACBr.Net.Boleto
             wLinha.Append('1');                                                      // ID do Arquivo( 1 - Remessa)
             wLinha.Append("REMESSA");                                                // Literal de Remessa
             wLinha.Append("01");                                                     // Código do Tipo de Serviço
-            wLinha.Append("COBRANCA".PadLeft(15));                                   // Descrição do tipo de serviço
-            wLinha.Append(ced.CodigoCedente.PadRight(20, '0'));                      // Codigo da Empresa no Banco
-            wLinha.Append(ced.Nome.RemoveCE().PadLeft(30));                          // Nome da Empresa
-            wLinha.Append(Numero + "BRADESCO".PadLeft(15));                          // Código e Nome do Banco(237 - Bradesco)
+            wLinha.Append("COBRANCA".FillLeft(15));                                   // Descrição do tipo de serviço
+            wLinha.Append(ced.CodigoCedente.FillRight(20, '0'));                      // Codigo da Empresa no Banco
+            wLinha.Append(ced.Nome.RemoveCE().FillLeft(30));                          // Nome da Empresa
+            wLinha.Append(Numero + "BRADESCO".FillLeft(15));                          // Código e Nome do Banco(237 - Bradesco)
             wLinha.AppendFormat("{0:ddMMyy}        MX", DateTime.Now);               // Data de geração do arquivo + brancos
-            wLinha.AppendFormat("{0:0000000}{1}", NumeroRemessa, "".PadRight(277));  // Nr. Sequencial de Remessa + brancos
+            wLinha.AppendFormat("{0:0000000}{1}", NumeroRemessa, "".FillRight(277));  // Nr. Sequencial de Remessa + brancos
             wLinha.AppendFormat("{0:000000}", 1);                                    // Nr. Sequencial de Remessa + brancos + Contador
             ARemessa.Add(wLinha.ToString().ToUpper());
         }
@@ -776,25 +776,25 @@ namespace ACBr.Net.Boleto
 
                 Result.Append(Environment.NewLine);
                 Result.Append('2');                                     // IDENTIFICAÇÃO DO LAYOUT PARA O REGISTRO
-                Result.Append(Titulo.Mensagem[1].PadLeft(80));          // CONTEÚDO DA 1ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+                Result.Append(Titulo.Mensagem[1].FillLeft(80));          // CONTEÚDO DA 1ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
 
                 if (Titulo.Mensagem.Count == 3)
-                    Result.Append(Titulo.Mensagem[2].PadLeft(80));      // CONTEÚDO DA 2ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+                    Result.Append(Titulo.Mensagem[2].FillLeft(80));      // CONTEÚDO DA 2ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
                 else
-                    Result.Append("".PadLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
+                    Result.Append("".FillLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
 
                 if (Titulo.Mensagem.Count == 4)
-                    Result.Append(Titulo.Mensagem[3].PadLeft(80));      // CONTEÚDO DA 3ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+                    Result.Append(Titulo.Mensagem[3].FillLeft(80));      // CONTEÚDO DA 3ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
                 else
-                    Result.Append("".PadLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
+                    Result.Append("".FillLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
 
                 if (Titulo.Mensagem.Count == 5)
-                    Result.Append(Titulo.Mensagem[4].PadLeft(80));      // CONTEÚDO DA 4ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+                    Result.Append(Titulo.Mensagem[4].FillLeft(80));      // CONTEÚDO DA 4ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
                 else
-                    Result.Append("".PadLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
+                    Result.Append("".FillLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
 
 
-                Result.Append("".PadRight(45));                         // COMPLEMENTO DO REGISTRO
+                Result.Append("".FillRight(45));                         // COMPLEMENTO DO REGISTRO
                 Result.Append(aCarteira);
                 Result.Append(aAgencia);
                 Result.Append(aConta);
@@ -913,7 +913,7 @@ namespace ACBr.Net.Boleto
             else if (Ocorrencia == "31")
                 Protesto = "9999";
             else
-                Protesto = Titulo.Instrucao1.Trim().PadRight(2, '0') + Titulo.Instrucao2.Trim().PadRight(2, '0');
+                Protesto = Titulo.Instrucao1.Trim().FillRight(2, '0') + Titulo.Instrucao2.Trim().FillRight(2, '0');
 
             //Pegando Tipo de Sacado
             string TipoSacado;
@@ -945,17 +945,17 @@ namespace ACBr.Net.Boleto
             wLinha.Append(aAgencia);
             wLinha.Append(aConta);
             wLinha.Append(Titulo.Parent.Cedente.ContaDigito);
-            wLinha.Append(Titulo.SeuNumero.PadLeft(25) + "000");             // Numero de Controle do Participante
+            wLinha.Append(Titulo.SeuNumero.FillLeft(25) + "000");             // Numero de Controle do Participante
             wLinha.Append(Titulo.PercentualMulta > 0 ? '2' : '0');          // Indica se exite Multa ou não
             wLinha.Append(Titulo.PercentualMulta.ToRemessaString(4));          // Percentual de Multa formatado com 2 casas decimais
             wLinha.Append(Titulo.NossoNumero + DigitoNossoNumero);
             wLinha.Append(Titulo.ValorDescontoAntDia.ToRemessaString(10));
-            wLinha.AppendFormat("{0} {1}", TipoBoleto, "".PadRight(10));                              // Tipo Boleto(Quem emite) + Identificação se emite boleto para débito automático.                  
+            wLinha.AppendFormat("{0} {1}", TipoBoleto, "".FillRight(10));                              // Tipo Boleto(Quem emite) + Identificação se emite boleto para débito automático.                  
             wLinha.AppendFormat(" 2  {0}", Ocorrencia);                             // Ind. Rateio de Credito + Aviso de Debito Aut.: 2=Não emite aviso + Ocorrência
-            wLinha.Append(Titulo.NumeroDocumento.PadLeft(10));
+            wLinha.Append(Titulo.NumeroDocumento.FillLeft(10));
             wLinha.AppendFormat("{0:ddMMyy}", Titulo.Vencimento);
             wLinha.Append(Titulo.ValorDocumento.ToRemessaString());
-            wLinha.AppendFormat("{0}{1}N", "".ZeroFill(8), aEspecie.PadLeft(2));     // Zeros + Especie do documento + Idntificação(valor fixo N)
+            wLinha.AppendFormat("{0}{1}N", "".ZeroFill(8), aEspecie.FillLeft(2));     // Zeros + Especie do documento + Idntificação(valor fixo N)
             wLinha.AppendFormat("{0:ddMMyy}", Titulo.DataDocumento);                 // Data de Emissão
             wLinha.Append(Protesto);
             wLinha.Append(Titulo.ValorMoraJuros.ToRemessaString());
@@ -964,13 +964,13 @@ namespace ACBr.Net.Boleto
             wLinha.Append(Titulo.ValorDesconto.ToRemessaString());
             wLinha.Append(Titulo.ValorIOF.ToRemessaString());
             wLinha.Append(Titulo.ValorAbatimento.ToRemessaString());
-            wLinha.Append(TipoSacado + Titulo.Sacado.CNPJCPF.OnlyNumbers().PadRight(14, '0'));
-            wLinha.Append(Titulo.Sacado.NomeSacado.PadLeft(40));
+            wLinha.Append(TipoSacado + Titulo.Sacado.CNPJCPF.OnlyNumbers().FillRight(14, '0'));
+            wLinha.Append(Titulo.Sacado.NomeSacado.FillLeft(40));
             wLinha.Append((Titulo.Sacado.Logradouro + ' ' + Titulo.Sacado.Numero + ' ' +
                     Titulo.Sacado.Bairro + ' ' + Titulo.Sacado.Cidade + ' ' +
-                    Titulo.Sacado.UF).PadLeft(40));
-            wLinha.Append("".PadRight(12) + Titulo.Sacado.CEP.PadLeft(8));
-            wLinha.Append(MensagemCedente.PadLeft(60));
+                    Titulo.Sacado.UF).FillLeft(40));
+            wLinha.Append("".FillRight(12) + Titulo.Sacado.CEP.FillLeft(8));
+            wLinha.Append(MensagemCedente.FillLeft(60));
 
 
             wLinha.AppendFormat("{0:000000}", ARemessa.Count + 1); // Nº SEQÜENCIAL DO REGISTRO NO ARQUIVO
@@ -988,7 +988,7 @@ namespace ACBr.Net.Boleto
         {
             var wLinha = new StringBuilder();
             wLinha.Append('9');
-            wLinha.Append("".PadRight(393));                        // ID Registro
+            wLinha.Append("".FillRight(393));                        // ID Registro
             wLinha.AppendFormat("{0:000000}", ARemessa.Count + 1);  // Contador de Registros
             ARemessa.Add(wLinha.ToString().ToUpper());
         }
@@ -1034,11 +1034,11 @@ namespace ACBr.Net.Boleto
 
             if(!Banco.Parent.LeCedenteRetorno)
             {
-                if (rCodEmpresa != Banco.Parent.Cedente.CodigoCedente.PadRight(20, '0'))
+                if (rCodEmpresa != Banco.Parent.Cedente.CodigoCedente.FillRight(20, '0'))
                     throw new ACBrException("Código da Empresa do arquivo inválido");
                 
                 if (rAgencia != Banco.Parent.Cedente.Agencia.OnlyNumbers() ||
-                    rConta != Banco.Parent.Cedente.Conta.PadRight(rConta.Length))
+                    rConta != Banco.Parent.Cedente.Conta.FillRight(rConta.Length))
                     throw new ACBrException("Agencia\\Conta do arquivo inválido");
             }
             
