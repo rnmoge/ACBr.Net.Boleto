@@ -61,6 +61,7 @@
     <Compile Include="Classes\Banco.cs" />
     <Compile Include="Classes\Bancos\BancoBanrisul.cs" />
     <Compile Include="Classes\Bancos\BancoBase.cs" />
+    <Compile Include="Classes\Bancos\BancoItau.cs" />
     <Compile Include="Classes\Bancos\BancoDoBrasil.cs" />
     <Compile Include="Classes\Bancos\BancoBradesco.cs" />
     <Compile Include="Classes\BoletoPrinterBase.cs">

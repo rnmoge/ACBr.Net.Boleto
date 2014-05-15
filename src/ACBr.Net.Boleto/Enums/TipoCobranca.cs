@@ -96,6 +96,10 @@ namespace ACBr.Net.Boleto
         /// <summary>
         /// The banco safra
         /// </summary>
-        BancoSafra
+        BancoSafra,
+        /// <summary>
+        /// The safra bradesco
+        /// </summary>
+        SafraBradesco
     }
 }
