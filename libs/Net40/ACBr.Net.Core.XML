@@ -24,69 +24,69 @@
             The modulo10
             </summary>
         </member>
-        <member name="T:ACBr.Net.Boleto.CalcDigito">
+        <member name="T:ACBr.Net.Core.CalcDigito">
             <summary>
             Class CalcDigito. This class cannot be inherited.
             </summary>
         </member>
-        <member name="M:ACBr.Net.Boleto.CalcDigito.#ctor">
+        <member name="M:ACBr.Net.Core.CalcDigito.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:ACBr.Net.Boleto.CalcDigito"/> class.
+            Initializes a new instance of the <see cref="T:ACBr.Net.Core.CalcDigito"/> class.
             </summary>
         </member>
-        <member name="M:ACBr.Net.Boleto.CalcDigito.Calcular">
+        <member name="M:ACBr.Net.Core.CalcDigito.Calcular">
             <summary>
             Calcula o digito verificador
             </summary>
         </member>
-        <member name="M:ACBr.Net.Boleto.CalcDigito.CalculoPadrao">
+        <member name="M:ACBr.Net.Core.CalcDigito.CalculoPadrao">
             <summary>
             Calculoes the padrao.
             </summary>
         </member>
-        <member name="P:ACBr.Net.Boleto.CalcDigito.Documento">
+        <member name="P:ACBr.Net.Core.CalcDigito.Documento">
             <summary>
             Gets or sets the documento.
             </summary>
             <value>The documento.</value>
         </member>
-        <member name="P:ACBr.Net.Boleto.CalcDigito.MultiplicadorInicial">
+        <member name="P:ACBr.Net.Core.CalcDigito.MultiplicadorInicial">
             <summary>
             Gets or sets the multiplicador inicial.
             </summary>
             <value>The multiplicador inicial.</value>
         </member>
-        <member name="P:ACBr.Net.Boleto.CalcDigito.MultiplicadorFinal">
+        <member name="P:ACBr.Net.Core.CalcDigito.MultiplicadorFinal">
             <summary>
             Gets or sets the multiplicador final.
             </summary>
             <value>The multiplicador final.</value>
         </member>
-        <member name="P:ACBr.Net.Boleto.CalcDigito.MultiplicadorAtual">
+        <member name="P:ACBr.Net.Core.CalcDigito.MultiplicadorAtual">
             <summary>
             Gets or sets the multiplicador atual.
             </summary>
             <value>The multiplicador atual.</value>
         </member>
-        <member name="P:ACBr.Net.Boleto.CalcDigito.DigitoFinal">
+        <member name="P:ACBr.Net.Core.CalcDigito.DigitoFinal">
             <summary>
             Gets or sets the digito final.
             </summary>
             <value>The digito final.</value>
         </member>
-        <member name="P:ACBr.Net.Boleto.CalcDigito.ModuloFinal">
+        <member name="P:ACBr.Net.Core.CalcDigito.ModuloFinal">
             <summary>
             Gets or sets the modulo final.
             </summary>
             <value>The modulo final.</value>
         </member>
-        <member name="P:ACBr.Net.Boleto.CalcDigito.SomaDigitos">
+        <member name="P:ACBr.Net.Core.CalcDigito.SomaDigitos">
             <summary>
             Gets or sets the soma digitos.
             </summary>
             <value>The soma digitos.</value>
         </member>
-        <member name="P:ACBr.Net.Boleto.CalcDigito.FormulaDigito">
+        <member name="P:ACBr.Net.Core.CalcDigito.FormulaDigito">
             <summary>
             Gets or sets the formula digito.
             </summary>
@@ -440,6 +440,27 @@
             <summary>
             Comprovante Nao Fiscal Aberto
             </summary>
+        </member>
+        <member name="T:ACBr.Net.Core.StreamExtensions">
+            <summary>
+            Class StreamExtensions.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.StreamExtensions.CopyTo(System.IO.Stream,System.IO.Stream,System.Int32)">
+            <summary>
+            Copies to.
+            </summary>
+            <param name="input">The input.</param>
+            <param name="destination">The destination.</param>
+            <param name="bufferSize">Size of the buffer.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.StreamExtensions.AreEqual(System.IO.Stream,System.IO.Stream)">
+            <summary>
+            Ares the equal.
+            </summary>
+            <param name="input">The input.</param>
+            <param name="other">The other.</param>
+            <returns><c>true</c> if stream are equals, <c>false</c> otherwise.</returns>
         </member>
         <member name="T:ACBr.Net.Core.AAC.AACECF">
             <summary>

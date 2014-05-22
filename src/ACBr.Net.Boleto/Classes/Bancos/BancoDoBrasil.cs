@@ -82,50 +82,50 @@ namespace ACBr.Net.Boleto
         /// <returns>Descrição da ocorrencia</returns>
         public override string TipoOcorrenciaToDescricao(TipoOcorrencia Tipo)
         {
-            var CodOcorrencia = TipoOCorrenciaToCod(Tipo);
+            var CodOcorrencia = TipoOCorrenciaToCod(Tipo).ToInt32();
             switch (CodOcorrencia)
             {
-                case "02": return "02-Confirmação de Entrada de Título";
-                case "03": return "03-Comando recusado";
-                case "05": return "05-Liquidado sem registro";
-                case "06": return "06-Liquidação Normal";
-                case "07": return "07-Liquidação por Conta";
-                case "08": return "08-Liquidação por Saldo";
-                case "09": return "09-Baixa de Título";
-                case "10": return "10-Baixa Solicitada";
-                case "11": return "11-Titulos em Ser";
-                case "12": return "12-Abatimento Concedido";
-                case "13": return "13-Abatimento Cancelado";
-                case "14": return "14-Alteração de Vencimento do Titulo";
-                case "15": return "15-Liquidação em Cartório";
-                case "16": return "16-Confirmação de alteração de juros de mora";
-                case "19": return "19-Confirmação de recebimento de instruções para protesto";
-                case "20": return "20-Débito em Conta";
-                case "21": return "21-Alteração do Nome do Sacado";
-                case "22": return "22-Alteração do Endereço do Sacado";
-                case "23": return "23-Indicação de encaminhamento a cartório";
-                case "24": return "24-Sustar Protesto";
-                case "25": return "25-Dispensar Juros";
-                case "26": return "26-Alteração do número do título dado pelo Cedente (Seu número) - 10 e 15 posições";
-                case "28": return "28-Manutenção de titulo vencido";
-                case "31": return "31-Conceder desconto";
-                case "32": return "32-Não conceder desconto";
-                case "33": return "33-Retificar desconto";
-                case "34": return "34-Alterar data para desconto";
-                case "35": return "35-Cobrar multa";
-                case "36": return "36-Dispensar multa";
-                case "37": return "37-Dispensar indexador";
-                case "38": return "38-Dispensar prazo limite para recebimento";
-                case "39": return "39-Alterar prazo limite para recebimento";
-                case "41": return "41-Alteração do número do controle do participante (25 posições)";
-                case "42": return "42-Alteração do número do documento do sacado (CNPJ/CPF)";
-                case "44": return "44-Título pago com cheque devolvido";
-                case "46": return "46-Título pago com cheque, aguardando compensação";
-                case "72": return "72-Alteração de tipo de cobrança";
-                case "96": return "96-Despesas de Protesto";
-                case "97": return "97-Despesas de Sustação de Protesto";
-                case "98": return "98-Débito de Custas Antecipadas";
-                default: return string.Empty;
+                case 2: return "02-Confirmação de Entrada de Título";
+                case 3: return "03-Comando recusado";
+                case 5: return "05-Liquidado sem registro";
+                case 6: return "06-Liquidação Normal";
+                case 7: return "07-Liquidação por Conta";
+                case 8: return "08-Liquidação por Saldo";
+                case 9: return "09-Baixa de Título";
+                case 10: return "10-Baixa Solicitada";
+                case 11: return "11-Titulos em Ser";
+                case 12: return "12-Abatimento Concedido";
+                case 13: return "13-Abatimento Cancelado";
+                case 14: return "14-Alteração de Vencimento do Titulo";
+                case 15: return "15-Liquidação em Cartório";
+                case 16: return "16-Confirmação de alteração de juros de mora";
+                case 19: return "19-Confirmação de recebimento de instruções para protesto";
+                case 20: return "20-Débito em Conta";
+                case 21: return "21-Alteração do Nome do Sacado";
+                case 22: return "22-Alteração do Endereço do Sacado";
+                case 23: return "23-Indicação de encaminhamento a cartório";
+                case 24: return "24-Sustar Protesto";
+                case 25: return "25-Dispensar Juros";
+                case 26: return "26-Alteração do número do título dado pelo Cedente (Seu número) - 10 e 15 posições";
+                case 28: return "28-Manutenção de titulo vencido";
+                case 31: return "31-Conceder desconto";
+                case 32: return "32-Não conceder desconto";
+                case 33: return "33-Retificar desconto";
+                case 34: return "34-Alterar data para desconto";
+                case 35: return "35-Cobrar multa";
+                case 36: return "36-Dispensar multa";
+                case 37: return "37-Dispensar indexador";
+                case 38: return "38-Dispensar prazo limite para recebimento";
+                case 39: return "39-Alterar prazo limite para recebimento";
+                case 41: return "41-Alteração do número do controle do participante (25 posições)";
+                case 42: return "42-Alteração do número do documento do sacado (CNPJ/CPF)";
+                case 44: return "44-Título pago com cheque devolvido";
+                case 46: return "46-Título pago com cheque, aguardando compensação";
+                case 72: return "72-Alteração de tipo de cobrança";
+                case 96: return "96-Despesas de Protesto";
+                case 97: return "97-Despesas de Sustação de Protesto";
+                case 98: return "98-Débito de Custas Antecipadas";                
+                default: return string.Format("{0:00}-Outras Ocorrencias", CodOcorrencia);
             }
         }
 
@@ -296,8 +296,12 @@ namespace ACBr.Net.Boleto
                         case 99: return "99-Outros motivos";
                         default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
                     }
-
-                case TipoOcorrencia.RetornoLiquidado:
+                    
+                case TipoOcorrencia.RetornoLiquidadoSemRegistro:  //05-Liquidado sem registro (carteira 17-tipo4)
+                case TipoOcorrencia.RetornoLiquidado:             //06-Liquidação Normal
+                case TipoOcorrencia.RetornoLiquidadoPorConta:     //07-Liquidação por Conta
+                case TipoOcorrencia.RetornoLiquidadoEmCartorio:   //15-Liquidação em Cartório
+                case TipoOcorrencia.RetornoTituloPagoEmCheque:    //46–Título pago com cheque, aguardando compensação
                     switch (CodMotivo)
                     {
                         case 1: return "01-Liquidação normal";

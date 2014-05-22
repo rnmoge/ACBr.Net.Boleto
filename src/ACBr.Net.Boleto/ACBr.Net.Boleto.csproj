@@ -42,7 +42,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ACBr.Net.Core">
+    <Reference Include="ACBr.Net.Core, Version=0.9.1.1, Culture=neutral, PublicKeyToken=d3bb9130f8b775a6, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\Net40\ACBr.Net.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />

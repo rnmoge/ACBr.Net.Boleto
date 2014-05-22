@@ -457,11 +457,11 @@ namespace ACBr.Net.Boleto
             if (Titulo.DataProtesto.HasValue)
             {
                 if (Titulo.TipoDiasProtesto == TipoDiasIntrucao.Corridos)
-                    StringList.Add(string.Format("Protestar em {0} dias corridos após o vencimento", 
-                        Titulo.Vencimento.Subtract(Titulo.DataProtesto.Value).TotalDays));
+                    StringList.Add(string.Format("Protestar em {0} dias corridos após o vencimento",
+                        Titulo.DataProtesto.Value.Date.Subtract(Titulo.Vencimento.Date).Days));
                 else
-                    StringList.Add(string.Format("Protestar no {0} dia útil após o vencimento", 
-                        Titulo.Vencimento.Subtract(Titulo.DataProtesto.Value).TotalDays));
+                    StringList.Add(string.Format("Protestar no {0} dia útil após o vencimento",
+                        Titulo.DataProtesto.Value.Date.Subtract(Titulo.Vencimento.Date).Days));
             }
 
             if (Titulo.ValorAbatimento > 0)
