@@ -47,15 +47,6 @@ namespace ACBr.Net.Boleto
     /// </summary>
     public sealed class BancoBanrisul : BancoBase
     {
-        #region Fields
-
-        /// <summary>
-        /// A total
-        /// </summary>
-        decimal aTotal;
-
-        #endregion Fields
-
         #region Constructor
 
         /// <summary>
@@ -508,7 +499,6 @@ namespace ACBr.Net.Boleto
         /// <param name="ARemessa">A remessa.</param>
         public override void GerarRegistroHeader400(int NumeroRemessa, List<string> ARemessa)
         {
-            aTotal = 0;
             var cd = Banco.Parent.Cedente.CodigoCedente.OnlyNumbers();
             var wLinha = new StringBuilder();
             wLinha.Append('0');                                                     // ID do Registro
@@ -676,7 +666,6 @@ namespace ACBr.Net.Boleto
              wLinha.Append("".FillRight(23));                                                        // Brancos
              wLinha.AppendFormat("{0:000000}", ARemessa.Count + 1);  
 
-            aTotal += Titulo.ValorDocumento;
             ARemessa.Add(wLinha.ToString().ToUpper()); 
         }
 
@@ -686,6 +675,10 @@ namespace ACBr.Net.Boleto
         /// <param name="ARemessa">A remessa.</param>
         public override void GerarRegistroTrailler400(List<string> ARemessa)
         {
+			decimal aTotal = 0;
+			foreach (var titulo in Banco.Parent.ListadeBoletos)
+				aTotal += titulo.ValorDocumento;
+
             var wLinha = new StringBuilder();
             wLinha.Append('9');                                     // Constante (9)
             wLinha.Append("".FillRight(26));                        // Brancos

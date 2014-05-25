@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Collections.Generic;
 #region COM Interop Attributes
 
@@ -371,6 +372,80 @@ namespace ACBr.Net.Boleto
                 return Modulo.DigitoFinal.ToString();
         }
 
-        #endregion Methods
-    }
+		public string GerarRegistroHeaderDBT627(int NumeroRemessa)
+		{
+			var Retorno = new StringBuilder();
+			Retorno.Append("A1");
+			Retorno.Append(Banco.Parent.Cedente.Convenio.FillRight(20));
+			Retorno.Append(Banco.Parent.Cedente.Nome.FillRight(20));
+			Retorno.AppendFormat("{0:000}", Numero);
+			Retorno.Append(Nome.FillRight(20));
+			Retorno.AppendFormat("{0:yyyyMMdd}", DateTime.Now);
+			Retorno.AppendFormat("{0:000000}", NumeroRemessa);
+			Retorno.Append("05DEBITO AUTOMATICO");
+			Retorno.Append("".FillRight(52));
+
+			return Retorno.ToString().ToUpper();
+		}
+
+		public string GerarRegistroTransacaoDBT627(Titulo Titulo)
+		{
+			var Retorno = new StringBuilder();
+			Retorno.Append("E");
+			Retorno.Append(Titulo.NumeroDocumento.Trim().FillRight(25));
+			Retorno.Append(Banco.Parent.Cedente.Agencia.Trim().FillRight(4));
+			Retorno.Append(Banco.Parent.Cedente.Conta.Trim().FillRight(14));
+			Retorno.Append(Titulo.Vencimento.ToString("yyyyMMdd"));
+			Retorno.Append(Titulo.ValorDocumento.ToRemessaString(15));
+			Retorno.Append("03");
+			Retorno.Append(Titulo.Sacado.NomeSacado.FillRight(60));
+			Retorno.Append(Titulo.Sacado.CNPJCPF.Trim().IsCNPJ() ? "1" : "2");
+			Retorno.Append(Titulo.Sacado.CNPJCPF.OnlyNumbers().ZeroFill(15));
+			Retorno.Append("".FillRight(4));
+			Retorno.Append("0");
+
+			return Retorno.ToString().ToUpper();
+		}
+
+		public string GerarRegistroTraillerDBT627(List<string> ARemessa)
+		{
+			decimal valortotal = 0;
+			foreach (var titulo in Banco.Parent.ListadeBoletos)
+				valortotal += titulo.ValorDocumento;
+
+			var Retorno = new StringBuilder();
+			Retorno.AppendFormat("{0:000000}", ARemessa.Count + 1);
+			Retorno.Append(valortotal.ToRemessaString(17));
+			Retorno.Append("".FillRight(126));
+
+			return Retorno.ToString().ToUpper();
+		}
+
+		/// <summary>
+		/// Lers the retornoDBT627.
+		/// </summary>
+		/// <param name="ARetorno">A retorno.</param>
+		/// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
+		public virtual void LerRetornoDBT627(List<string> ARetorno)
+		{
+			Titulo titulo = null;
+			foreach (var line in ARetorno)
+			{
+				if (line[0].IsIn('A', 'Z'))
+					continue;
+
+				if (line[0] == 'F')
+					titulo = Banco.Parent.CriarTituloNaLista();
+
+				titulo.Vencimento = line.ExtrairDataDaPosicao(45, 52);
+				titulo.NumeroDocumento = line.ExtrairDaPosicao(2, 26);
+				titulo.Sacado.NomeSacado = line.ExtrairDaPosicao(70, 139);
+				titulo.MotivoRejeicaoComando.Add(line.ExtrairDaPosicao(68, 69));
+				titulo.ValorDocumento = line.ExtrairDecimalDaPosicao(53, 67);
+				titulo.Sacado.CNPJCPF = line.ExtrairDaPosicao(131, 145);
+			}
+		}
+
+        #endregion Methods		
+	}
 }

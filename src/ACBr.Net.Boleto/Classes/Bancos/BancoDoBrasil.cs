@@ -788,15 +788,15 @@ namespace ACBr.Net.Boleto
             var wLinha = new StringBuilder();
             
             if(TamConvenioMaior6)
-                wLinha.Append('7');                                                        // ID Registro
+                wLinha.Append('7');                                                         // ID Registro
             else
-                wLinha.Append('1');                                                        // ID Registro
+                wLinha.Append('1');                                                         // ID Registro
             
-            wLinha.Append(ATipoCendente);                                                  // Tipo de inscrição da empresa 01-CPF / 02-CNPJ
-            wLinha.Append(Titulo.Parent.Cedente.CNPJCPF.OnlyNumbers().FillRight(14,'0'));  //Inscrição da empresa
-            wLinha.Append(aAgencia);                                                       // Prefixo da agencia
+            wLinha.Append(ATipoCendente);                                                   // Tipo de inscrição da empresa 01-CPF / 02-CNPJ
+            wLinha.Append(Titulo.Parent.Cedente.CNPJCPF.OnlyNumbers().ZeroFill(14));       //Inscrição da empresa
+            wLinha.Append(aAgencia);                                                        // Prefixo da agencia
             wLinha.Append(Titulo.Parent.Cedente.AgenciaDigito.FillLeft(1));                 // DV-prefixo da agencia
-            wLinha.Append(aConta);                                                         // Código do cendete/nr. conta corrente da empresa
+            wLinha.Append(aConta);                                                          // Código do cendete/nr. conta corrente da empresa
             wLinha.Append(Titulo.Parent.Cedente.ContaDigito.FillLeft(1));                   // DV-código do cedente
 
             if(TamConvenioMaior6)
@@ -807,12 +807,12 @@ namespace ACBr.Net.Boleto
             wLinha.Append(Titulo.SeuNumero.FillLeft(25));                                   // Numero de Controle do Participante
             
             if(TamConvenioMaior6)
-                wLinha.Append(ANossoNumero.FillRight(17, '0'));                             // Nosso numero
+                wLinha.Append(ANossoNumero.ZeroFill(17));                                   // Nosso numero
             else
                 wLinha.Append(ANossoNumero.FillRight(11) + ADigitoNossoNumero);
 
-            
-            wLinha.Append("0000" + "".FillRight(7) + aModalidade);                          // Zeros + Brancos + Prefixo do titulo + Variação da carteira
+
+			wLinha.AppendFormat("0000{0}{1}", "".FillRight(7), aModalidade);                // Zeros + Brancos + Prefixo do titulo + Variação da carteira
 
             if(TamConvenioMaior6)
                 wLinha.Append("".ZeroFill(7));                                             // Zero + Zeros + Zero + Zeros
@@ -822,11 +822,11 @@ namespace ACBr.Net.Boleto
             wLinha.Append(aTipoCobranca);                                                  // Tipo de cobrança - 11, 17 (04DSC, 08VDR, 02VIN, BRANCOS) 12,31,51 (BRANCOS)
             wLinha.Append(Titulo.Carteira);                                                // Carteira
             wLinha.Append(ATipoOcorrencia);                                                // Ocorrência "Comando"
-            wLinha.Append(Titulo.NumeroDocumento.FillLeft(10));                             // Seu Numero - Nr. titulo dado pelo cedente
+            wLinha.Append(Titulo.NumeroDocumento.FillLeft(10));                            // Seu Numero - Nr. titulo dado pelo cedente
             wLinha.AppendFormat("{0:ddMMyy}", Titulo.Vencimento);                          // Data de vencimento
             wLinha.Append(Titulo.ValorDocumento.ToRemessaString());                        // Valor do titulo
             wLinha.Append("0010000 ");                                                     // Numero do Banco - 001 + Prefixo da agencia cobradora + DV-pref. agencia cobradora
-            wLinha.Append(ATipoEspecieDoc.FillRight(2, '0') + ATipoAceite);                 // Especie de titulo + Aceite
+            wLinha.Append(ATipoEspecieDoc.FillRight(2, '0') + ATipoAceite);                // Especie de titulo + Aceite
             wLinha.AppendFormat("{0:ddMMyy}", Titulo.DataDocumento);                       // Data de Emissão
             wLinha.Append(AInstrucao);                                                     // 1ª e 2ª instrução codificada
             wLinha.Append(Titulo.ValorMoraJuros.ToRemessaString());                        // Juros de mora por dia
@@ -836,7 +836,7 @@ namespace ACBr.Net.Boleto
             wLinha.Append(Titulo.ValorAbatimento.ToRemessaString());                       // Valor do abatimento permitido
             wLinha.Append(ATipoSacado);
             wLinha.Append(Titulo.Sacado.CNPJCPF.OnlyNumbers().FillRight(14,'0'));           // Tipo de inscricao do sacado + CNPJ ou CPF do sacado
-            wLinha.Append(Titulo.Sacado.NomeSacado.RemoveCE().FillLeft(37) + "   ");        // Nome do sacado + Brancos
+            wLinha.Append(Titulo.Sacado.NomeSacado.FillLeft(37) + "   ");                   // Nome do sacado + Brancos
             wLinha.Append(string.Format("{0}, {1} {2}", Titulo.Sacado.Logradouro.Trim(),
                        Titulo.Sacado.Numero.Trim(), Titulo.Sacado.Bairro.Trim())
                        .FillLeft(52));                                                      // Endereço do sacado

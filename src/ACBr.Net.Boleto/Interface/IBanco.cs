@@ -186,6 +186,24 @@ namespace ACBr.Net.Boleto.Interfaces
         /// <param name="ARemessa">A remessa.</param>
         /// <returns>System.String.</returns>
         string GerarRegistroTrailler240(List<string> ARemessa);
+		/// <summary>
+		/// Gerars the registro headerDBT627.
+		/// </summary>
+		/// <param name="NumeroRemessa">The numero remessa.</param>
+		/// <returns>System.String.</returns>
+		string GerarRegistroHeaderDBT627(int NumeroRemessa);
+		/// <summary>
+		/// Gerars the registro transacaoDBT627.
+		/// </summary>
+		/// <param name="Titulo">The titulo.</param>
+		/// <returns>System.String.</returns>
+		string GerarRegistroTransacaoDBT627(Titulo Titulo);
+		/// <summary>
+		/// Gerars the registro traillerDBT627.
+		/// </summary>
+		/// <param name="ARemessa">A remessa.</param>
+		/// <returns>System.String.</returns>
+		string GerarRegistroTraillerDBT627(List<string> ARemessa);
         /// <summary>
         /// Lers the retorno400.
         /// </summary>
@@ -196,6 +214,11 @@ namespace ACBr.Net.Boleto.Interfaces
         /// </summary>
         /// <param name="ARetorno">A retorno.</param>
         void LerRetorno240(List<string> ARetorno);
+		/// <summary>
+		/// Lers the retornoDBT627.
+		/// </summary>
+		/// <param name="ARetorno">A retorno.</param>
+		void LerRetornoDBT627(List<string> ARetorno);
         /// <summary>
         /// Calculars the nome arquivo remessa.
         /// </summary>

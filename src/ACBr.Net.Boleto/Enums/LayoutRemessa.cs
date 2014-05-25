@@ -32,6 +32,10 @@ namespace ACBr.Net.Boleto
         /// <summary>
         /// The cna B240
         /// </summary>
-        CNAB240
+        CNAB240,
+		/// <summary>
+		/// The DBT627
+		/// </summary>
+		DBT627
     }
 }
