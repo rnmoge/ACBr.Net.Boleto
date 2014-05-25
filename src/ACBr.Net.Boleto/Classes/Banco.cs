@@ -386,6 +386,16 @@ namespace ACBr.Net.Boleto
             return BancoClass.GerarRegistroHeader240(NumeroRemessa);
         }
 
+		/// <summary>
+		/// Gerars the registro headerDBT627.
+		/// </summary>
+		/// <param name="NumeroRemessa">The numero remessa.</param>
+		/// <returns>System.String.</returns>
+		public string GerarRegistroHeaderDBT627(int NumeroRemessa)
+		{
+			return BancoClass.GerarRegistroHeaderDBT627(NumeroRemessa);
+		}
+
         /// <summary>
         /// Gerars the registro transacao400.
         /// </summary>
@@ -404,6 +414,16 @@ namespace ACBr.Net.Boleto
         public string GerarRegistroTransacao240(Titulo Titulo)
         {
             return BancoClass.GerarRegistroTransacao240(Titulo);
+        }
+		
+		/// <summary>
+        /// Gerars the registro transacao240.
+        /// </summary>
+        /// <param name="Titulo">The titulo.</param>
+        /// <returns>System.String.</returns>
+		public string GerarRegistroTransacaoDBT627(Titulo Titulo)
+        {
+			return BancoClass.GerarRegistroTransacaoDBT627(Titulo);
         }
 
         /// <summary>
@@ -424,6 +444,16 @@ namespace ACBr.Net.Boleto
         {
             return BancoClass.GerarRegistroTrailler240(ARemessa);
         }
+		
+		/// <summary>
+        /// Gerars the registro trailler240.
+        /// </summary>
+        /// <param name="ARemessa">A remessa.</param>
+        /// <returns>System.String.</returns>
+		public string GerarRegistroTraillerDBT627(List<string> ARemessa)
+        {
+			return BancoClass.GerarRegistroTraillerDBT627(ARemessa);
+        }
 
         /// <summary>
         /// Lers the retorno400.
@@ -442,7 +472,15 @@ namespace ACBr.Net.Boleto
         {
             BancoClass.LerRetorno240(ARetorno);
         }
-
+		
+		/// <summary>
+        /// Lers the retorno240.
+        /// </summary>
+        /// <param name="ARetorno">A retorno.</param>
+		public void LerRetornoDBT627(List<string> ARetorno)
+        {
+			BancoClass.LerRetornoDBT627(ARetorno);
+        }
         /// <summary>
         /// Calculars the nome arquivo remessa.
         /// </summary>

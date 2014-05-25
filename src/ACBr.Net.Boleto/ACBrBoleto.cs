@@ -520,14 +520,22 @@ namespace ACBr.Net.Boleto
                 NomeArq = string.Format(@"{0}\{1}", DirArqRemessa, NomeArqRemessa);
 
             var Remessa = new List<string>();
-            if (LayoutRemessa == LayoutRemessa.CNAB400)
+
+			if (LayoutRemessa == Boleto.LayoutRemessa.DBT627)
+			{
+				Remessa.Add(Banco.GerarRegistroHeaderDBT627(NumeroRemessa));
+				foreach (var titulo in ListadeBoletos)
+					Remessa.Add(Banco.GerarRegistroTransacaoDBT627(titulo));
+				Remessa.Add(Banco.GerarRegistroTraillerDBT627(Remessa));
+			}
+            else if (LayoutRemessa == LayoutRemessa.CNAB400)
             {
                 Banco.GerarRegistroHeader400(NumeroRemessa, Remessa);
                 foreach (var titulo in ListadeBoletos)
                     Banco.GerarRegistroTransacao400(titulo, Remessa);
                 Banco.GerarRegistroTrailler400(Remessa);
             }
-            else
+			else
             {
                 Remessa.Add(Banco.GerarRegistroHeader240(NumeroRemessa));
                 foreach (var titulo in ListadeBoletos)
@@ -582,12 +590,21 @@ namespace ACBr.Net.Boleto
                    LayoutRemessa = LayoutRemessa.CNAB400;
                    break;
 
+				case 150:
+				   if (!SlRetorno[0].ExtrairDaPosicao(1, 2).Equals("A2"))
+					   throw new ACBrException(string.Format("{1}{0}Não é um arquivo de Retorno de cobrança com layout DBT627",
+						   Environment.NewLine, NomeArq));
+				   LayoutRemessa = LayoutRemessa.DBT627;
+				   break;
+
                 default:
-                   throw new ACBrException(string.Format("{1}{0}Não é um arquivo de Retorno de cobrança CNAB240 ou CNAB400",
+				   throw new ACBrException(string.Format("{1}{0}Não é um arquivo de Retorno de cobrança CNAB240, CNAB400 ou DBT627",
                        Environment.NewLine, NomeArq));
             }
 
-            if (LayoutRemessa == LayoutRemessa.CNAB240)
+			if (LayoutRemessa == LayoutRemessa.DBT627)
+				Banco.LerRetornoDBT627(SlRetorno);
+            else if (LayoutRemessa == LayoutRemessa.CNAB240)
                 Banco.LerRetorno240(SlRetorno);
             else
                 Banco.LerRetorno400(SlRetorno);
