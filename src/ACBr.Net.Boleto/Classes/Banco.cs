@@ -228,10 +228,15 @@ namespace ACBr.Net.Boleto
                         BancoClass = new BancoDoBrasil(this);
                         break;
 
+                    case TipoCobranca.Itau:
+                        BancoClass = new BancoItau(this);
+                        break;
+
                     default:
                         BancoClass = new BancoBase(this);
                         break;
                 }
+
                 cobranca = value;
             }
         }

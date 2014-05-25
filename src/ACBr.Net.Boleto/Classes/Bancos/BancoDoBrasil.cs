@@ -219,7 +219,7 @@ namespace ACBr.Net.Boleto
         {
             switch (Tipo)
             {
-                case TipoOcorrencia.RetornoRegistroRecusado:
+                case TipoOcorrencia.RetornoComandoRecusado:
                     switch (CodMotivo)
                     {
                         case 1: return "01-Identificação inválida";

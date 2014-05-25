@@ -453,7 +453,7 @@ namespace ACBr.Net.Boleto
         {
             if (!ImprimirMensagemPadrao)
                 return;
-
+						
             if (Titulo.DataProtesto.HasValue)
             {
                 if (Titulo.TipoDiasProtesto == TipoDiasIntrucao.Corridos)

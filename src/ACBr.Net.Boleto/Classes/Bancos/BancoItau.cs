@@ -1,13 +1,13 @@
 // ***********************************************************************
 // Assembly         : ACBr.Net.Boleto
 // Author           : RFTD
-// Created          : 04-21-2014
+// Created          : 05-08-2014
 //
 // Last Modified By : RFTD
-// Last Modified On : 04-24-2014
+// Last Modified On : 05-23-2014
 // ***********************************************************************
-// <copyright file="BancoDoBrasil.cs" company="">
-//     Copyright (c) . All rights reserved.
+// <copyright file="BancoItau.cs" company="ACBr.Net">
+//     Copyright (c) ACBr.Net. All rights reserved.
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
@@ -43,7 +43,7 @@ namespace ACBr.Net.Boleto
 
     #endregion COM Interop Attributes
     /// <summary>
-    /// Classe BancoDoBrasil. Esta classe não pode ser herdada.
+    /// Classe BancoItau. Esta classe não pode ser herdada.
     /// </summary>
     public sealed class BancoItau : BancoBase
     {
@@ -53,7 +53,7 @@ namespace ACBr.Net.Boleto
         #region Constructor
 
         /// <summary>
-        /// Inicializa uma nova instancia da classe <see cref="BancoDoBrasil" />.
+        /// Inicializa uma nova instancia da classe <see cref="BancoItau" />.
         /// </summary>
         /// <param name="parent">Classe Banco.</param>
         internal BancoItau(Banco parent)
@@ -600,8 +600,7 @@ namespace ACBr.Net.Boleto
         /// <returns>System.String.</returns>
         public override string CalcularDigitoVerificador(Titulo Titulo)
         {
-            string Docto = string.Empty;
-
+            string Docto;
             if (Titulo.Carteira.IsIn("112", "212", "113", "114", "166", "115", "104", "147", "188", "108",
                 "121", "180", "280", "126", "131", "145", "150", "168", "109", "110", "111", "121", "221", "175"))
             {
@@ -609,8 +608,8 @@ namespace ACBr.Net.Boleto
             }
             else
             {
-                Docto = String.Format("{0}{1}{2}", Titulo.Parent.Cedente.Agencia,
-                    Titulo.Parent.Cedente.Conta, Docto);
+                Docto = String.Format("{0}{1}{2}{3}", Titulo.Parent.Cedente.Agencia,
+                    Titulo.Parent.Cedente.Conta, Titulo.Carteira, Titulo.NossoNumero.FillRight(TamanhoMaximoNossoNum, '0'));
             }
 
             Modulo.MultiplicadorInicial = 1;
@@ -745,47 +744,6 @@ namespace ACBr.Net.Boleto
         public override void LerRetorno240(List<string> ARetorno)
         {
             throw new NotImplementedException("Esta função não esta implementada para este banco");
-        }
-
-        /// <summary>
-        /// Calculars the nome arquivo remessa.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        public override string CalcularNomeArquivoRemessa()
-        {
-            int Sequencia = 0;
-            
-            if(string.IsNullOrEmpty(Banco.Parent.NomeArqRemessa))
-            {
-                var NomeFixo = string.Format(@"{0}\cb{1:ddMM}", Banco.Parent.DirArqRemessa, DateTime.Now);
-                string NomeArq = string.Empty;
-                do
-                {
-                    Sequencia++;
-                    NomeArq = string.Format("{0}{1:00}.rem", NomeFixo, Sequencia);
-                }
-                while(File.Exists(NomeArq));
-                return NomeArq;
-            }
-            else
-             return string.Format(@"{0}\{1}",  Banco.Parent.DirArqRemessa, Banco.Parent.NomeArqRemessa);
-        }
-
-        /// <summary>
-        /// Calculars the digito codigo barras.
-        /// </summary>
-        /// <param name="CodigoBarras">The codigo barras.</param>
-        /// <returns>System.String.</returns>
-        protected override string CalcularDigitoCodigoBarras(string CodigoBarras)
-        {
-            Modulo.CalculoPadrao();
-            Modulo.Documento = CodigoBarras;
-            Modulo.Calcular();
-
-            if (Modulo.DigitoFinal == 0 || Modulo.DigitoFinal > 9)
-                return "1";
-            else
-                return Modulo.DigitoFinal.ToString();
         }
 
         #endregion Methods
