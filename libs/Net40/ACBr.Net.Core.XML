@@ -1137,11 +1137,11 @@
         </member>
         <member name="M:ACBr.Net.Core.StringExtensions.OnlyNumbers(System.String)">
             <summary>
-            Called when [numbers].
+            Retorna apenas os numeros da string.
             </summary>
-            <param name="toNormalize">To normalize.</param>
+            <param name="toNormalize">String para processar.</param>
             <returns>System.String.</returns>
-            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar string</exception>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao processar a string</exception>
         </member>
         <member name="M:ACBr.Net.Core.StringExtensions.IsCep(System.String)">
             <summary>
@@ -1153,17 +1153,25 @@
         </member>
         <member name="M:ACBr.Net.Core.StringExtensions.IsCPFOrCNPJ(System.String)">
             <summary>
-            Determines whether [is CPF or CNPJ] [the specified CPFCNPJ].
+            Checar se a string é um [CPF ou CNPJ] válido.
             </summary>
-            <param name="cpfcnpj">The CPFCNPJ.</param>
-            <returns><c>true</c> if [is CPF or CNPJ] [the specified CPFCNPJ]; otherwise, <c>false</c>.</returns>
+            <param name="cpfcnpj">CPFCNPJ</param>
+            <returns><c>true</c> se o [CPF ou CNPJ] é válido; senão, <c>false</c>.</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.IsCPF(System.String)">
+            <summary>
+            Checa se a string é um CPF válido.
+            </summary>
+            <param name="vrCPF">CPF</param>
+            <returns><c>true</c> se o CPF for válido; senão, <c>false</c>.</returns>
+            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar CPF</exception>
         </member>
         <member name="M:ACBr.Net.Core.StringExtensions.IsCNPJ(System.String)">
             <summary>
-            Determines whether the specified vr CNPJ is CNPJ.
+            Checa se a string é um CNPJ válido.
             </summary>
-            <param name="vrCNPJ">The vr CNPJ.</param>
-            <returns><c>true</c> if the specified vr CNPJ is CNPJ; otherwise, <c>false</c>.</returns>
+            <param name="vrCNPJ">CNPJ.</param>
+            <returns><c>true</c> se o CNPJ for válido; senão, <c>false</c>.</returns>
             <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar CNPJ</exception>
         </member>
         <member name="M:ACBr.Net.Core.StringExtensions.IsIE(System.String,System.String)">
@@ -1174,14 +1182,6 @@
             <param name="pUF">The p uf.</param>
             <returns><c>true</c> if the specified p inscr is ie; otherwise, <c>false</c>.</returns>
             <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao IE</exception>
-        </member>
-        <member name="M:ACBr.Net.Core.StringExtensions.IsCPF(System.String)">
-            <summary>
-            Determines whether the specified vr CPF is CPF.
-            </summary>
-            <param name="vrCPF">The vr CPF.</param>
-            <returns><c>true</c> if the specified vr CPF is CPF; otherwise, <c>false</c>.</returns>
-            <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao validar CPF</exception>
         </member>
         <member name="M:ACBr.Net.Core.StringExtensions.IsPIS(System.String)">
             <summary>

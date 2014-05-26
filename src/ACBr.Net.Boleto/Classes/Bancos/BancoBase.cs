@@ -376,8 +376,8 @@ namespace ACBr.Net.Boleto
 		{
 			var Retorno = new StringBuilder();
 			Retorno.Append("A1");
-			Retorno.Append(Banco.Parent.Cedente.Convenio.FillRight(20));
-			Retorno.Append(Banco.Parent.Cedente.Nome.FillRight(20));
+			Retorno.Append(Banco.Parent.Cedente.Convenio.FillLeft(20));
+            Retorno.Append(Banco.Parent.Cedente.Nome.FillLeft(20));
 			Retorno.AppendFormat("{0:000}", Numero);
 			Retorno.Append(Nome.FillRight(20));
 			Retorno.AppendFormat("{0:yyyyMMdd}", DateTime.Now);
@@ -392,14 +392,14 @@ namespace ACBr.Net.Boleto
 		{
 			var Retorno = new StringBuilder();
 			Retorno.Append("E");
-			Retorno.Append(Titulo.NumeroDocumento.Trim().FillRight(25));
-			Retorno.Append(Banco.Parent.Cedente.Agencia.Trim().FillRight(4));
-			Retorno.Append(Banco.Parent.Cedente.Conta.Trim().FillRight(14));
+			Retorno.Append(Titulo.NumeroDocumento.Trim().FillLeft(25));
+			Retorno.Append(Banco.Parent.Cedente.Agencia.Trim().ZeroFill(4));
+            Retorno.Append(Banco.Parent.Cedente.Conta.Trim().ZeroFill(14));
 			Retorno.Append(Titulo.Vencimento.ToString("yyyyMMdd"));
 			Retorno.Append(Titulo.ValorDocumento.ToRemessaString(15));
 			Retorno.Append("03");
-			Retorno.Append(Titulo.Sacado.NomeSacado.FillRight(60));
-			Retorno.Append(Titulo.Sacado.CNPJCPF.Trim().IsCNPJ() ? "1" : "2");
+			Retorno.Append(Titulo.Sacado.NomeSacado.FillLeft(60));
+			Retorno.Append(Titulo.Sacado.CNPJCPF.IsCNPJ() ? "1" : "2");
 			Retorno.Append(Titulo.Sacado.CNPJCPF.OnlyNumbers().ZeroFill(15));
 			Retorno.Append("".FillRight(4));
 			Retorno.Append("0");
@@ -413,8 +413,8 @@ namespace ACBr.Net.Boleto
 			foreach (var titulo in Banco.Parent.ListadeBoletos)
 				valortotal += titulo.ValorDocumento;
 
-			var Retorno = new StringBuilder();
-			Retorno.AppendFormat("{0:000000}", ARemessa.Count + 1);
+			var Retorno = new StringBuilder();            
+			Retorno.AppendFormat("Z{0:000000}", ARemessa.Count + 1);
 			Retorno.Append(valortotal.ToRemessaString(17));
 			Retorno.Append("".FillRight(126));
 

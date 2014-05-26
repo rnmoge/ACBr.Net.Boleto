@@ -1330,7 +1330,7 @@ namespace ACBr.Net.Boleto
             Result.Append(" ");                                                                           // 15 - 15 Uso exclusivo FEBRABAN/CNAB: Branco
             Result.Append(ATipoOcorrencia);                                                               // 16 - 17 Tipo Ocorrencia
             Result.Append("".FillRight(48, '0'));                                                          // 18 - 65 Brancos (Não definido pelo FEBRAN)
-            Result.Append(Titulo.PercentualMulta > 0 ? '2' : '0');                                        // 66 - 66 1-Cobrar Multa / 0-Não cobrar multa
+            Result.Append(Titulo.PercentualMulta > 0 ? '1' : '0');                                        // 66 - 66 1-Cobrar Multa / 0-Não cobrar multa
             Result.Append(Titulo.PercentualMulta > 0 ?
                 string.Format("{0:ddMMyyyy}", Titulo.DataMoraJuros) : "00000000");                        // 67 - 74 Se cobrar informe a data para iniciar a cobrança ou informe zeros se não cobrar
 

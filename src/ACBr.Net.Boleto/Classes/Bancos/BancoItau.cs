@@ -694,7 +694,7 @@ namespace ACBr.Net.Boleto
         /// <param name="ARemessa">A remessa.</param>
         public override void GerarRegistroTransacao400(Titulo Titulo, List<string> ARemessa)
         {
-            
+            throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
         /// <summary>
@@ -713,7 +713,7 @@ namespace ACBr.Net.Boleto
         /// <param name="ARemessa">A remessa.</param>
         public override void GerarRegistroTrailler400(List<string> ARemessa)
         {
-            
+            throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
         /// <summary>
@@ -723,7 +723,7 @@ namespace ACBr.Net.Boleto
         /// <returns>System.String.</returns>
         public override string GerarRegistroTrailler240(List<string> ARemessa)
         {
-            return string.Empty;
+            throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
         /// <summary>
