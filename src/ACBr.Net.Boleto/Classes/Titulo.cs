@@ -86,6 +86,7 @@ namespace ACBr.Net.Boleto
             EspecieDoc = "DM";
             LocalPagamento = string.Format("Pagar preferencialmente nas agencias do {0}", Parent.Banco.Nome);
             NumeroDocumento = string.Empty;
+            SeuNumero = string.Empty;
             Vencimento = DateTime.Now;
             DataProcessamento = DateTime.Now;
             nossonumero = string.Empty;

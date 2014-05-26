@@ -538,7 +538,7 @@ namespace ACBr.Net.Boleto
                wLinha.Append("".FillRight(287));
             }
             
-            wLinha.AppendFormat("{0:000000", 1);                               // Nr. Sequencial do registro-informar 000001
+            wLinha.AppendFormat("{0:000000}", 1);                               // Nr. Sequencial do registro-informar 000001
 
             ARemessa.Add(wLinha.ToString().ToUpper());
 

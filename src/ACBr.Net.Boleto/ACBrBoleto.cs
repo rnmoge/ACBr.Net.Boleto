@@ -515,7 +515,10 @@ namespace ACBr.Net.Boleto
 
             string NomeArq;
             if (string.IsNullOrEmpty(NomeArqRemessa))
+            {
                 NomeArq = Banco.CalcularNomeArquivoRemessa();
+                NomeArqRemessa = Path.GetFileName(NomeArq);
+            }
             else
                 NomeArq = string.Format(@"{0}\{1}", DirArqRemessa, NomeArqRemessa);
 
