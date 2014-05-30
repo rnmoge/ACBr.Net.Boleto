@@ -907,8 +907,8 @@ namespace ACBr.Net.Boleto
 			string ATipoCedente;
 			switch(Titulo.Parent.Cedente.TipoInscricao)
 			{
-				case PessoaCedente.Fisica: ATipoAceite = "01"; break;
-				default: ATipoAceite = "02"; break;
+                case PessoaCedente.Fisica: ATipoCedente = "01"; break;
+                default: ATipoCedente = "02"; break;
 			}
 
 			//Pegando Tipo de Sacado
