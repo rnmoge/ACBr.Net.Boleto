@@ -63,6 +63,10 @@ namespace ACBr.Net.Boleto
         /// The nossonumero
         /// </summary>
         public string nossonumero;
+		/// <summary>
+		/// The codigomora
+		/// </summary>
+		public char codigomora;
 
         #endregion Fields
 
@@ -74,7 +78,7 @@ namespace ACBr.Net.Boleto
         /// <param name="parent">The parent.</param>
         internal Titulo(ACBrBoleto parent)
         {
-            this.Parent = parent;
+            Parent = parent;
             OcorrenciaOriginal = new Ocorrencia();
             Aceite = AceiteTitulo.Nao;
             Mensagem = new List<string>();
@@ -106,7 +110,7 @@ namespace ACBr.Net.Boleto
             ValorDescontoAntDia = 0;
             Referencia = string.Empty;
             Versao = string.Empty;
-            CodigoMora = "0";
+            codigomora = '2';
         }
 
         #endregion Constructor
@@ -616,7 +620,23 @@ namespace ACBr.Net.Boleto
         /// Gets or sets the codigo mora.
         /// </summary>
         /// <value>The codigo mora.</value>
-        public string CodigoMora { get; set; }
+        public char CodigoMora 
+		{
+			get
+			{
+				return codigomora;
+			}
+			set
+			{
+				if (value == codigomora)
+					return;
+
+				if(!Parent.Banco.CodigosMoraAceitos.Contains(value))
+					throw new ACBrException("Código de Mora/Juros informado não é permitido para este banco!");
+
+				codigomora = value;
+			}
+		}
         /// <summary>
         /// Gets or sets the tipo dias protesto.
         /// </summary>

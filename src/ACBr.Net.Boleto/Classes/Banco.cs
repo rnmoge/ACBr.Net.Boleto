@@ -256,6 +256,17 @@ namespace ACBr.Net.Boleto
             }
         }
 
+		public string CodigosMoraAceitos
+		{
+			get
+			{
+				if (BancoClass == null)
+					return string.Empty;
+				else
+					return BancoClass.CodigosMoraAceitos;
+			}
+		}
+
         #endregion Propriedades
 
         #region Methods

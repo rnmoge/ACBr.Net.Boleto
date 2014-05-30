@@ -441,7 +441,7 @@ namespace ACBr.Net.Boleto
         public override string MontarCampoCodigoCedente(Titulo Titulo)
         {
             return string.Format("{0}-{1}/{2}-{3}", Titulo.Parent.Cedente.Agencia,
-                Titulo.Parent.Cedente.AgenciaDigito, Titulo.Parent.Cedente.Conta.ZeroFill(8),
+                Titulo.Parent.Cedente.AgenciaDigito, Titulo.Parent.Cedente.Conta,
                 Titulo.Parent.Cedente.ContaDigito);
         }
 
@@ -521,7 +521,7 @@ namespace ACBr.Net.Boleto
             else
                 wLinha.Append(Banco.Parent.Cedente.Convenio.FillRight(6,'0'));  //Convenio;
             
-            wLinha.Append(Banco.Parent.Cedente.Nome.RemoveCE().FillLeft(30));    // Nome da Empresa
+            wLinha.Append(Banco.Parent.Cedente.Nome.FillLeft(30));    // Nome da Empresa
             wLinha.AppendFormat("{0:000}", Numero);                             // Código do Banco
             wLinha.Append("BANCO DO BRASIL".FillLeft(15));                       // Nome do Banco(BANCO DO BRASIL)
             wLinha.AppendFormat("{0:ddMMyy}", DateTime.Now);                    // Data de geração do arquivo
@@ -1003,7 +1003,7 @@ namespace ACBr.Net.Boleto
             Result.Append(aConta);                                                           //59 a 70 - Número da conta do cedente
             Result.Append(Banco.Parent.Cedente.ContaDigito.FillLeft(1, '0'));                 //71 - Dígito da conta do cedente
             Result.Append(" ");                                                              //72 - Dígito verificador da agência / conta
-            Result.Append(Banco.Parent.Cedente.Nome.RemoveCE().FillLeft(30).ToUpper());       //73 a 102 - Nome do cedente
+            Result.Append(Banco.Parent.Cedente.Nome.FillLeft(30).ToUpper());       //73 a 102 - Nome do cedente
             Result.Append("BANCO DO BRASIL".FillLeft(30));                                    //103 a 132 - Nome do banco
             Result.Append("".FillLeft(10));                                                   //133 a 142 - Uso exclusivo FEBRABAN/CNAB
             Result.Append('1');                                                              //143 - Código de Remessa (1) / Retorno (2)
@@ -1238,6 +1238,13 @@ namespace ACBr.Net.Boleto
             else
                 ADataDesconto = "".FillLeft(8, '0');
 
+			//Data Protesto
+			string ADataProtesto;
+			if (Titulo.DataProtesto.HasValue && Titulo.DataProtesto > Titulo.Vencimento)
+				ADataProtesto = string.Format("{0:dd}", Titulo.DataProtesto.Value.Date.Subtract(Titulo.Vencimento.Date));
+			else
+				ADataProtesto = "00";
+
             //SEGMENTO P
             var Result = new StringBuilder();
             Result.AppendFormat("{0:000}", Banco.Numero);                                                 //1 a 3 - Código do banco
@@ -1276,14 +1283,13 @@ namespace ACBr.Net.Boleto
                                                         "0".ZeroFill(15));                                //151 a 165 - Valor do desconto por dia
             Result.Append(Titulo.ValorIOF.ToRemessaString(15));                                           //166 a 180 - Valor do IOF a ser recolhido
             Result.Append(Titulo.ValorAbatimento.ToRemessaString(15));                                    //181 a 195 - Valor do abatimento
-            Result.Append(Titulo.SeuNumero.FillLeft(25));                                                  //196 a 220 - Identificação do título na empresa
+            Result.Append(Titulo.SeuNumero.FillLeft(25));                                                 //196 a 220 - Identificação do título na empresa
 
             Result.Append(Titulo.DataProtesto.HasValue && Titulo.DataProtesto > Titulo.Vencimento ?
-                (Titulo.DataProtesto.Value - Titulo.Vencimento).TotalDays > 5 ? '1' : '2' : '3');         //221 - Código de protesto: Protestar em XX dias corridos
+				Titulo.DataProtesto.Value.Date.Subtract(Titulo.Vencimento.Date).Days > 5 ?
+				'1' : '2' : '3');																		  //221 - Código de protesto: Protestar em XX dias corridos
 
-            Result.Append(Titulo.DataProtesto.HasValue && Titulo.DataProtesto > Titulo.Vencimento ?
-                (Titulo.Vencimento - Titulo.DataProtesto.Value).TotalDays.ToString().FillLeft(2, '0')
-                : "00");                                                                                  //222 a 223 - Prazo para protesto (em dias corridos)
+			Result.Append(ADataProtesto);                                                                 //222 a 223 - Prazo para protesto (em dias corridos)
 
             Result.Append("0");                                                                           //224 - Campo não tratado pelo BB [ Alterado conforme instruções da CSO Brasília ] {27-07-09}
             Result.Append("000");                                                                         //225 a 227 - Campo não tratado pelo BB [ Alterado conforme instruções da CSO Brasília ] {27-07-09}
@@ -1304,12 +1310,12 @@ namespace ACBr.Net.Boleto
             //Dados do sacado
             Result.Append(Titulo.Sacado.Pessoa == Pessoa.Juridica ? '2' : '1');                           //Tipo inscricao
             Result.Append(Titulo.Sacado.CNPJCPF.OnlyNumbers().FillLeft(15, '0'));
-            Result.Append(Titulo.Sacado.NomeSacado.RemoveCE().FillLeft(40));
-            Result.Append((string.Format("{0} {1} {2}", Titulo.Sacado.Logradouro.RemoveCE(),
-                Titulo.Sacado.Numero, Titulo.Sacado.Complemento.RemoveCE())).FillLeft(40));
-            Result.Append(Titulo.Sacado.Bairro.RemoveCE().FillLeft(15));
+            Result.Append(Titulo.Sacado.NomeSacado.FillLeft(40));
+            Result.Append((string.Format("{0} {1} {2}", Titulo.Sacado.Logradouro,
+                Titulo.Sacado.Numero, Titulo.Sacado.Complemento)).FillLeft(40));
+            Result.Append(Titulo.Sacado.Bairro.FillLeft(15));
             Result.Append(Titulo.Sacado.CEP.OnlyNumbers().FillRight(8, '0'));
-            Result.Append(Titulo.Sacado.Cidade.RemoveCE().FillLeft(15));
+            Result.Append(Titulo.Sacado.Cidade.FillLeft(15));
             Result.Append(Titulo.Sacado.UF.FillLeft(2));
 
             //Dados do sacador/avalista
@@ -1329,8 +1335,8 @@ namespace ACBr.Net.Boleto
             Result.Append('R');                                                                           // 14 - 14 Código do segmento do registro detalhe
             Result.Append(" ");                                                                           // 15 - 15 Uso exclusivo FEBRABAN/CNAB: Branco
             Result.Append(ATipoOcorrencia);                                                               // 16 - 17 Tipo Ocorrencia
-            Result.Append("".FillRight(48, '0'));                                                          // 18 - 65 Brancos (Não definido pelo FEBRAN)
-            Result.Append(Titulo.PercentualMulta > 0 ? '1' : '0');                                        // 66 - 66 1-Cobrar Multa / 0-Não cobrar multa
+            Result.Append("".FillRight(48, '0'));                                                         // 18 - 65 Brancos (Não definido pelo FEBRAN)
+			Result.Append(Titulo.PercentualMulta > 0 ? Titulo.CodigoMora : '0');                          // 66 - 66 1-Valor Fixo / 2-Percentual
             Result.Append(Titulo.PercentualMulta > 0 ?
                 string.Format("{0:ddMMyyyy}", Titulo.DataMoraJuros) : "00000000");                        // 67 - 74 Se cobrar informe a data para iniciar a cobrança ou informe zeros se não cobrar
 
@@ -1475,7 +1481,8 @@ namespace ACBr.Net.Boleto
                     var IdxMotivo = 214;                    
                     while (IdxMotivo < 223)
                     {
-                        if(string.IsNullOrEmpty(Linha.ExtrairDaPosicao(IdxMotivo, IdxMotivo+1)))
+						if (!string.IsNullOrEmpty(Linha.ExtrairDaPosicao(IdxMotivo, IdxMotivo + 1)) ||
+							!Linha.ExtrairDaPosicao(IdxMotivo, IdxMotivo + 1).Equals("00"))
                         {
                             titulo.MotivoRejeicaoComando.Add(Linha.ExtrairDaPosicao(IdxMotivo, IdxMotivo+1));
                             titulo.DescricaoMotivoRejeicaoComando.Add(

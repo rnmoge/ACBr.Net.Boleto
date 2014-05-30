@@ -83,6 +83,11 @@ namespace ACBr.Net.Boleto.Interfaces
         /// </summary>
         /// <value>The orientacoes banco.</value>
         List<string> OrientacoesBanco { get; }
+		/// <summary>
+		/// Gets the codigos mora aceitos.
+		/// </summary>
+		/// <value>The codigos mora aceitos.</value>
+		string CodigosMoraAceitos { get; }
 
         #endregion Propriedades
 

@@ -52,6 +52,7 @@ namespace ACBr.Net.Boleto
             TamanhoCarteira = 0;
             TamanhoConta = 0;
             TamanhoMaximoNossoNum = 0;
+			CodigosMoraAceitos = "12";
         }
 
         #endregion Constructor
@@ -113,6 +114,11 @@ namespace ACBr.Net.Boleto
         /// </summary>
         /// <value>The orientacoes banco.</value>
         public List<string> OrientacoesBanco { get; protected set; }
+		/// <summary>
+		/// Gets the codigos mora aceitos.
+		/// </summary>
+		/// <value>The codigos mora aceitos.</value>
+		public string CodigosMoraAceitos { get; protected set; }
 
         #endregion Propriedades
 

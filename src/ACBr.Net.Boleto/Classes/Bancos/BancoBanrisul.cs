@@ -595,8 +595,8 @@ namespace ACBr.Net.Boleto
                     break;
             }
 
-            if (string.IsNullOrEmpty(Titulo.CodigoMora))
-                Titulo.CodigoMora = "0";      //0-Valor Diario, 1-Taxa Mensal
+            if (string.IsNullOrEmpty(Titulo.CodigoMora.ToString()))
+                Titulo.CodigoMora = '0';      //0-Valor Diario, 1-Taxa Mensal
 
             //Instruções
             //Se tiver protesto
@@ -635,7 +635,7 @@ namespace ACBr.Net.Boleto
             wLinha.AppendFormat("{0:ddmmyy}", Titulo.DataDocumento);                                 // Data de Emissão do título
             wLinha.Append(Titulo.Instrucao1.Trim().FillRight(2));                                     // 1ª Instrução
             wLinha.Append(Titulo.Instrucao2.Trim().FillRight(2));                                     // 2ª Instrução
-            wLinha.Append(Titulo.CodigoMora.Trim().FillRight(1));                                     // Código de mora (0=Valor diário; 1=Taxa Mensal)
+            wLinha.Append(Titulo.CodigoMora);                                                        // Código de mora (0=Valor diário; 1=Taxa Mensal)
             wLinha.Append(Titulo.ValorMoraJuros.ToRemessaString(12));                                // Valor ao dia ou Taxa Mensal de juros
             
             wLinha.Append(Titulo.DataDesconto.HasValue ?
