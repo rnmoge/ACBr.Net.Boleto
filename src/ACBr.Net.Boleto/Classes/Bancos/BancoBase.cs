@@ -1,3 +1,16 @@
+// ***********************************************************************
+// Assembly         : ACBr.Net.Boleto
+// Author           : RFTD
+// Created          : 04-21-2014
+//
+// Last Modified By : RFTD
+// Last Modified On : 05-30-2014
+// ***********************************************************************
+// <copyright file="BancoBase.cs" company="ACBr.Net">
+//     Copyright (c) ACBr.Net. All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
 using System;
 using System.IO;
 using System.Linq;
@@ -14,6 +27,9 @@ using System.Runtime.InteropServices;
 using ACBr.Net.Core;
 using ACBr.Net.Boleto.Interfaces;
 
+/// <summary>
+/// The Boleto namespace.
+/// </summary>
 namespace ACBr.Net.Boleto
 {
     #region COM Interop Attributes
@@ -27,9 +43,9 @@ namespace ACBr.Net.Boleto
 #endif
 
     #endregion COM Interop Attributes
-    /// <summary>
-    /// Class BancoBase.
-    /// </summary>
+	/// <summary>
+	/// Class BancoBase.
+	/// </summary>
     public class BancoBase : IBanco
     {
         #region Fields
@@ -37,13 +53,13 @@ namespace ACBr.Net.Boleto
 
         #region Constructor
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BancoBase"/> class.
-        /// </summary>
-        /// <param name="parent">The parent.</param>
+		/// <summary>
+		/// Initializes a new instance of the <see cref="BancoBase" /> class.
+		/// </summary>
+		/// <param name="parent">The parent.</param>
         internal BancoBase(Banco parent)
         {
-            this.Banco = parent;
+            Banco = parent;
             Modulo = new CalcDigito();
             TipoCobranca = TipoCobranca.Nenhum;
             OrientacoesBanco = new List<string>();
@@ -59,60 +75,60 @@ namespace ACBr.Net.Boleto
 
         #region Propriedades
 
-        /// <summary>
-        /// Gets or sets the banco.
-        /// </summary>
-        /// <value>The banco.</value>
+		/// <summary>
+		/// Gets or sets the banco.
+		/// </summary>
+		/// <value>The banco.</value>
         public Banco Banco { get; protected set; }
-        /// <summary>
-        /// Gets or sets the modulo.
-        /// </summary>
-        /// <value>The modulo.</value>
+		/// <summary>
+		/// Gets or sets the modulo.
+		/// </summary>
+		/// <value>The modulo.</value>
         public CalcDigito Modulo { get; protected set; }
-        /// <summary>
-        /// Gets or sets the nome.
-        /// </summary>
-        /// <value>The nome.</value>
+		/// <summary>
+		/// Gets or sets the nome.
+		/// </summary>
+		/// <value>The nome.</value>
         public string Nome { get; protected set; }
-        /// <summary>
-        /// Gets or sets the tamanho agencia.
-        /// </summary>
-        /// <value>The tamanho agencia.</value>
+		/// <summary>
+		/// Gets or sets the tamanho agencia.
+		/// </summary>
+		/// <value>The tamanho agencia.</value>
         public int TamanhoAgencia { get; protected set; }
-        /// <summary>
-        /// Gets or sets the tamanho conta.
-        /// </summary>
-        /// <value>The tamanho conta.</value>
+		/// <summary>
+		/// Gets or sets the tamanho conta.
+		/// </summary>
+		/// <value>The tamanho conta.</value>
         public int TamanhoConta { get; protected set; }
-        /// <summary>
-        /// Gets or sets the tamanho carteira.
-        /// </summary>
-        /// <value>The tamanho carteira.</value>
+		/// <summary>
+		/// Gets or sets the tamanho carteira.
+		/// </summary>
+		/// <value>The tamanho carteira.</value>
         public int TamanhoCarteira { get; protected set; }
-        /// <summary>
-        /// Gets or sets the numero.
-        /// </summary>
-        /// <value>The numero.</value>
+		/// <summary>
+		/// Gets or sets the numero.
+		/// </summary>
+		/// <value>The numero.</value>
         public int Numero { get; protected set; }
-        /// <summary>
-        /// Gets or sets the digito.
-        /// </summary>
-        /// <value>The digito.</value>
+		/// <summary>
+		/// Gets or sets the digito.
+		/// </summary>
+		/// <value>The digito.</value>
         public int Digito { get; protected set; }
-        /// <summary>
-        /// Gets or sets the tamanho maximo nosso number.
-        /// </summary>
-        /// <value>The tamanho maximo nosso number.</value>
+		/// <summary>
+		/// Gets or sets the tamanho maximo nosso number.
+		/// </summary>
+		/// <value>The tamanho maximo nosso number.</value>
         public int TamanhoMaximoNossoNum { get; protected set; }
-        /// <summary>
-        /// Gets or sets the tipo cobranca.
-        /// </summary>
-        /// <value>The tipo cobranca.</value>
+		/// <summary>
+		/// Gets or sets the tipo cobranca.
+		/// </summary>
+		/// <value>The tipo cobranca.</value>
         public TipoCobranca TipoCobranca { get; protected set; }
-        /// <summary>
-        /// Gets or sets the orientacoes banco.
-        /// </summary>
-        /// <value>The orientacoes banco.</value>
+		/// <summary>
+		/// Gets or sets the orientacoes banco.
+		/// </summary>
+		/// <value>The orientacoes banco.</value>
         public List<string> OrientacoesBanco { get; protected set; }
 		/// <summary>
 		/// Gets the codigos mora aceitos.
@@ -124,104 +140,104 @@ namespace ACBr.Net.Boleto
 
         #region Methods
 
-        /// <summary>
-        /// Tipoes the ocorrencia to descricao.
-        /// </summary>
-        /// <param name="Tipo">The tipo.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Tipoes the ocorrencia to descricao.
+		/// </summary>
+		/// <param name="Tipo">The tipo.</param>
+		/// <returns>System.String.</returns>
         public virtual string TipoOcorrenciaToDescricao(TipoOcorrencia Tipo)
         {
             return string.Empty;
         }
 
-        /// <summary>
-        /// Cods the ocorrencia to tipo.
-        /// </summary>
-        /// <param name="CodOcorrencia">The cod ocorrencia.</param>
-        /// <returns>TipoOcorrencia.</returns>
+		/// <summary>
+		/// Cods the ocorrencia to tipo.
+		/// </summary>
+		/// <param name="CodOcorrencia">The cod ocorrencia.</param>
+		/// <returns>TipoOcorrencia.</returns>
         public virtual TipoOcorrencia CodOcorrenciaToTipo(int CodOcorrencia)
         {
             return TipoOcorrencia.RemessaRegistrar;
         }
 
-        /// <summary>
-        /// Tipoes the o correncia to cod.
-        /// </summary>
-        /// <param name="Tipo">The tipo.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Tipoes the o correncia to cod.
+		/// </summary>
+		/// <param name="Tipo">The tipo.</param>
+		/// <returns>System.String.</returns>
         public virtual string TipoOCorrenciaToCod(TipoOcorrencia Tipo)
         {
             return string.Empty;
         }
 
-        /// <summary>
-        /// Cods the motivo rejeicao to descricao.
-        /// </summary>
-        /// <param name="Tipo">The tipo.</param>
-        /// <param name="CodMotivo">The cod motivo.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Cods the motivo rejeicao to descricao.
+		/// </summary>
+		/// <param name="Tipo">The tipo.</param>
+		/// <param name="CodMotivo">The cod motivo.</param>
+		/// <returns>System.String.</returns>
         public virtual string CodMotivoRejeicaoToDescricao(TipoOcorrencia Tipo, int CodMotivo)
         {
             return string.Empty;
         }
 
-        /// <summary>
-        /// Calculars the digito verificador.
-        /// </summary>
-        /// <param name="Titulo">The titulo.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Calculars the digito verificador.
+		/// </summary>
+		/// <param name="Titulo">The titulo.</param>
+		/// <returns>System.String.</returns>
         public virtual string CalcularDigitoVerificador(Titulo Titulo)
         {
             return string.Empty;
         }
 
-        /// <summary>
-        /// Calculars the tam maximo nosso numero.
-        /// </summary>
-        /// <param name="Carteira">The carteira.</param>
-        /// <param name="NossoNumero">The nosso numero.</param>
-        /// <returns>System.Int32.</returns>
+		/// <summary>
+		/// Calculars the tam maximo nosso numero.
+		/// </summary>
+		/// <param name="Carteira">The carteira.</param>
+		/// <param name="NossoNumero">The nosso numero.</param>
+		/// <returns>System.Int32.</returns>
         public virtual int CalcularTamMaximoNossoNumero(string Carteira, string NossoNumero = "")
         {
             return Banco.TamanhoMaximoNossoNum;
         }
 
-        /// <summary>
-        /// Montars the campo codigo cedente.
-        /// </summary>
-        /// <param name="Titulo">The titulo.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Montars the campo codigo cedente.
+		/// </summary>
+		/// <param name="Titulo">The titulo.</param>
+		/// <returns>System.String.</returns>
         public virtual string MontarCampoCodigoCedente(Titulo Titulo)
         {
             return string.Empty;
         }
 
-        /// <summary>
-        /// Montars the campo nosso numero.
-        /// </summary>
-        /// <param name="Titulo">The titulo.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Montars the campo nosso numero.
+		/// </summary>
+		/// <param name="Titulo">The titulo.</param>
+		/// <returns>System.String.</returns>
         public virtual string MontarCampoNossoNumero(Titulo Titulo)
         {
             return Titulo.NossoNumero;
         }
 
-        /// <summary>
-        /// Montars the codigo barras.
-        /// </summary>
-        /// <param name="Titulo">The titulo.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Montars the codigo barras.
+		/// </summary>
+		/// <param name="Titulo">The titulo.</param>
+		/// <returns>System.String.</returns>
         public virtual string MontarCodigoBarras(Titulo Titulo)
         {
             return string.Empty;
         }
 
-        /// <summary>
-        /// Montars the linha digitavel.
-        /// </summary>
-        /// <param name="CodigoBarras">The codigo barras.</param>
-        /// <param name="Titulo">The titulo.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Montars the linha digitavel.
+		/// </summary>
+		/// <param name="CodigoBarras">The codigo barras.</param>
+		/// <param name="Titulo">The titulo.</param>
+		/// <returns>System.String.</returns>
         public virtual string MontarLinhaDigitavel(string CodigoBarras, Titulo Titulo)
         {
             Modulo.FormulaDigito = CalcDigFormula.Modulo10;
@@ -256,91 +272,91 @@ namespace ACBr.Net.Boleto
            return string.Format("{0} {1} {2} {3} {4}",  Campo1, Campo2, Campo3, Campo4, Campo5);
         }
 
-        /// <summary>
-        /// Gerars the registro header400.
-        /// </summary>
-        /// <param name="NumeroRemessa">The numero remessa.</param>
-        /// <param name="ARemessa">A remessa.</param>
-        /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
+		/// <summary>
+		/// Gerars the registro header400.
+		/// </summary>
+		/// <param name="NumeroRemessa">The numero remessa.</param>
+		/// <param name="ARemessa">A remessa.</param>
+		/// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public virtual void GerarRegistroHeader400(int NumeroRemessa, List<string> ARemessa)
         {
             throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
-        /// <summary>
-        /// Gerars the registro header240.
-        /// </summary>
-        /// <param name="NumeroRemessa">The numero remessa.</param>
-        /// <returns>System.String.</returns>
-        /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
+		/// <summary>
+		/// Gerars the registro header240.
+		/// </summary>
+		/// <param name="NumeroRemessa">The numero remessa.</param>
+		/// <returns>System.String.</returns>
+		/// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public virtual string GerarRegistroHeader240(int NumeroRemessa)
         {
             throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
-        /// <summary>
-        /// Gerars the registro transacao400.
-        /// </summary>
-        /// <param name="Titulo">The titulo.</param>
-        /// <param name="ARemessa">A remessa.</param>
+		/// <summary>
+		/// Gerars the registro transacao400.
+		/// </summary>
+		/// <param name="Titulo">The titulo.</param>
+		/// <param name="ARemessa">A remessa.</param>
         public virtual void GerarRegistroTransacao400(Titulo Titulo, List<string> ARemessa)
         {
             
         }
 
-        /// <summary>
-        /// Gerars the registro transacao240.
-        /// </summary>
-        /// <param name="Titulo">The titulo.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Gerars the registro transacao240.
+		/// </summary>
+		/// <param name="Titulo">The titulo.</param>
+		/// <returns>System.String.</returns>
         public virtual string GerarRegistroTransacao240(Titulo Titulo)
         {
             return string.Empty;
         }
 
-        /// <summary>
-        /// Gerars the registro trailler400.
-        /// </summary>
-        /// <param name="ARemessa">A remessa.</param>
+		/// <summary>
+		/// Gerars the registro trailler400.
+		/// </summary>
+		/// <param name="ARemessa">A remessa.</param>
         public virtual void GerarRegistroTrailler400(List<string> ARemessa)
         {
             
         }
 
-        /// <summary>
-        /// Gerars the registro trailler240.
-        /// </summary>
-        /// <param name="ARemessa">A remessa.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Gerars the registro trailler240.
+		/// </summary>
+		/// <param name="ARemessa">A remessa.</param>
+		/// <returns>System.String.</returns>
         public virtual string GerarRegistroTrailler240(List<string> ARemessa)
         {
             return string.Empty;
         }
 
-        /// <summary>
-        /// Lers the retorno400.
-        /// </summary>
-        /// <param name="ARetorno">A retorno.</param>
-        /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
+		/// <summary>
+		/// Lers the retorno400.
+		/// </summary>
+		/// <param name="ARetorno">A retorno.</param>
+		/// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public virtual void LerRetorno400(List<string> ARetorno)
         {
             throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
-        /// <summary>
-        /// Lers the retorno240.
-        /// </summary>
-        /// <param name="ARetorno">A retorno.</param>
-        /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
+		/// <summary>
+		/// Lers the retorno240.
+		/// </summary>
+		/// <param name="ARetorno">A retorno.</param>
+		/// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public virtual void LerRetorno240(List<string> ARetorno)
         {
             throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
-        /// <summary>
-        /// Calculars the nome arquivo remessa.
-        /// </summary>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Calculars the nome arquivo remessa.
+		/// </summary>
+		/// <returns>System.String.</returns>
         public virtual string CalcularNomeArquivoRemessa()
         {
             int Sequencia = 0;
@@ -361,11 +377,11 @@ namespace ACBr.Net.Boleto
              return string.Format(@"{0}\{1}",  Banco.Parent.DirArqRemessa, Banco.Parent.NomeArqRemessa);
         }
 
-        /// <summary>
-        /// Calculars the digito codigo barras.
-        /// </summary>
-        /// <param name="CodigoBarras">The codigo barras.</param>
-        /// <returns>System.String.</returns>
+		/// <summary>
+		/// Calculars the digito codigo barras.
+		/// </summary>
+		/// <param name="CodigoBarras">The codigo barras.</param>
+		/// <returns>System.String.</returns>
         protected virtual string CalcularDigitoCodigoBarras(string CodigoBarras)
         {
             Modulo.CalculoPadrao();
@@ -378,6 +394,11 @@ namespace ACBr.Net.Boleto
                 return Modulo.DigitoFinal.ToString();
         }
 
+		/// <summary>
+		/// Gerars the registro headerDBT627.
+		/// </summary>
+		/// <param name="NumeroRemessa">The numero remessa.</param>
+		/// <returns>System.String.</returns>
 		public string GerarRegistroHeaderDBT627(int NumeroRemessa)
 		{
 			var Retorno = new StringBuilder();
@@ -394,6 +415,11 @@ namespace ACBr.Net.Boleto
 			return Retorno.ToString().ToUpper();
 		}
 
+		/// <summary>
+		/// Gerars the registro transacaoDBT627.
+		/// </summary>
+		/// <param name="Titulo">The titulo.</param>
+		/// <returns>System.String.</returns>
 		public string GerarRegistroTransacaoDBT627(Titulo Titulo)
 		{
 			var Retorno = new StringBuilder();
@@ -413,6 +439,11 @@ namespace ACBr.Net.Boleto
 			return Retorno.ToString().ToUpper();
 		}
 
+		/// <summary>
+		/// Gerars the registro traillerDBT627.
+		/// </summary>
+		/// <param name="ARemessa">A remessa.</param>
+		/// <returns>System.String.</returns>
 		public string GerarRegistroTraillerDBT627(List<string> ARemessa)
 		{
 			decimal valortotal = 0;
@@ -431,7 +462,6 @@ namespace ACBr.Net.Boleto
 		/// Lers the retornoDBT627.
 		/// </summary>
 		/// <param name="ARetorno">A retorno.</param>
-		/// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
 		public virtual void LerRetornoDBT627(List<string> ARetorno)
 		{
 			Titulo titulo = null;

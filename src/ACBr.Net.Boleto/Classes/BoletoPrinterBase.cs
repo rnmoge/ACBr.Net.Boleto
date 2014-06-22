@@ -343,11 +343,18 @@ namespace ACBr.Net.Boleto
             {
                 var sync = OnObterLogo.Target as ISynchronizeInvoke;
                 var e = new OnObterLogoEventArgs(NumeroBanco);
+
+#if !COM_INTEROP
                 if (sync != null)
                     sync.Invoke(OnObterLogo, new object[] { this, e });
                 else
                     OnObterLogo.Invoke(this, e);
-
+#else
+				if (sync != null)
+					sync.Invoke(OnObterLogo, new object[] { e });
+				else
+					OnObterLogo.Invoke(e);
+#endif
                 PictureLogo = e.Logo;
             }
             else

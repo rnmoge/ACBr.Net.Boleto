@@ -1362,17 +1362,17 @@ namespace ACBr.Net.Boleto
             Result.AppendFormat("{0:000}", Banco.Numero);                               //Código do banco
             Result.Append("0001");                                                      //Número do lote
             Result.Append('5');                                                         //Tipo do registro: Registro trailer do lote
-            Result.Append("".FillLeft(9));                                               //Uso exclusivo FEBRABAN/CNAB
-            Result.AppendFormat("{0:000000}", (3 * ARemessa.Count - 1));                //Quantidade de Registro da Remessa
-            Result.Append("".FillLeft(6, '0'));                                          //Quantidade títulos em cobrança
-            Result.Append("".FillLeft(17, '0'));                                         //Valor dos títulos em carteiras}
-            Result.Append("".FillLeft(6, '0'));                                          //Quantidade títulos em cobrança
-            Result.Append("".FillLeft(17, '0'));                                         //Valor dos títulos em carteiras}
-            Result.Append("".FillLeft(6, '0'));                                          //Quantidade títulos em cobrança
-            Result.Append("".FillLeft(17, '0'));                                         //Valor dos títulos em carteiras}
-            Result.Append("".FillLeft(6, '0'));                                          //Quantidade títulos em cobrança
-            Result.Append("".FillLeft(17, '0'));                                         //Valor dos títulos em carteiras}
-            Result.Append("".FillLeft(8));                                               //Uso exclusivo FEBRABAN/CNAB}
+            Result.Append("".FillLeft(9));                                              //Uso exclusivo FEBRABAN/CNAB
+            Result.AppendFormat("{0:000000}", ARemessa.Count - 2);                      //Quantidade de Registro da Remessa
+            Result.Append("".FillLeft(6, '0'));                                         //Quantidade títulos em cobrança
+            Result.Append("".FillLeft(17, '0'));                                        //Valor dos títulos em carteiras}
+            Result.Append("".FillLeft(6, '0'));                                         //Quantidade títulos em cobrança
+            Result.Append("".FillLeft(17, '0'));                                        //Valor dos títulos em carteiras}
+            Result.Append("".FillLeft(6, '0'));                                         //Quantidade títulos em cobrança
+            Result.Append("".FillLeft(17, '0'));                                        //Valor dos títulos em carteiras}
+            Result.Append("".FillLeft(6, '0'));                                         //Quantidade títulos em cobrança
+            Result.Append("".FillLeft(17, '0'));                                        //Valor dos títulos em carteiras}
+            Result.Append("".FillLeft(8));                                              //Uso exclusivo FEBRABAN/CNAB}
             Result.Append("".FillLeft(117));
 
             //ERAR REGISTRO TRAILER DO ARQUIVO}
@@ -1380,11 +1380,11 @@ namespace ACBr.Net.Boleto
             Result.AppendFormat("{0:000}", Banco.Numero);                               //Código do banco
             Result.Append("9999");                                                      //Lote de serviço
             Result.Append('9');                                                         //Tipo do registro: Registro trailer do arquivo
-            Result.Append("".FillLeft(9));                                               //Uso exclusivo FEBRABAN/CNAB}
+            Result.Append("".FillLeft(9));                                              //Uso exclusivo FEBRABAN/CNAB}
             Result.Append("000001");                                                    //Quantidade de lotes do arquivo}
-            Result.AppendFormat("{0:000000}", ((ARemessa.Count - 1) * 3) + 4);          //Quantidade de registros do arquivo, inclusive este registro que está sendo criado agora}
-            Result.Append("".FillLeft(6));                                               //Uso exclusivo FEBRABAN/CNAB}
-            Result.Append("".FillLeft(205));                                             //Uso exclusivo FEBRABAN/CNAB}      
+			Result.AppendFormat("{0:000000}", ARemessa.Count + 2);                      //Quantidade de registros do arquivo, inclusive este registro que está sendo criado agora}
+            Result.Append("".FillLeft(6));                                              //Uso exclusivo FEBRABAN/CNAB}
+            Result.Append("".FillLeft(205));                                            //Uso exclusivo FEBRABAN/CNAB}      
 
             return Result.ToString();
         }

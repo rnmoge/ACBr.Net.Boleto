@@ -66,7 +66,7 @@ namespace ACBr.Net.Boleto
         internal Banco(ACBrBoleto parent)
         {
             this.Parent = parent;
-            cobranca = TipoCobranca.Nenhum;
+            TipoCobranca = TipoCobranca.Nenhum;
         }
 
         #endregion Constructor
@@ -231,6 +231,10 @@ namespace ACBr.Net.Boleto
                     case TipoCobranca.Itau:
                         BancoClass = new BancoItau(this);
                         break;
+
+					case TipoCobranca.HSBC:
+						BancoClass = new BancoHSBC(this);
+						break;
 
                     default:
                         BancoClass = new BancoBase(this);

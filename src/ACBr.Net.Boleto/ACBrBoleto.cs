@@ -540,10 +540,10 @@ namespace ACBr.Net.Boleto
             }
 			else
             {
-                Remessa.Add(Banco.GerarRegistroHeader240(NumeroRemessa));
+				Remessa.AddText(Banco.GerarRegistroHeader240(NumeroRemessa));
                 foreach (var titulo in ListadeBoletos)
-                    Remessa.Add(Banco.GerarRegistroTransacao240(titulo));
-                Remessa.Add(Banco.GerarRegistroTrailler240(Remessa));
+                    Remessa.AddText(Banco.GerarRegistroTransacao240(titulo));
+				Remessa.AddText(Banco.GerarRegistroTrailler240(Remessa));
             }
 
             File.WriteAllLines(NomeArq, Remessa);

@@ -88,7 +88,7 @@ namespace ACBr.Net.Boleto
             {
                 case 2: return "02-Entrada Confirmada";
                 case 3: return "03-Entrada Rejeitada";
-                case 4: return "04-Alteração de Dados - Nova Entrada";
+				case 4: return "04-Alteração de Dados - Nova Entrada ou Alteração/Exclusão de Dados Acatada";
                 case 5: return "05-Alteração de Dados - Baixa";
                 case 6: return "06-Liquidação Normal";
                 case 7: return "07-Liquidação Parcial - Cobrança Inteligente (B2b)";
@@ -601,8 +601,8 @@ namespace ACBr.Net.Boleto
         public override string CalcularDigitoVerificador(Titulo Titulo)
         {
             string Docto;
-            if (Titulo.Carteira.IsIn("112", "212", "113", "114", "166", "115", "104", "147", "188", "108",
-                "121", "180", "280", "126", "131", "145", "150", "168", "109", "110", "111", "121", "221", "175"))
+            if (Titulo.Carteira.IsIn("116", "117", "119", "134", "135", "136", "104", "147",
+                "105", "112", "212", "166", "113", "126", "131", "145", "150", "168"))
             {
                 Docto = string.Format("{0}{1}", Titulo.Carteira, Titulo.NossoNumero.FillRight(TamanhoMaximoNossoNum, '0'));
             }

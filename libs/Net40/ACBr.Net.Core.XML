@@ -441,6 +441,25 @@
             Comprovante Nao Fiscal Aberto
             </summary>
         </member>
+        <member name="T:ACBr.Net.Core.IListExtension">
+            <summary>
+            Class IListExtension.
+            </summary>
+        </member>
+        <member name="M:ACBr.Net.Core.IListExtension.AddText(System.Collections.Generic.IList{System.String},System.String)">
+            <summary>
+            Adiciona uma string com quebra de linha na lista como se fosse uma ou mais linhas
+            </summary>
+            <param name="list">A lista.</param>
+            <param name="texto">O texto.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.IListExtension.AsString(System.Collections.Generic.List{System.String})">
+            <summary>
+            Transforma uma lista de string em uma unica string.
+            </summary>
+            <param name="array">The array.</param>
+            <returns>String com todos os dados da lista de strings</returns>
+        </member>
         <member name="T:ACBr.Net.Core.StreamExtensions">
             <summary>
             Class StreamExtensions.
@@ -1231,20 +1250,13 @@
             <returns>String com todos os dados do array de strings</returns>
             <exception cref="T:ACBr.Net.Core.ACBrException">Erro ao converter array</exception>
         </member>
-        <member name="M:ACBr.Net.Core.StringExtensions.AsString(System.Collections.Generic.List{System.String})">
-            <summary>
-            Transforma uma lista de string em uma unica string.
-            </summary>
-            <param name="array">The array.</param>
-            <returns>String com todos os dados da lista de strings</returns>
-        </member>
         <member name="M:ACBr.Net.Core.StringExtensions.StringFill(System.String,System.Int32,System.Char,System.Boolean)">
             <summary>
             Alinha a string a direita/esquerda e preenche com caractere informado ate ficar do tamanho especificado.
             </summary>
             <param name="text">O texto</param>
-            <param name="with">Caractere para preencher</param>
             <param name="length">Tamanho final desejado</param>
+            <param name="with">Caractere para preencher</param>
             <param name="esquerda">Direção do preenchimento</param>
             <returns>String do tamanho especificado e se menor complementada com o caractere informado a direita/esquerda</returns>
         </member>
@@ -1254,8 +1266,8 @@
             Se tamanho menor que a string atual retorna uma string do tamanho especificado.
             </summary>
             <param name="text">O texto.</param>
-            <param name="with">Caractere para preencher</param>
             <param name="length">Tamanho final desejado</param>
+            <param name="with">Caractere para preencher</param>
             <returns>String do tamanho especificado e se menor complementada com o caractere informado a esquerda</returns>
         </member>
         <member name="M:ACBr.Net.Core.StringExtensions.FillLeft(System.String,System.Int32,System.Char)">
@@ -1264,8 +1276,8 @@
             Se tamanho menor que a string atual retorna uma string do tamanho especificado.
             </summary>
             <param name="text">O texto.</param>
-            <param name="with">Caractere para preencher</param>
             <param name="length">Tamanho final desejado</param>
+            <param name="with">Caractere para preencher</param>
             <returns>String do tamanho especificado e se menor complementada com o caractere informado a direita</returns>
         </member>
         <member name="M:ACBr.Net.Core.StringExtensions.ZeroFill(System.String,System.Int32)">
@@ -1274,7 +1286,6 @@
             </summary>
             <param name="text">The text.</param>
             <param name="length">Tamanho final desejado</param>
-            <param name="esquerda">Direção do preenchimento</param>
             <returns>String do tamanho especificado e se menor complementada com zero a direita/esquerda</returns>
         </member>
         <member name="M:ACBr.Net.Core.StringExtensions.RemoveCE(System.String)">
@@ -1336,6 +1347,13 @@
             <param name="value">The value.</param>
             <param name="length">The length.</param>
             <returns>System.String.</returns>
+        </member>
+        <member name="M:ACBr.Net.Core.StringExtensions.FromJulianDate(System.String)">
+            <summary>
+            Froms the julian date.
+            </summary>
+            <param name="julianDate">The julian date.</param>
+            <returns>DateTime.</returns>
         </member>
     </members>
 </doc>
