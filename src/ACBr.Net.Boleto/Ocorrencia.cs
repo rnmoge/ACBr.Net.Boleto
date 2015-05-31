@@ -11,9 +11,9 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using System;
-using System.Linq;
-using System.Collections.Generic;
+
+using ACBr.Net.Boleto.Enums;
+
 #region COM Interop Attributes
 
 #if COM_INTEROP
@@ -22,11 +22,7 @@ using System.Runtime.InteropServices;
 
 
 #endregion COM Interop Attributes
-using ACBr.Net.Core;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
 namespace ACBr.Net.Boleto
 {
     #region COM Interop Attributes

@@ -11,9 +11,14 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using ACBr.Net.Boleto.Enums;
+using ACBr.Net.Core.Exceptions;
+using ACBr.Net.Core.Extensions;
+
 #region COM Interop Attributes
 
 #if COM_INTEROP
@@ -22,11 +27,7 @@ using System.Runtime.InteropServices;
 
 
 #endregion COM Interop Attributes
-using ACBr.Net.Core;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
 namespace ACBr.Net.Boleto
 {
     #region COM Interop Attributes
@@ -47,26 +48,12 @@ namespace ACBr.Net.Boleto
     {
         #region Fields
 
-        /// <summary>
-        /// The carteira
-        /// </summary>
-        public string carteira;
-        /// <summary>
-        /// The parcela
-        /// </summary>
-        public int parcela;
-        /// <summary>
-        /// The totalparcelas
-        /// </summary>
-        public int totalparcelas;
-        /// <summary>
-        /// The nossonumero
-        /// </summary>
-        public string nossonumero;
-		/// <summary>
-		/// The codigomora
-		/// </summary>
-		public char codigomora;
+        private string carteira;
+        private int parcela;
+        private int totalparcelas;
+        private string nossonumero;
+		private char codigomora;
+	    private char codGeracao;
 
         #endregion Fields
 
@@ -76,7 +63,7 @@ namespace ACBr.Net.Boleto
         /// Initializes a new instance of the <see cref="Titulo" /> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        internal Titulo(ACBrBoleto parent)
+        internal Titulo(AcBrBoleto parent)
         {
             Parent = parent;
             OcorrenciaOriginal = new Ocorrencia();
@@ -111,6 +98,7 @@ namespace ACBr.Net.Boleto
             Referencia = string.Empty;
             Versao = string.Empty;
             codigomora = '2';
+	        CodigoGeracao = '2';
         }
 
         #endregion Constructor
@@ -121,7 +109,7 @@ namespace ACBr.Net.Boleto
         /// Gets the parent.
         /// </summary>
         /// <value>The parent.</value>
-        public ACBrBoleto Parent { get; private set; }
+        public AcBrBoleto Parent { get; private set; }
         /// <summary>
         /// Gets or sets the local pagamento.
         /// </summary>
@@ -176,9 +164,8 @@ namespace ACBr.Net.Boleto
                 else
                     tamanho = Parent.Banco.CalcularTamMaximoNossoNumero(Carteira, value);
 
-                if (value.Trim().Length > tamanho)
-                    throw new ACBrException(string.Format("Tamanho Máximo do Nosso Número é: {0}", tamanho));
-
+	            Guard.Against<ACBrException>(
+					value.Trim().Length > tamanho, "Tamanho Máximo do Nosso Número é: {0}", tamanho);
                 nossonumero = value.ZeroFill(tamanho);
             }
         }
@@ -281,8 +268,9 @@ namespace ACBr.Net.Boleto
             }
             set
             {
-                if (value > TotalParcelas && Parent.BoletoPrinter != null && Parent.BoletoPrinter.Layout == LayoutBoleto.Carne)
-                    throw new ACBrException("Numero da Parcela Atual deve ser menor que o Total de Parcelas do Carnê");
+				Guard.Against<ACBrException>(
+					value > TotalParcelas && Parent.BoletoPrinter != null && Parent.BoletoPrinter.Layout == LayoutBoleto.Carne,
+				   "Numero da Parcela Atual deve ser menor que o Total de Parcelas do Carnê");
 
                 parcela = value;
             }
@@ -300,8 +288,9 @@ namespace ACBr.Net.Boleto
             }
             set
             {
-                if (value < Parcela && Parent.BoletoPrinter != null && Parent.BoletoPrinter.Layout == LayoutBoleto.Carne)
-                    throw new ACBrException("Numero da Parcela Atual deve ser menor ou igual o Total de Parcelas do Carnê");
+                Guard.Against<ACBrException>(
+					value < Parcela && Parent.BoletoPrinter != null && Parent.BoletoPrinter.Layout == LayoutBoleto.Carne,
+                    "Numero da Parcela Atual deve ser menor ou igual o Total de Parcelas do Carnê");
 
                 totalparcelas = value;
             }
@@ -631,10 +620,33 @@ namespace ACBr.Net.Boleto
 				if (value == codigomora)
 					return;
 
-				if(!Parent.Banco.CodigosMoraAceitos.Contains(value))
-					throw new ACBrException("Código de Mora/Juros informado não é permitido para este banco!");
+				Guard.Against<ACBrException>(
+					!Parent.Banco.CodigosMoraAceitos.Contains(value),
+					"Código de Mora/Juros informado não é permitido para este banco!");
 
 				codigomora = value;
+			}
+		}
+		/// <summary>
+		/// Gets or sets the codigo geracao.
+		/// </summary>
+		/// <value>The codigo geracao.</value>
+		public char CodigoGeracao
+		{
+			get
+			{
+				return codGeracao;
+			}
+			set
+			{
+				if (value == codGeracao)
+					return;
+
+				Guard.Against<ACBrException>(
+					!Parent.Banco.CodigosGeracaoAceitos.Contains(value),
+					"Código de Geração Inválido!");
+
+				codGeracao = value;
 			}
 		}
         /// <summary>

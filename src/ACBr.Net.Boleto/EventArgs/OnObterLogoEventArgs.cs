@@ -11,18 +11,15 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using System;
+
 using System.Drawing;
 
-/// <summary>
-/// The Events namespace.
-/// </summary>
-namespace ACBr.Net.Boleto.Events
+namespace ACBr.Net.Boleto.EventArgs
 {
     /// <summary>
     /// Class OnObterLogoEventArgs.
     /// </summary>
-    public class OnObterLogoEventArgs : EventArgs
+    public class OnObterLogoEventArgs : System.EventArgs
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="OnObterLogoEventArgs"/> class.

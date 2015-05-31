@@ -11,10 +11,16 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+
 using System;
-using System.Linq;
-using System.Text;
 using System.Collections.Generic;
+using System.Text;
+using ACBr.Net.Boleto.Enums;
+using ACBr.Net.Boleto.Utils;
+using ACBr.Net.Core.Enum;
+using ACBr.Net.Core.Exceptions;
+using ACBr.Net.Core.Extensions;
+
 #region COM Interop Attributes
 
 #if COM_INTEROP
@@ -23,12 +29,8 @@ using System.Runtime.InteropServices;
 
 
 #endregion COM Interop Attributes
-using ACBr.Net.Core;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
-namespace ACBr.Net.Boleto
+namespace ACBr.Net.Boleto.Bancos
 {
     #region COM Interop Attributes
 
@@ -78,12 +80,12 @@ namespace ACBr.Net.Boleto
         /// <summary>
         /// Tipoes the ocorrencia to descricao.
         /// </summary>
-        /// <param name="Tipo">The tipo.</param>
+        /// <param name="tipo">The tipo.</param>
         /// <returns>System.String.</returns>
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public override string TipoOcorrenciaToDescricao(TipoOcorrencia Tipo)
+        public override string TipoOcorrenciaToDescricao(TipoOcorrencia tipo)
         {
-            switch ((int)Tipo)
+            switch ((int)tipo)
             {
                 case 2:
                     return "02-Entrada Confirmada";
@@ -184,12 +186,12 @@ namespace ACBr.Net.Boleto
         /// <summary>
         /// Cods the ocorrencia to tipo.
         /// </summary>
-        /// <param name="CodOcorrencia">The cod ocorrencia.</param>
+        /// <param name="codOcorrencia">The cod ocorrencia.</param>
         /// <returns>TipoOcorrencia.</returns>
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public override TipoOcorrencia CodOcorrenciaToTipo(int CodOcorrencia)
+        public override TipoOcorrencia CodOcorrenciaToTipo(int codOcorrencia)
         {
-            switch (CodOcorrencia)
+            switch (codOcorrencia)
             {
                 case 2: return TipoOcorrencia.RetornoRegistroConfirmado;
                 case 3: return TipoOcorrencia.RetornoRegistroRecusado;
@@ -226,12 +228,12 @@ namespace ACBr.Net.Boleto
         /// <summary>
         /// Tipoes the o correncia to cod.
         /// </summary>
-        /// <param name="Tipo">The tipo.</param>
+        /// <param name="tipo">The tipo.</param>
         /// <returns>System.String.</returns>
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public override string TipoOCorrenciaToCod(TipoOcorrencia Tipo)
+        public override string TipoOCorrenciaToCod(TipoOcorrencia tipo)
         {
-            switch (Tipo)
+            switch (tipo)
             {
                 case TipoOcorrencia.RetornoRegistroConfirmado: return "02";
                 case TipoOcorrencia.RetornoRegistroRecusado: return "03";
@@ -267,16 +269,16 @@ namespace ACBr.Net.Boleto
         /// <summary>
         /// Cods the motivo rejeicao to descricao.
         /// </summary>
-        /// <param name="Tipo">The tipo.</param>
-        /// <param name="CodMotivo">The cod motivo.</param>
+        /// <param name="tipo">The tipo.</param>
+        /// <param name="codMotivo">The cod motivo.</param>
         /// <returns>System.String.</returns>
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public override string CodMotivoRejeicaoToDescricao(TipoOcorrencia Tipo, int CodMotivo)
+        public override string CodMotivoRejeicaoToDescricao(TipoOcorrencia tipo, int codMotivo)
         {
-            switch (Tipo)
+            switch (tipo)
             {
                 case TipoOcorrencia.RetornoRegistroConfirmado:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 0: return "00-Ocorrencia aceita";
                         case 1: return "01-Codigo de banco inválido";
@@ -306,11 +308,11 @@ namespace ACBr.Net.Boleto
                         case 86: return "86-Seu número do documento inválido";
                         case 89: return "89-Email sacado nao enviado - Titulo com debito automatico";
                         case 90: return "90-Email sacado nao enviado - Titulo com cobranca sem registro";
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoRegistroRecusado:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 2: return "02-Codigo do registro detalhe invalido";
                         case 3: return "03-Codigo da Ocorrencia Invalida";
@@ -346,62 +348,62 @@ namespace ACBr.Net.Boleto
                         case 73: return "Debito nao agendado - Data de vencimento invalida";
                         case 74: return "Debito nao agendado - Conforme seu pedido titulo nao registrado";
                         case 75: return "Debito nao agendado - Tipo de numero de inscricao de debitado invalido";
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoLiquidado:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 0: return "00-Titulo pago com dinheiro";
                         case 15: return "15-Titulo pago com cheque";
                         case 42: return "42-Rateio nao efetuado";  
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoBaixadoViaArquivo:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                             case 0: return "00-Ocorrencia aceita";
                             case 10: return "10-Baixa comandada pelo cliente";
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoBaixadoInstAgencia:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 0: return "00-Baixado conforme instrucoes na agencia";
                         case 14: return "14-Titulo protestado";
                         case 15: return "15-Titulo excluido";
                         case 16: return "16-Titulo baixado pelo banco por decurso de prazo";
                         case 20: return "20-Titulo baixado e transferido para desconto";  
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoLiquidadoAposBaixaOuNaoRegistro:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 0: return "00-Pago com dinheiro";
                         case 15: return "15-Pago com cheque";  
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoLiquidadoEmCartorio:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 0: return "00-Pago com dinheiro";
                         case 15: return "15-Pago com cheque";  
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoEntradaRejeitaCEPIrregular:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 48: return "48-CEP invalido";
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoBaixaRejeitada:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 4: return "04-Codigo de ocorrencia nao permitido para a carteira";
                         case 7: return "07-Agencia\\Conta\\Digito invalidos";
@@ -413,11 +415,11 @@ namespace ACBr.Net.Boleto
                         case 60: return "60-Movimento para titulo nao cadastrado";
                         case 77: return "70-Transferencia para desconto nao permitido para a carteira";
                         case 85: return "85-Titulo com pagamento vinculado";
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoDebitoTarifas:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 2: return "02-Tarifa de permanência título cadastrado";
                         case 3: return "03-Tarifa de sustação";
@@ -522,19 +524,19 @@ namespace ACBr.Net.Boleto
                         case 106: return "106-TR Emissão aviso rateio";
                         case 107: return "107-Extrato de protesto";
                         case 110: return "110-Tarifa reg/pagto Bradesco Expresso";
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoOcorrenciasDoSacado:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 78: return "78-Sacado alega que faturamento e indevido";
                         case 116: return "116-Sacado aceita/reconhece o faturamento";
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoAlteracaoOutrosDadosRejeitada:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 1: return "01-Código do Banco inválido";
                         case 4: return "04-Código de ocorrência não permitido para a carteira";
@@ -570,11 +572,11 @@ namespace ACBr.Net.Boleto
                         case 85: return "85-Título com Pagamento Vinculado.";
                         case 88: return "88-E-mail Sacado não lido no prazo 5 dias";
                         case 91: return "91-E-mail sacado não recebido";
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoComandoRecusado:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 1: return "01-Código do Banco inválido";
                         case 2: return "02-Código do registro detalhe inválido";
@@ -613,89 +615,88 @@ namespace ACBr.Net.Boleto
                         case 85: return "85-Título com pagamento vinculado";
                         case 86: return "86-Seu número inválido";
                         case 94: return "94-Título Penhorado – Instrução Não Liberada pela Agência";
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
                 case TipoOcorrencia.RetornoDesagendamentoDebitoAutomatico:
-                    switch (CodMotivo)
+                    switch (codMotivo)
                     {
                         case 81: return "81-Tentativas esgotadas, baixado";
                         case 82: return "82-Tentativas esgotadas, pendente";
                         case 83: return "83-Cancelado pelo Sacado e Mantido Pendente, conforme negociação";
                         case 84: return "84-Cancelado pelo sacado e baixado, conforme negociação";   
-                        default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                        default: return string.Format("{0:00} - Outros Motivos", codMotivo);
                     }
 
-                default: return string.Format("{0:00} - Outros Motivos", CodMotivo);
+                default: return string.Format("{0:00} - Outros Motivos", codMotivo);
             }
         }
 
         /// <summary>
         /// Calculars the digito verificador.
         /// </summary>
-        /// <param name="Titulo">The titulo.</param>
+        /// <param name="titulo">The titulo.</param>
         /// <returns>System.String.</returns>
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public override string CalcularDigitoVerificador(Titulo Titulo)
+        public override string CalcularDigitoVerificador(Titulo titulo)
         {
             Modulo.CalculoPadrao();
             Modulo.MultiplicadorFinal = 7;
-            Modulo.Documento = Titulo.Carteira + Titulo.NossoNumero;
+            Modulo.Documento = titulo.Carteira + titulo.NossoNumero;
             Modulo.Calcular();
             
             if(Modulo.ModuloFinal == 1)
                 return "P";
-            else
-                return Modulo.DigitoFinal.ToString();  
+	        return Modulo.DigitoFinal.ToString();
         }
 
         /// <summary>
         /// Montars the campo codigo cedente.
         /// </summary>
-        /// <param name="Titulo">The titulo.</param>
+        /// <param name="titulo">The titulo.</param>
         /// <returns>System.String.</returns>
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public override string MontarCampoCodigoCedente(Titulo Titulo)
+        public override string MontarCampoCodigoCedente(Titulo titulo)
         {
-            return String.Format("{0}-{1}/{2}-{3}", Titulo.Parent.Cedente.Agencia, 
-                Titulo.Parent.Cedente.AgenciaDigito, Titulo.Parent.Cedente.Conta, 
-                Titulo.Parent.Cedente.ContaDigito); 
+            return String.Format("{0}-{1}/{2}-{3}", titulo.Parent.Cedente.Agencia, 
+                titulo.Parent.Cedente.AgenciaDigito, titulo.Parent.Cedente.Conta, 
+                titulo.Parent.Cedente.ContaDigito); 
         }
 
         /// <summary>
         /// Montar o campo nosso numero.
         /// </summary>
-        /// <param name="Titulo">Boleto</param>
+        /// <param name="titulo">Boleto</param>
         /// <returns>NossoNumero</returns>
-        public override string MontarCampoNossoNumero(Titulo Titulo)
+        public override string MontarCampoNossoNumero(Titulo titulo)
         {
-            return String.Format("{0}/{1}-{2}", Titulo.Carteira, Titulo.NossoNumero, CalcularDigitoVerificador(Titulo));
+            return String.Format("{0}/{1}-{2}", titulo.Carteira, titulo.NossoNumero, CalcularDigitoVerificador(titulo));
         }
 
         /// <summary>
         /// Montar o codigo barras do boleto.
         /// </summary>
-        /// <param name="Titulo">Boleto.</param>
+        /// <param name="titulo">Boleto.</param>
         /// <returns>Codigo de barras</returns>
-        public override string MontarCodigoBarras(Titulo Titulo)
+        public override string MontarCodigoBarras(Titulo titulo)
         {
-            var  FatorVencimento = Titulo.Vencimento.CalcularFatorVencimento();
-            var CodigoBarras = string.Format("{0}9{1}{2}{3}{4}{5}{6}0", Numero, FatorVencimento, Titulo.ValorDocumento.ToRemessaString(10),
-                                Titulo.Parent.Cedente.Agencia.OnlyNumbers().FillRight(TamanhoAgencia,'0'), Titulo.Carteira, Titulo.NossoNumero,
-                                Titulo.Parent.Cedente.Conta.Right(7).FillRight(7,'0'));
+            var  fatorVencimento = titulo.Vencimento.CalcularFatorVencimento();
+            var codigoBarras = string.Format("{0}9{1}{2}{3}{4}{5}{6}0", Numero, fatorVencimento, titulo.ValorDocumento.ToDecimalString(10),
+                                titulo.Parent.Cedente.Agencia.OnlyNumbers().FillRight(TamanhoAgencia,'0'), titulo.Carteira, titulo.NossoNumero,
+                                titulo.Parent.Cedente.Conta.Right(7).FillRight(7,'0'));
             
-            var DigitoCodBarras = CalcularDigitoCodigoBarras(CodigoBarras);
+            var digitoCodBarras = CalcularDigitoCodigoBarras(codigoBarras);
             
-            return CodigoBarras.Insert(4, DigitoCodBarras);
+            return codigoBarras.Insert(4, digitoCodBarras);
         }
 
         /// <summary>
         /// Montar a linha digitavel do boleto.
         /// </summary>
-        /// <param name="CodigoBarras">Codigo de barras.</param>
-        /// <param name="Titulo">Boleto.</param>
+        /// <param name="codigoBarras">Codigo de barras.</param>
+        /// <param name="titulo">Boleto.</param>
         /// <returns>Linha digitavel</returns>
-        public override string MontarLinhaDigitavel(string CodigoBarras, Titulo Titulo)
+        public override string MontarLinhaDigitavel(string codigoBarras, Titulo titulo)
         {
             Modulo.FormulaDigito = CalcDigFormula.Modulo10;
             Modulo.MultiplicadorInicial = 1;
@@ -703,39 +704,39 @@ namespace ACBr.Net.Boleto
             Modulo.MultiplicadorAtual = 2;
 
             //Campo 1(Código Banco,Tipo de Moeda,5 primeiro digitos do Campo Livre)
-            Modulo.Documento = string.Format("{0}9{1}", CodigoBarras.Substring(1, 3), CodigoBarras.Substring(19, 5));
+            Modulo.Documento = string.Format("{0}9{1}", codigoBarras.Substring(1, 3), codigoBarras.Substring(19, 5));
             Modulo.Calcular();
 
-            var Campo1 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring(5, 4), Modulo.DigitoFinal);
+            var campo1 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring(5, 4), Modulo.DigitoFinal);
 
             //Campo 2(6ª a 15ª posições do campo Livre)
-            Modulo.Documento = CodigoBarras.Substring(24, 10);
+            Modulo.Documento = codigoBarras.Substring(24, 10);
             Modulo.Calcular();
 
-            var Campo2 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring(5, 5), Modulo.DigitoFinal);
+            var campo2 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring(5, 5), Modulo.DigitoFinal);
 
             //Campo 3 (16ª a 25ª posições do campo Livre)
-            Modulo.Documento = CodigoBarras.Substring(34, 10);
+            Modulo.Documento = codigoBarras.Substring(34, 10);
             Modulo.Calcular();
 
-            var Campo3 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring(5, 5), Modulo.DigitoFinal);
+            var campo3 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring(5, 5), Modulo.DigitoFinal);
 
             //Campo 4 (Digito Verificador Nosso Numero)
-            var Campo4 = CodigoBarras.Substring(4, 1);
+            var campo4 = codigoBarras.Substring(4, 1);
 
             //Campo 5 (Fator de Vencimento e Valor do Documento)
-            var Campo5 = CodigoBarras.Substring(5, 14);
+            var campo5 = codigoBarras.Substring(5, 14);
 
-            return string.Format("{0} {1} {2} {3} {4}", Campo1, Campo2, Campo3, Campo4, Campo5);
+            return string.Format("{0} {1} {2} {3} {4}", campo1, campo2, campo3, campo4, campo5);
         }
 
         /// <summary>
         /// Gerars the registro header400.
         /// </summary>
-        /// <param name="NumeroRemessa">The numero remessa.</param>
-        /// <param name="ARemessa">A remessa.</param>
+        /// <param name="numeroRemessa">The numero remessa.</param>
+        /// <param name="aRemessa">A remessa.</param>
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public override void GerarRegistroHeader400(int NumeroRemessa, List<string> ARemessa)
+        public override void GerarRegistroHeader400(int numeroRemessa, List<string> aRemessa)
         {
             var ced = Banco.Parent.Cedente;
             var wLinha = new StringBuilder();
@@ -745,133 +746,133 @@ namespace ACBr.Net.Boleto
             wLinha.Append("01");                                                     // Código do Tipo de Serviço
             wLinha.Append("COBRANCA".FillLeft(15));                                   // Descrição do tipo de serviço
             wLinha.Append(ced.CodigoCedente.FillRight(20, '0'));                      // Codigo da Empresa no Banco
-            wLinha.Append(ced.Nome.RemoveCE().FillLeft(30));                          // Nome da Empresa
+            wLinha.Append(ced.Nome.RemoveCe().FillLeft(30));                          // Nome da Empresa
             wLinha.Append(Numero + "BRADESCO".FillLeft(15));                          // Código e Nome do Banco(237 - Bradesco)
             wLinha.AppendFormat("{0:ddMMyy}        MX", DateTime.Now);               // Data de geração do arquivo + brancos
-            wLinha.AppendFormat("{0:0000000}{1}", NumeroRemessa, "".FillRight(277));  // Nr. Sequencial de Remessa + brancos
+            wLinha.AppendFormat("{0:0000000}{1}", numeroRemessa, "".FillRight(277));  // Nr. Sequencial de Remessa + brancos
             wLinha.AppendFormat("{0:000000}", 1);                                    // Nr. Sequencial de Remessa + brancos + Contador
-            ARemessa.Add(wLinha.ToString().ToUpper());
+            aRemessa.Add(wLinha.ToString().ToUpper());
         }
 
         /// <summary>
         /// Gerars the registro transacao400.
         /// </summary>
-        /// <param name="Titulo">The titulo.</param>
-        /// <param name="ARemessa">A remessa.</param>
-        public override void GerarRegistroTransacao400(Titulo Titulo, List<string> ARemessa)
+        /// <param name="titulo">The titulo.</param>
+        /// <param name="aRemessa">A remessa.</param>
+        public override void GerarRegistroTransacao400(Titulo titulo, List<string> aRemessa)
         {
             string aCarteira = string.Empty;
             string aAgencia = string.Empty;
             string aConta = string.Empty;
-            string DigitoNossoNumero = string.Empty;
+            string digitoNossoNumero = string.Empty;
 
-            var DoMontaInstrucoes = new Func<string>(() =>
+            var doMontaInstrucoes = new Func<string>(() =>
             {
-                var Result = new StringBuilder();
-                Result.Append("");
+                var result = new StringBuilder();
+                result.Append("");
 
                 //Primeira instrução vai no registro 1
-                if (Titulo.Mensagem.Count <= 1)
+                if (titulo.Mensagem.Count <= 1)
                     return string.Empty;
 
-                Result.Append(Environment.NewLine);
-                Result.Append('2');                                     // IDENTIFICAÇÃO DO LAYOUT PARA O REGISTRO
-                Result.Append(Titulo.Mensagem[1].FillLeft(80));          // CONTEÚDO DA 1ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+                result.Append(Environment.NewLine);
+                result.Append('2');                                     // IDENTIFICAÇÃO DO LAYOUT PARA O REGISTRO
+                result.Append(titulo.Mensagem[1].FillLeft(80));          // CONTEÚDO DA 1ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
 
-                if (Titulo.Mensagem.Count == 3)
-                    Result.Append(Titulo.Mensagem[2].FillLeft(80));      // CONTEÚDO DA 2ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+                if (titulo.Mensagem.Count == 3)
+                    result.Append(titulo.Mensagem[2].FillLeft(80));      // CONTEÚDO DA 2ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
                 else
-                    Result.Append("".FillLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
+                    result.Append("".FillLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
 
-                if (Titulo.Mensagem.Count == 4)
-                    Result.Append(Titulo.Mensagem[3].FillLeft(80));      // CONTEÚDO DA 3ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+                if (titulo.Mensagem.Count == 4)
+                    result.Append(titulo.Mensagem[3].FillLeft(80));      // CONTEÚDO DA 3ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
                 else
-                    Result.Append("".FillLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
+                    result.Append("".FillLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
 
-                if (Titulo.Mensagem.Count == 5)
-                    Result.Append(Titulo.Mensagem[4].FillLeft(80));      // CONTEÚDO DA 4ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+                if (titulo.Mensagem.Count == 5)
+                    result.Append(titulo.Mensagem[4].FillLeft(80));      // CONTEÚDO DA 4ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
                 else
-                    Result.Append("".FillLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
+                    result.Append("".FillLeft(80));                      // CONTEÚDO DO RESTANTE DAS LINHAS
 
 
-                Result.Append("".FillRight(45));                         // COMPLEMENTO DO REGISTRO
-                Result.Append(aCarteira);
-                Result.Append(aAgencia);
-                Result.Append(aConta);
-                Result.Append(Titulo.Parent.Cedente.ContaDigito);
-                Result.Append(Titulo.NossoNumero);
-                Result.Append(DigitoNossoNumero);
-                Result.AppendFormat("{0:000000}", ARemessa.Count + 2);
-                return Result.ToString();
+                result.Append("".FillRight(45));                         // COMPLEMENTO DO REGISTRO
+                result.Append(aCarteira);
+                result.Append(aAgencia);
+                result.Append(aConta);
+                result.Append(titulo.Parent.Cedente.ContaDigito);
+                result.Append(titulo.NossoNumero);
+                result.Append(digitoNossoNumero);
+                result.AppendFormat("{0:000000}", aRemessa.Count + 2);
+                return result.ToString();
             });
 
-            DigitoNossoNumero = CalcularDigitoVerificador(Titulo);
-            aAgencia = Titulo.Parent.Cedente.Agencia.OnlyNumbers().ZeroFill(5);
-            aConta = Titulo.Parent.Cedente.Conta.OnlyNumbers().ZeroFill(7);
-            aCarteira = Titulo.Carteira.Trim().ZeroFill(3);
+            digitoNossoNumero = CalcularDigitoVerificador(titulo);
+            aAgencia = titulo.Parent.Cedente.Agencia.OnlyNumbers().ZeroFill(5);
+            aConta = titulo.Parent.Cedente.Conta.OnlyNumbers().ZeroFill(7);
+            aCarteira = titulo.Carteira.Trim().ZeroFill(3);
 
             //Pegando Código da Ocorrencia
-            string Ocorrencia;
-            switch (Titulo.OcorrenciaOriginal.Tipo)
+            string ocorrencia;
+            switch (titulo.OcorrenciaOriginal.Tipo)
             {
                 case TipoOcorrencia.RemessaBaixar:
-                    Ocorrencia = "02"; //Pedido de Baixa
+                    ocorrencia = "02"; //Pedido de Baixa
                     break;
 
                 case TipoOcorrencia.RemessaConcederAbatimento:
-                    Ocorrencia = "04"; //Concessão de Abatimento
+                    ocorrencia = "04"; //Concessão de Abatimento
                     break;
 
                 case TipoOcorrencia.RemessaCancelarAbatimento:
-                    Ocorrencia = "05"; //Cancelamento de Abatimento concedido
+                    ocorrencia = "05"; //Cancelamento de Abatimento concedido
                     break;
 
                 case TipoOcorrencia.RemessaAlterarVencimento:
-                    Ocorrencia = "06"; //Alteração de vencimento
+                    ocorrencia = "06"; //Alteração de vencimento
                     break;
 
                 case TipoOcorrencia.RemessaAlterarNumeroControle:
-                    Ocorrencia = "08"; //Alteração de seu número
+                    ocorrencia = "08"; //Alteração de seu número
                     break;
 
                 case TipoOcorrencia.RemessaProtestar:
-                    Ocorrencia = "09"; //Pedido de protesto
+                    ocorrencia = "09"; //Pedido de protesto
                     break;
 
                 case TipoOcorrencia.RemessaCancelarInstrucaoProtestoBaixa:
-                    Ocorrencia = "18"; //Sustar protesto e baixar
+                    ocorrencia = "18"; //Sustar protesto e baixar
                     break;
 
                 case TipoOcorrencia.RemessaCancelarInstrucaoProtesto:
-                    Ocorrencia = "19"; //Sustar protesto e manter na carteira
+                    ocorrencia = "19"; //Sustar protesto e manter na carteira
                     break;
 
                 case TipoOcorrencia.RemessaOutrasOcorrencias:
-                    Ocorrencia = "31"; //Alteração de Outros Dados
+                    ocorrencia = "31"; //Alteração de Outros Dados
                     break;
 
                 default:
-                    Ocorrencia = "01"; //Remessa
+                    ocorrencia = "01"; //Remessa
                     break;
             }
 
             //Pegando Tipo de Boleto
-            string TipoBoleto;
-            switch (Titulo.Parent.Cedente.ResponEmissao)
+            string tipoBoleto;
+            switch (titulo.Parent.Cedente.ResponEmissao)
             {
                 case ResponEmissao.CliEmite:
-                    TipoBoleto = "2";
+                    tipoBoleto = "2";
                     break;
 
                 default:
-                    TipoBoleto = "1";
-                    if (string.IsNullOrEmpty(Titulo.NossoNumero))
-                        DigitoNossoNumero = "0";
+                    tipoBoleto = "1";
+                    if (string.IsNullOrEmpty(titulo.NossoNumero))
+                        digitoNossoNumero = "0";
                     break;
             }
 
             string aEspecie;
-            switch (Titulo.EspecieDoc.Trim())
+            switch (titulo.EspecieDoc.Trim())
             {
                 case "DM":
                     aEspecie = "01";
@@ -902,41 +903,41 @@ namespace ACBr.Net.Boleto
                     break;
 
                 default:
-                    aEspecie = Titulo.EspecieDoc;
+                    aEspecie = titulo.EspecieDoc;
                     break;
             }
 
             //Pegando campo Intruções
-            string Protesto;
-            if (Titulo.DataProtesto.HasValue && Titulo.DataProtesto > Titulo.Vencimento)
-                Protesto = "06" + (Titulo.DataProtesto.Value - Titulo.Vencimento).TotalDays.ToString().ZeroFill(2);
-            else if (Ocorrencia == "31")
-                Protesto = "9999";
+            string protesto;
+            if (titulo.DataProtesto.HasValue && titulo.DataProtesto > titulo.Vencimento)
+                protesto = "06" + (titulo.DataProtesto.Value - titulo.Vencimento).TotalDays.ToString().ZeroFill(2);
+            else if (ocorrencia == "31")
+                protesto = "9999";
             else
-                Protesto = Titulo.Instrucao1.Trim().FillRight(2, '0') + Titulo.Instrucao2.Trim().FillRight(2, '0');
+                protesto = titulo.Instrucao1.Trim().FillRight(2, '0') + titulo.Instrucao2.Trim().FillRight(2, '0');
 
             //Pegando Tipo de Sacado
-            string TipoSacado;
-            switch (Titulo.Sacado.Pessoa)
+            string tipoSacado;
+            switch (titulo.Sacado.Pessoa)
             {
                 case Pessoa.Fisica:
-                    TipoSacado = "01";
+                    tipoSacado = "01";
                     break;
 
                 case Pessoa.Juridica:
-                    TipoSacado = "02";
+                    tipoSacado = "02";
                     break;
 
                 default:
-                    TipoSacado = "99";
+                    tipoSacado = "99";
                     break;
             }
 
-            string MensagemCedente;
-            if (Titulo.Mensagem.Count > 0)
-                MensagemCedente = Titulo.Mensagem[0];
+            string mensagemCedente;
+            if (titulo.Mensagem.Count > 0)
+                mensagemCedente = titulo.Mensagem[0];
             else
-                MensagemCedente = string.Empty;
+                mensagemCedente = string.Empty;
 
             var wLinha = new StringBuilder();
             wLinha.Append('1');                                                       // ID Registro
@@ -944,91 +945,91 @@ namespace ACBr.Net.Boleto
             wLinha.Append('0' + aCarteira);
             wLinha.Append(aAgencia);
             wLinha.Append(aConta);
-            wLinha.Append(Titulo.Parent.Cedente.ContaDigito);
-            wLinha.Append(Titulo.SeuNumero.FillLeft(25) + "000");             // Numero de Controle do Participante
-            wLinha.Append(Titulo.PercentualMulta > 0 ? '2' : '0');          // Indica se exite Multa ou não
-            wLinha.Append(Titulo.PercentualMulta.ToRemessaString(4));          // Percentual de Multa formatado com 2 casas decimais
-            wLinha.Append(Titulo.NossoNumero + DigitoNossoNumero);
-            wLinha.Append(Titulo.ValorDescontoAntDia.ToRemessaString(10));
-            wLinha.AppendFormat("{0} {1}", TipoBoleto, "".FillRight(10));                              // Tipo Boleto(Quem emite) + Identificação se emite boleto para débito automático.                  
-            wLinha.AppendFormat(" 2  {0}", Ocorrencia);                             // Ind. Rateio de Credito + Aviso de Debito Aut.: 2=Não emite aviso + Ocorrência
-            wLinha.Append(Titulo.NumeroDocumento.FillLeft(10));
-            wLinha.AppendFormat("{0:ddMMyy}", Titulo.Vencimento);
-            wLinha.Append(Titulo.ValorDocumento.ToRemessaString());
+            wLinha.Append(titulo.Parent.Cedente.ContaDigito);
+            wLinha.Append(titulo.SeuNumero.FillLeft(25) + "000");             // Numero de Controle do Participante
+            wLinha.Append(titulo.PercentualMulta > 0 ? '2' : '0');          // Indica se exite Multa ou não
+            wLinha.Append(titulo.PercentualMulta.ToDecimalString(4));          // Percentual de Multa formatado com 2 casas decimais
+            wLinha.Append(titulo.NossoNumero + digitoNossoNumero);
+            wLinha.Append(titulo.ValorDescontoAntDia.ToDecimalString(10));
+            wLinha.AppendFormat("{0} {1}", tipoBoleto, "".FillRight(10));                              // Tipo Boleto(Quem emite) + Identificação se emite boleto para débito automático.                  
+            wLinha.AppendFormat(" 2  {0}", ocorrencia);                             // Ind. Rateio de Credito + Aviso de Debito Aut.: 2=Não emite aviso + Ocorrência
+            wLinha.Append(titulo.NumeroDocumento.FillLeft(10));
+            wLinha.AppendFormat("{0:ddMMyy}", titulo.Vencimento);
+            wLinha.Append(titulo.ValorDocumento.ToDecimalString());
             wLinha.AppendFormat("{0}{1}N", "".ZeroFill(8), aEspecie.FillLeft(2));     // Zeros + Especie do documento + Idntificação(valor fixo N)
-            wLinha.AppendFormat("{0:ddMMyy}", Titulo.DataDocumento);                 // Data de Emissão
-            wLinha.Append(Protesto);
-            wLinha.Append(Titulo.ValorMoraJuros.ToRemessaString());
-            wLinha.Append(Titulo.DataDesconto.HasValue && Titulo.DataDesconto < new DateTime(2000, 01, 01) ?
-                "000000" : string.Format("{0:ddMMyy}", Titulo.DataDesconto.Value));
-            wLinha.Append(Titulo.ValorDesconto.ToRemessaString());
-            wLinha.Append(Titulo.ValorIOF.ToRemessaString());
-            wLinha.Append(Titulo.ValorAbatimento.ToRemessaString());
-            wLinha.Append(TipoSacado + Titulo.Sacado.CNPJCPF.OnlyNumbers().FillRight(14, '0'));
-            wLinha.Append(Titulo.Sacado.NomeSacado.FillLeft(40));
-            wLinha.Append((Titulo.Sacado.Logradouro + ' ' + Titulo.Sacado.Numero + ' ' +
-                    Titulo.Sacado.Bairro + ' ' + Titulo.Sacado.Cidade + ' ' +
-                    Titulo.Sacado.UF).FillLeft(40));
-            wLinha.Append("".FillRight(12) + Titulo.Sacado.CEP.FillLeft(8));
-            wLinha.Append(MensagemCedente.FillLeft(60));
+            wLinha.AppendFormat("{0:ddMMyy}", titulo.DataDocumento);                 // Data de Emissão
+            wLinha.Append(protesto);
+            wLinha.Append(titulo.ValorMoraJuros.ToDecimalString());
+            wLinha.Append(titulo.DataDesconto.HasValue && titulo.DataDesconto < new DateTime(2000, 01, 01) ?
+                "000000" : string.Format("{0:ddMMyy}", titulo.DataDesconto.Value));
+            wLinha.Append(titulo.ValorDesconto.ToDecimalString());
+            wLinha.Append(titulo.ValorIOF.ToDecimalString());
+            wLinha.Append(titulo.ValorAbatimento.ToDecimalString());
+            wLinha.Append(tipoSacado + titulo.Sacado.CNPJCPF.OnlyNumbers().FillRight(14, '0'));
+            wLinha.Append(titulo.Sacado.NomeSacado.FillLeft(40));
+            wLinha.Append((titulo.Sacado.Logradouro + ' ' + titulo.Sacado.Numero + ' ' +
+                    titulo.Sacado.Bairro + ' ' + titulo.Sacado.Cidade + ' ' +
+                    titulo.Sacado.UF).FillLeft(40));
+            wLinha.Append("".FillRight(12) + titulo.Sacado.CEP.FillLeft(8));
+            wLinha.Append(mensagemCedente.FillLeft(60));
 
 
-            wLinha.AppendFormat("{0:000000}", ARemessa.Count + 1); // Nº SEQÜENCIAL DO REGISTRO NO ARQUIVO
-            wLinha.Append(DoMontaInstrucoes());
+            wLinha.AppendFormat("{0:000000}", aRemessa.Count + 1); // Nº SEQÜENCIAL DO REGISTRO NO ARQUIVO
+            wLinha.Append(doMontaInstrucoes());
 
-            ARemessa.Add(wLinha.ToString().ToUpper());
+            aRemessa.Add(wLinha.ToString().ToUpper());
         }
 
         /// <summary>
         /// Gera o registro trailler para o formato CNAB400.
         /// </summary>
-        /// <param name="ARemessa">Dados da remessa</param>
+        /// <param name="aRemessa">Dados da remessa</param>
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public override void GerarRegistroTrailler400(List<string> ARemessa)
+        public override void GerarRegistroTrailler400(List<string> aRemessa)
         {
             var wLinha = new StringBuilder();
             wLinha.Append('9');
             wLinha.Append("".FillRight(393));                        // ID Registro
-            wLinha.AppendFormat("{0:000000}", ARemessa.Count + 1);  // Contador de Registros
-            ARemessa.Add(wLinha.ToString().ToUpper());
+            wLinha.AppendFormat("{0:000000}", aRemessa.Count + 1);  // Contador de Registros
+            aRemessa.Add(wLinha.ToString().ToUpper());
         }
 
         /// <summary>
         /// Ler retorno de arquivo CNAB400.
         /// </summary>
-        /// <param name="ARetorno">Dados do retorno.</param>
+        /// <param name="aRetorno">Dados do retorno.</param>
         /// <exception cref="ACBrException">Código da Empresa do arquivo inválido
         /// or
         /// Agencia\\Conta do arquivo inválido</exception>
-        public override void LerRetorno400(List<string> ARetorno)
+        public override void LerRetorno400(List<string> aRetorno)
         {
-            if(ARetorno[0].ExtrairInt32DaPosicao(77,79) != Numero)
+            if(aRetorno[0].ExtrairInt32DaPosicao(77,79) != Numero)
                 throw new ACBrException(string.Format("{0} não é um arquivo de retorno do {1}",
                                                        Banco.Parent.NomeArqRetorno, Nome));
             
-            var rCodEmpresa = ARetorno[0].ExtrairDaPosicao(27, 46).Trim();
-            var rCedente = ARetorno[0].ExtrairDaPosicao(47, 76).Trim();
-            var rAgencia = ARetorno[1].ExtrairDaPosicao( 25, 29).Trim();
-            var rConta   = ARetorno[1].ExtrairDaPosicao( 30, 36).Trim();
-            var rDigitoConta = ARetorno[1].ExtrairDaPosicao(37, 37);
+            var rCodEmpresa = aRetorno[0].ExtrairDaPosicao(27, 46).Trim();
+            var rCedente = aRetorno[0].ExtrairDaPosicao(47, 76).Trim();
+            var rAgencia = aRetorno[1].ExtrairDaPosicao( 25, 29).Trim();
+            var rConta   = aRetorno[1].ExtrairDaPosicao( 30, 36).Trim();
+            var rDigitoConta = aRetorno[1].ExtrairDaPosicao(37, 37);
             
-            Banco.Parent.NumeroArquivo = ARetorno[0].ExtrairInt32DaPosicao(109, 113);            
-            Banco.Parent.DataArquivo = ARetorno[0].ExtrairDataDaPosicao(95, 100);
-            Banco.Parent.DataCreditoLanc = ARetorno[0].ExtrairDataDaPosicao(380, 385);
+            Banco.Parent.NumeroArquivo = aRetorno[0].ExtrairInt32DaPosicao(109, 113);            
+            Banco.Parent.DataArquivo = aRetorno[0].ExtrairDataDaPosicao(95, 100);
+            Banco.Parent.DataCreditoLanc = aRetorno[0].ExtrairDataDaPosicao(380, 385);
             
             string rCNPJCPF;
-            switch(ARetorno[1].ExtrairInt32DaPosicao(2, 3))
+            switch(aRetorno[1].ExtrairInt32DaPosicao(2, 3))
             {
                 case 11:
-                    rCNPJCPF = ARetorno[1].ExtrairDaPosicao(4, 14);
+                    rCNPJCPF = aRetorno[1].ExtrairDaPosicao(4, 14);
                     break;
 
                 case 14:
-                    rCNPJCPF = ARetorno[1].ExtrairDaPosicao(4, 17);
+                    rCNPJCPF = aRetorno[1].ExtrairDaPosicao(4, 17);
                     break;
 
                 default:
-                    rCNPJCPF = ARetorno[1].ExtrairDaPosicao(4, 17);
+                    rCNPJCPF = aRetorno[1].ExtrairDaPosicao(4, 17);
                     break;
             }
 
@@ -1042,7 +1043,7 @@ namespace ACBr.Net.Boleto
                     throw new ACBrException("Agencia\\Conta do arquivo inválido");
             }
             
-            switch(ARetorno[1].ExtrairInt32DaPosicao(2, 3))
+            switch(aRetorno[1].ExtrairInt32DaPosicao(2, 3))
             {
                 case 11:
                     Banco.Parent.Cedente.TipoInscricao = PessoaCedente.Fisica;
@@ -1069,98 +1070,98 @@ namespace ACBr.Net.Boleto
             }
             
             Banco.Parent.ListadeBoletos.Clear();
-            string Linha;
-            Titulo Titulo;
-            for(int ContLinha = 1; ContLinha < ARetorno.Count - 1; ContLinha++)
+            string linha;
+            Titulo titulo;
+            for(int contLinha = 1; contLinha < aRetorno.Count - 1; contLinha++)
             {
-                Linha = ARetorno[ContLinha];
+                linha = aRetorno[contLinha];
                 
-                if (Linha.ExtrairInt32DaPosicao(1,1) == 1)
+                if (linha.ExtrairInt32DaPosicao(1,1) == 1)
                     continue;
                 
-                Titulo = Banco.Parent.CriarTituloNaLista();
+                titulo = Banco.Parent.CriarTituloNaLista();
 
                 
-                Titulo.SeuNumero = Linha.ExtrairDaPosicao(38, 62);
-                Titulo.NumeroDocumento = Linha.ExtrairDaPosicao(117, 126);
-                Titulo.OcorrenciaOriginal.Tipo = CodOcorrenciaToTipo(Linha.ExtrairInt32DaPosicao(109, 110));
+                titulo.SeuNumero = linha.ExtrairDaPosicao(38, 62);
+                titulo.NumeroDocumento = linha.ExtrairDaPosicao(117, 126);
+                titulo.OcorrenciaOriginal.Tipo = CodOcorrenciaToTipo(linha.ExtrairInt32DaPosicao(109, 110));
                 
-                var CodOcorrencia = Linha.ExtrairInt32DaPosicao(109,2);
+                var codOcorrencia = linha.ExtrairInt32DaPosicao(109,2);
                 
                 //-|Se a ocorrencia for igual a 19 - Confirmação de Receb. de Protesto
                 //-|Verifica o motivo na posição 295 - A = Aceite , D = Desprezado
-                if(CodOcorrencia == 19)
+                if(codOcorrencia == 19)
                 {
-                    var CodMotivo_19 = Linha.ExtrairDaPosicao(295, 295);
-                    Titulo.MotivoRejeicaoComando.Add(Linha.ExtrairDaPosicao(295, 295).ZeroFill(2));
-                    if(CodMotivo_19 == "A")
-                        Titulo.DescricaoMotivoRejeicaoComando.Add("A - Aceito");
+                    var codMotivo19 = linha.ExtrairDaPosicao(295, 295);
+                    titulo.MotivoRejeicaoComando.Add(linha.ExtrairDaPosicao(295, 295).ZeroFill(2));
+                    if(codMotivo19 == "A")
+                        titulo.DescricaoMotivoRejeicaoComando.Add("A - Aceito");
                     else
-                        Titulo.DescricaoMotivoRejeicaoComando.Add("D - Desprezado");
+                        titulo.DescricaoMotivoRejeicaoComando.Add("D - Desprezado");
                 }
                 else
                 {
-                    var MotivoLinha = 319;
+                    var motivoLinha = 319;
                     for(int i = 0; i < 4; i++)
                     {
-                        var CodMotivo =  Linha.ExtrairInt32DaPosicao(MotivoLinha, MotivoLinha + 1);
+                        var codMotivo =  linha.ExtrairInt32DaPosicao(motivoLinha, motivoLinha + 1);
                         
                         //Se for o primeiro motivo}
                         if (i == 0) 
                         {
                             //Somente estas ocorrencias possuem motivos 00}
-                            if(CodOcorrencia.IsIn( 2, 6, 9, 10, 15, 17))
+                            if(codOcorrencia.IsIn( 2, 6, 9, 10, 15, 17))
                             {
-                                Titulo.MotivoRejeicaoComando.Add(Linha.ExtrairDaPosicao(MotivoLinha, MotivoLinha + 1).ZeroFill(2));
-                                Titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(Titulo.OcorrenciaOriginal.Tipo, CodMotivo));
+                                titulo.MotivoRejeicaoComando.Add(linha.ExtrairDaPosicao(motivoLinha, motivoLinha + 1).ZeroFill(2));
+                                titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(titulo.OcorrenciaOriginal.Tipo, codMotivo));
                             }
                             else
                             {
-                                if(CodMotivo == 0)
+                                if(codMotivo == 0)
                                 {
-                                    Titulo.MotivoRejeicaoComando.Add("00");
-                                    Titulo.DescricaoMotivoRejeicaoComando.Add("Sem Motivo");
+                                    titulo.MotivoRejeicaoComando.Add("00");
+                                    titulo.DescricaoMotivoRejeicaoComando.Add("Sem Motivo");
                                 }
                                 else
                                 {
-                                    Titulo.MotivoRejeicaoComando.Add(Linha.ExtrairDaPosicao(MotivoLinha, MotivoLinha + 1).ZeroFill(2));
-                                    Titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(Titulo.OcorrenciaOriginal.Tipo, CodMotivo));
+                                    titulo.MotivoRejeicaoComando.Add(linha.ExtrairDaPosicao(motivoLinha, motivoLinha + 1).ZeroFill(2));
+                                    titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(titulo.OcorrenciaOriginal.Tipo, codMotivo));
                                 }
                             }
                         }
                         else
                         {
                             //Apos o 1º motivo os 00 significam que não existe mais motivo
-                            if(CodMotivo != 0)
+                            if(codMotivo != 0)
                             {
-                                Titulo.MotivoRejeicaoComando.Add(Linha.ExtrairDaPosicao(MotivoLinha, MotivoLinha + 1).ZeroFill(2));
-                                Titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(Titulo.OcorrenciaOriginal.Tipo, CodMotivo));
+                                titulo.MotivoRejeicaoComando.Add(linha.ExtrairDaPosicao(motivoLinha, motivoLinha + 1).ZeroFill(2));
+                                titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(titulo.OcorrenciaOriginal.Tipo, codMotivo));
                             }
                         }
 
-                        MotivoLinha = MotivoLinha + 2; //Incrementa a coluna dos motivos
+                        motivoLinha = motivoLinha + 2; //Incrementa a coluna dos motivos
                     }
                     
-                    Titulo.DataOcorrencia = Linha.ExtrairDataDaPosicao(111, 116);
-                    var temp = Linha.ExtrairDataOpcionalDaPosicao(147, 152);
+                    titulo.DataOcorrencia = linha.ExtrairDataDaPosicao(111, 116);
+                    var temp = linha.ExtrairDataOpcionalDaPosicao(147, 152);
                     if(temp.HasValue)
-                        Titulo.Vencimento = temp.Value;
+                        titulo.Vencimento = temp.Value;
 
-                    Titulo.ValorDocumento = Linha.ExtrairDecimalDaPosicao(153, 165);
-                    Titulo.ValorIOF = Linha.ExtrairDecimalDaPosicao(215, 227);
-                    Titulo.ValorAbatimento = Linha.ExtrairDecimalDaPosicao(228, 240);
-                    Titulo.ValorDesconto = Linha.ExtrairDecimalDaPosicao(241, 253);
-                    Titulo.ValorRecebido = Linha.ExtrairDecimalDaPosicao(254, 266);
-                    Titulo.ValorMoraJuros = Linha.ExtrairDecimalDaPosicao(267, 279);
-                    Titulo.ValorOutrosCreditos = Linha.ExtrairDecimalDaPosicao(280, 292);
-                    Titulo.NossoNumero = Linha.ExtrairDaPosicao(71, 80);
-                    Titulo.Carteira = Linha.ExtrairDaPosicao(22, 24);
-                    Titulo.ValorDespesaCobranca = Linha.ExtrairDecimalDaPosicao(176, 188);
-                    Titulo.ValorOutrasDespesas = Linha.ExtrairDecimalDaPosicao(189, 201);
+                    titulo.ValorDocumento = linha.ExtrairDecimalDaPosicao(153, 165);
+                    titulo.ValorIOF = linha.ExtrairDecimalDaPosicao(215, 227);
+                    titulo.ValorAbatimento = linha.ExtrairDecimalDaPosicao(228, 240);
+                    titulo.ValorDesconto = linha.ExtrairDecimalDaPosicao(241, 253);
+                    titulo.ValorRecebido = linha.ExtrairDecimalDaPosicao(254, 266);
+                    titulo.ValorMoraJuros = linha.ExtrairDecimalDaPosicao(267, 279);
+                    titulo.ValorOutrosCreditos = linha.ExtrairDecimalDaPosicao(280, 292);
+                    titulo.NossoNumero = linha.ExtrairDaPosicao(71, 80);
+                    titulo.Carteira = linha.ExtrairDaPosicao(22, 24);
+                    titulo.ValorDespesaCobranca = linha.ExtrairDecimalDaPosicao(176, 188);
+                    titulo.ValorOutrasDespesas = linha.ExtrairDecimalDaPosicao(189, 201);
                     
-                    var temp2 = Linha.ExtrairDataOpcionalDaPosicao(296, 301);
+                    var temp2 = linha.ExtrairDataOpcionalDaPosicao(296, 301);
                     if (temp2.HasValue)
-                        Titulo.DataCredito = temp2.Value;
+                        titulo.DataCredito = temp2.Value;
                 }                                        
             }
         }

@@ -11,10 +11,13 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using System;
-using System.Linq;
+
 using System.ComponentModel;
-using System.Collections.Generic;
+using ACBr.Net.Boleto.Enums;
+using ACBr.Net.Core;
+using ACBr.Net.Core.Exceptions;
+using ACBr.Net.Core.Extensions;
+
 #region COM Interop Attributes
 
 #if COM_INTEROP
@@ -23,11 +26,7 @@ using System.Runtime.InteropServices;
 
 
 #endregion COM Interop Attributes
-using ACBr.Net.Core;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
 namespace ACBr.Net.Boleto
 {
     #region COM Interop Attributes
@@ -70,9 +69,9 @@ namespace ACBr.Net.Boleto
         /// Initializes a new instance of the <see cref="Cedente"/> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        internal Cedente(ACBrBoleto parent)
+        internal Cedente(AcBrBoleto parent)
         {
-            this.Parent = parent;
+            Parent = parent;
             TipoDocumento = TipoDocumento.Tradicional;
             ResponEmissao = ResponEmissao.CliEmite;
             CaracTitulo = CaracTitulo.Simples;
@@ -106,7 +105,7 @@ namespace ACBr.Net.Boleto
         /// </summary>
         /// <value>The parent.</value>
         [Browsable(false)]
-        public ACBrBoleto Parent { get; private set; }
+        public AcBrBoleto Parent { get; private set; }
 
         /// <summary>
         /// Gets or sets the nome.

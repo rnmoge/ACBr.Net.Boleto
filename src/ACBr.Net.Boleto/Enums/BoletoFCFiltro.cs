@@ -11,14 +11,8 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
-namespace ACBr.Net.Boleto
+namespace ACBr.Net.Boleto.Enums
 {
     /// <summary>
     /// Enum BoletoFCFiltro

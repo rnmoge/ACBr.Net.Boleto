@@ -11,11 +11,19 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Collections.Generic;
+using ACBr.Net.Boleto.Enums;
+using ACBr.Net.Boleto.Interfaces;
+using ACBr.Net.Boleto.Utils;
+using ACBr.Net.Core;
+using ACBr.Net.Core.Enum;
+using ACBr.Net.Core.Extensions;
+
 #region COM Interop Attributes
 
 #if COM_INTEROP
@@ -24,13 +32,8 @@ using System.Runtime.InteropServices;
 
 
 #endregion COM Interop Attributes
-using ACBr.Net.Core;
-using ACBr.Net.Boleto.Interfaces;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
-namespace ACBr.Net.Boleto
+namespace ACBr.Net.Boleto.Bancos
 {
     #region COM Interop Attributes
 
@@ -69,6 +72,7 @@ namespace ACBr.Net.Boleto
             TamanhoConta = 0;
             TamanhoMaximoNossoNum = 0;
 			CodigosMoraAceitos = "12";
+			CodigosGeracaoAceitos = "0123456789";
         }
 
         #endregion Constructor
@@ -135,6 +139,11 @@ namespace ACBr.Net.Boleto
 		/// </summary>
 		/// <value>The codigos mora aceitos.</value>
 		public string CodigosMoraAceitos { get; protected set; }
+		/// <summary>
+		/// Gets the codigos mora aceitos.
+		/// </summary>
+		/// <value>The codigos mora aceitos.</value>
+		public string CodigosGeracaoAceitos { get; protected set; }
 
         #endregion Propriedades
 
@@ -143,9 +152,9 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Tipoes the ocorrencia to descricao.
 		/// </summary>
-		/// <param name="Tipo">The tipo.</param>
+		/// <param name="tipo">The tipo.</param>
 		/// <returns>System.String.</returns>
-        public virtual string TipoOcorrenciaToDescricao(TipoOcorrencia Tipo)
+        public virtual string TipoOcorrenciaToDescricao(TipoOcorrencia tipo)
         {
             return string.Empty;
         }
@@ -153,9 +162,9 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Cods the ocorrencia to tipo.
 		/// </summary>
-		/// <param name="CodOcorrencia">The cod ocorrencia.</param>
+		/// <param name="codOcorrencia">The cod ocorrencia.</param>
 		/// <returns>TipoOcorrencia.</returns>
-        public virtual TipoOcorrencia CodOcorrenciaToTipo(int CodOcorrencia)
+        public virtual TipoOcorrencia CodOcorrenciaToTipo(int codOcorrencia)
         {
             return TipoOcorrencia.RemessaRegistrar;
         }
@@ -163,9 +172,9 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Tipoes the o correncia to cod.
 		/// </summary>
-		/// <param name="Tipo">The tipo.</param>
+		/// <param name="tipo">The tipo.</param>
 		/// <returns>System.String.</returns>
-        public virtual string TipoOCorrenciaToCod(TipoOcorrencia Tipo)
+        public virtual string TipoOCorrenciaToCod(TipoOcorrencia tipo)
         {
             return string.Empty;
         }
@@ -173,10 +182,10 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Cods the motivo rejeicao to descricao.
 		/// </summary>
-		/// <param name="Tipo">The tipo.</param>
-		/// <param name="CodMotivo">The cod motivo.</param>
+		/// <param name="tipo">The tipo.</param>
+		/// <param name="codMotivo">The cod motivo.</param>
 		/// <returns>System.String.</returns>
-        public virtual string CodMotivoRejeicaoToDescricao(TipoOcorrencia Tipo, int CodMotivo)
+        public virtual string CodMotivoRejeicaoToDescricao(TipoOcorrencia tipo, int codMotivo)
         {
             return string.Empty;
         }
@@ -184,9 +193,9 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Calculars the digito verificador.
 		/// </summary>
-		/// <param name="Titulo">The titulo.</param>
+		/// <param name="titulo">The titulo.</param>
 		/// <returns>System.String.</returns>
-        public virtual string CalcularDigitoVerificador(Titulo Titulo)
+        public virtual string CalcularDigitoVerificador(Titulo titulo)
         {
             return string.Empty;
         }
@@ -194,10 +203,10 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Calculars the tam maximo nosso numero.
 		/// </summary>
-		/// <param name="Carteira">The carteira.</param>
-		/// <param name="NossoNumero">The nosso numero.</param>
+		/// <param name="carteira">The carteira.</param>
+		/// <param name="nossoNumero">The nosso numero.</param>
 		/// <returns>System.Int32.</returns>
-        public virtual int CalcularTamMaximoNossoNumero(string Carteira, string NossoNumero = "")
+        public virtual int CalcularTamMaximoNossoNumero(string carteira, string nossoNumero = "")
         {
             return Banco.TamanhoMaximoNossoNum;
         }
@@ -205,9 +214,9 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Montars the campo codigo cedente.
 		/// </summary>
-		/// <param name="Titulo">The titulo.</param>
+		/// <param name="titulo">The titulo.</param>
 		/// <returns>System.String.</returns>
-        public virtual string MontarCampoCodigoCedente(Titulo Titulo)
+        public virtual string MontarCampoCodigoCedente(Titulo titulo)
         {
             return string.Empty;
         }
@@ -215,19 +224,19 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Montars the campo nosso numero.
 		/// </summary>
-		/// <param name="Titulo">The titulo.</param>
+		/// <param name="titulo">The titulo.</param>
 		/// <returns>System.String.</returns>
-        public virtual string MontarCampoNossoNumero(Titulo Titulo)
+        public virtual string MontarCampoNossoNumero(Titulo titulo)
         {
-            return Titulo.NossoNumero;
+            return titulo.NossoNumero;
         }
 
 		/// <summary>
 		/// Montars the codigo barras.
 		/// </summary>
-		/// <param name="Titulo">The titulo.</param>
+		/// <param name="titulo">The titulo.</param>
 		/// <returns>System.String.</returns>
-        public virtual string MontarCodigoBarras(Titulo Titulo)
+        public virtual string MontarCodigoBarras(Titulo titulo)
         {
             return string.Empty;
         }
@@ -235,10 +244,10 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Montars the linha digitavel.
 		/// </summary>
-		/// <param name="CodigoBarras">The codigo barras.</param>
-		/// <param name="Titulo">The titulo.</param>
+		/// <param name="codigoBarras">The codigo barras.</param>
+		/// <param name="titulo">The titulo.</param>
 		/// <returns>System.String.</returns>
-        public virtual string MontarLinhaDigitavel(string CodigoBarras, Titulo Titulo)
+        public virtual string MontarLinhaDigitavel(string codigoBarras, Titulo titulo)
         {
             Modulo.FormulaDigito = CalcDigFormula.Modulo10;
             Modulo.MultiplicadorInicial = 1;
@@ -246,39 +255,39 @@ namespace ACBr.Net.Boleto
             Modulo.MultiplicadorAtual = 2;
             
             //Campo 1(Código Banco,Tipo de Moeda,5 primeiro digitos do Campo Livre)
-            Modulo.Documento = string.Format("{0}9{1}", CodigoBarras.Substring(0,3), CodigoBarras.Substring(19,5));
+            Modulo.Documento = string.Format("{0}9{1}", codigoBarras.Substring(0,3), codigoBarras.Substring(19,5));
             Modulo.Calcular();
             
-            var Campo1 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring(5, 4), Modulo.DigitoFinal);
+            var campo1 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring(5, 4), Modulo.DigitoFinal);
             
             //Campo 2(6ª a 15ª posições do campo Livre)
-            Modulo.Documento = CodigoBarras.Substring( 24, 10);
+            Modulo.Documento = codigoBarras.Substring( 24, 10);
             Modulo.Calcular();
             
-            var Campo2 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring( 5, 5), Modulo.DigitoFinal);
+            var campo2 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring( 5, 5), Modulo.DigitoFinal);
             
             //Campo 3 (16ª a 25ª posições do campo Livre)
-            Modulo.Documento = CodigoBarras.Substring( 34, 10);
+            Modulo.Documento = codigoBarras.Substring( 34, 10);
             Modulo.Calcular();
 
-            var Campo3 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring( 5, 5), Modulo.DigitoFinal);
+            var campo3 = string.Format("{0}.{1}{2}", Modulo.Documento.Substring(0, 5), Modulo.Documento.Substring( 5, 5), Modulo.DigitoFinal);
             
             //Campo 4 (Digito Verificador Nosso Numero)
-            var Campo4 = CodigoBarras.Substring( 4, 1);
+            var campo4 = codigoBarras.Substring( 4, 1);
             
             //Campo 5 (Fator de Vencimento e Valor do Documento)
-            var Campo5 = CodigoBarras.Substring( 5, 14);
+            var campo5 = codigoBarras.Substring( 5, 14);
 
-           return string.Format("{0} {1} {2} {3} {4}",  Campo1, Campo2, Campo3, Campo4, Campo5);
+           return string.Format("{0} {1} {2} {3} {4}",  campo1, campo2, campo3, campo4, campo5);
         }
 
 		/// <summary>
 		/// Gerars the registro header400.
 		/// </summary>
-		/// <param name="NumeroRemessa">The numero remessa.</param>
-		/// <param name="ARemessa">A remessa.</param>
+		/// <param name="numeroRemessa">The numero remessa.</param>
+		/// <param name="aRemessa">A remessa.</param>
 		/// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public virtual void GerarRegistroHeader400(int NumeroRemessa, List<string> ARemessa)
+        public virtual void GerarRegistroHeader400(int numeroRemessa, List<string> aRemessa)
         {
             throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
@@ -286,10 +295,10 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Gerars the registro header240.
 		/// </summary>
-		/// <param name="NumeroRemessa">The numero remessa.</param>
+		/// <param name="numeroRemessa">The numero remessa.</param>
 		/// <returns>System.String.</returns>
 		/// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public virtual string GerarRegistroHeader240(int NumeroRemessa)
+        public virtual string GerarRegistroHeader240(int numeroRemessa)
         {
             throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
@@ -297,9 +306,9 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Gerars the registro transacao400.
 		/// </summary>
-		/// <param name="Titulo">The titulo.</param>
-		/// <param name="ARemessa">A remessa.</param>
-        public virtual void GerarRegistroTransacao400(Titulo Titulo, List<string> ARemessa)
+		/// <param name="titulo">The titulo.</param>
+		/// <param name="aRemessa">A remessa.</param>
+        public virtual void GerarRegistroTransacao400(Titulo titulo, List<string> aRemessa)
         {
             
         }
@@ -307,9 +316,9 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Gerars the registro transacao240.
 		/// </summary>
-		/// <param name="Titulo">The titulo.</param>
+		/// <param name="titulo">The titulo.</param>
 		/// <returns>System.String.</returns>
-        public virtual string GerarRegistroTransacao240(Titulo Titulo)
+        public virtual string GerarRegistroTransacao240(Titulo titulo)
         {
             return string.Empty;
         }
@@ -317,8 +326,8 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Gerars the registro trailler400.
 		/// </summary>
-		/// <param name="ARemessa">A remessa.</param>
-        public virtual void GerarRegistroTrailler400(List<string> ARemessa)
+		/// <param name="aRemessa">A remessa.</param>
+        public virtual void GerarRegistroTrailler400(List<string> aRemessa)
         {
             
         }
@@ -326,9 +335,9 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Gerars the registro trailler240.
 		/// </summary>
-		/// <param name="ARemessa">A remessa.</param>
+		/// <param name="aRemessa">A remessa.</param>
 		/// <returns>System.String.</returns>
-        public virtual string GerarRegistroTrailler240(List<string> ARemessa)
+        public virtual string GerarRegistroTrailler240(List<string> aRemessa)
         {
             return string.Empty;
         }
@@ -336,9 +345,9 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Lers the retorno400.
 		/// </summary>
-		/// <param name="ARetorno">A retorno.</param>
+		/// <param name="aRetorno">A retorno.</param>
 		/// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public virtual void LerRetorno400(List<string> ARetorno)
+        public virtual void LerRetorno400(List<string> aRetorno)
         {
             throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
@@ -346,9 +355,9 @@ namespace ACBr.Net.Boleto
 		/// <summary>
 		/// Lers the retorno240.
 		/// </summary>
-		/// <param name="ARetorno">A retorno.</param>
+		/// <param name="aRetorno">A retorno.</param>
 		/// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
-        public virtual void LerRetorno240(List<string> ARetorno)
+        public virtual void LerRetorno240(List<string> aRetorno)
         {
             throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
@@ -359,119 +368,114 @@ namespace ACBr.Net.Boleto
 		/// <returns>System.String.</returns>
         public virtual string CalcularNomeArquivoRemessa()
         {
-            int Sequencia = 0;
-            
-            if(string.IsNullOrEmpty(Banco.Parent.NomeArqRemessa))
-            {
-                var NomeFixo = string.Format(@"{0}\cb{1:ddMM}", Banco.Parent.DirArqRemessa, DateTime.Now);
-                string NomeArq = string.Empty;
-                do
-                {
-                    Sequencia++;
-                    NomeArq = string.Format("{0}{1:00}.rem", NomeFixo, Sequencia);
-                }
-                while(File.Exists(NomeArq));
-                return NomeArq;
-            }
-            else
-             return string.Format(@"{0}\{1}",  Banco.Parent.DirArqRemessa, Banco.Parent.NomeArqRemessa);
+            var sequencia = 0;
+
+			if (!string.IsNullOrEmpty(Banco.Parent.NomeArqRemessa))
+				return string.Format(@"{0}\{1}", Banco.Parent.DirArqRemessa, Banco.Parent.NomeArqRemessa);
+
+			var nomeFixo = string.Format(@"{0}\cb{1:ddMM}", Banco.Parent.DirArqRemessa, DateTime.Now);
+			string nomeArq;
+			do
+			{
+				sequencia++;
+				nomeArq = string.Format("{0}{1:00}.rem", nomeFixo, sequencia);
+			}
+			while(File.Exists(nomeArq));
+			return nomeArq;
         }
 
 		/// <summary>
 		/// Calculars the digito codigo barras.
 		/// </summary>
-		/// <param name="CodigoBarras">The codigo barras.</param>
+		/// <param name="codigoBarras">The codigo barras.</param>
 		/// <returns>System.String.</returns>
-        protected virtual string CalcularDigitoCodigoBarras(string CodigoBarras)
+        protected virtual string CalcularDigitoCodigoBarras(string codigoBarras)
         {
             Modulo.CalculoPadrao();
-            Modulo.Documento = CodigoBarras;
+            Modulo.Documento = codigoBarras;
             Modulo.Calcular();
 
             if (Modulo.DigitoFinal == 0 || Modulo.DigitoFinal > 9)
                 return "1";
-            else
-                return Modulo.DigitoFinal.ToString();
+			
+			return Modulo.DigitoFinal.ToString();
         }
 
 		/// <summary>
 		/// Gerars the registro headerDBT627.
 		/// </summary>
-		/// <param name="NumeroRemessa">The numero remessa.</param>
+		/// <param name="numeroRemessa">The numero remessa.</param>
 		/// <returns>System.String.</returns>
-		public string GerarRegistroHeaderDBT627(int NumeroRemessa)
+		public virtual string GerarRegistroHeaderDBT627(int numeroRemessa)
 		{
-			var Retorno = new StringBuilder();
-			Retorno.Append("A1");
-			Retorno.Append(Banco.Parent.Cedente.Convenio.FillLeft(20));
-            Retorno.Append(Banco.Parent.Cedente.Nome.FillLeft(20));
-			Retorno.AppendFormat("{0:000}", Numero);
-			Retorno.Append(Nome.FillRight(20));
-			Retorno.AppendFormat("{0:yyyyMMdd}", DateTime.Now);
-			Retorno.AppendFormat("{0:000000}", NumeroRemessa);
-			Retorno.Append("05DEBITO AUTOMATICO");
-			Retorno.Append("".FillRight(52));
+			var retorno = new StringBuilder();
+			retorno.Append("A1");
+			retorno.Append(Banco.Parent.Cedente.Convenio.FillLeft(20));
+            retorno.Append(Banco.Parent.Cedente.Nome.RemoveCe().FillLeft(20));
+			retorno.AppendFormat("{0:000}", Numero);
+			retorno.Append(Nome.RemoveCe().FillRight(20));
+			retorno.AppendFormat("{0:yyyyMMdd}", DateTime.Now);
+			retorno.AppendFormat("{0:000000}", numeroRemessa);
+			retorno.Append("05DEBITO AUTOMATICO");
+			retorno.Append("".FillRight(52));
 
-			return Retorno.ToString().ToUpper();
+			return retorno.ToString().ToUpper();
 		}
 
 		/// <summary>
 		/// Gerars the registro transacaoDBT627.
 		/// </summary>
-		/// <param name="Titulo">The titulo.</param>
+		/// <param name="titulo">The titulo.</param>
 		/// <returns>System.String.</returns>
-		public string GerarRegistroTransacaoDBT627(Titulo Titulo)
+		public virtual string GerarRegistroTransacaoDBT627(Titulo titulo)
 		{
-			var Retorno = new StringBuilder();
-			Retorno.Append("E");
-			Retorno.Append(Titulo.NumeroDocumento.Trim().FillLeft(25));
-			Retorno.Append(Banco.Parent.Cedente.Agencia.Trim().ZeroFill(4));
-            Retorno.Append(Banco.Parent.Cedente.Conta.Trim().ZeroFill(14));
-			Retorno.Append(Titulo.Vencimento.ToString("yyyyMMdd"));
-			Retorno.Append(Titulo.ValorDocumento.ToRemessaString(15));
-			Retorno.Append("03");
-			Retorno.Append(Titulo.Sacado.NomeSacado.FillLeft(60));
-			Retorno.Append(Titulo.Sacado.CNPJCPF.IsCNPJ() ? "1" : "2");
-			Retorno.Append(Titulo.Sacado.CNPJCPF.OnlyNumbers().ZeroFill(15));
-			Retorno.Append("".FillRight(4));
-			Retorno.Append("0");
+			var retorno = new StringBuilder();
+			retorno.Append("E");
+			retorno.Append(titulo.NumeroDocumento.Trim().FillLeft(25));
+			retorno.Append(titulo.Sacado.Agencia.Trim().ZeroFill(4));
+			retorno.Append(titulo.Sacado.Conta.Trim().ZeroFill(14));
+			retorno.Append(titulo.Vencimento.ToString("yyyyMMdd"));
+			retorno.Append(titulo.ValorDocumento.ToDecimalString(15));
+			retorno.Append("03");
+			retorno.Append(titulo.Sacado.NomeSacado.RemoveCe().FillLeft(60));
+			retorno.Append(titulo.Sacado.CNPJCPF.IsCNPJ() ? "1" : "2");
+			retorno.Append(titulo.Sacado.CNPJCPF.OnlyNumbers().ZeroFill(15));
+			retorno.Append("".FillRight(4));
+			retorno.Append("0");
 
-			return Retorno.ToString().ToUpper();
+			return retorno.ToString().ToUpper();
 		}
 
 		/// <summary>
 		/// Gerars the registro traillerDBT627.
 		/// </summary>
-		/// <param name="ARemessa">A remessa.</param>
+		/// <param name="aRemessa">A remessa.</param>
 		/// <returns>System.String.</returns>
-		public string GerarRegistroTraillerDBT627(List<string> ARemessa)
+		public virtual string GerarRegistroTraillerDBT627(List<string> aRemessa)
 		{
-			decimal valortotal = 0;
-			foreach (var titulo in Banco.Parent.ListadeBoletos)
-				valortotal += titulo.ValorDocumento;
+			var valortotal = Banco.Parent.ListadeBoletos.Sum(titulo => titulo.ValorDocumento);
+			var retorno = new StringBuilder();            
+			retorno.AppendFormat("Z{0:000000}", aRemessa.Count + 1);
+			retorno.Append(valortotal.ToDecimalString(17));
+			retorno.Append("".FillRight(126));
 
-			var Retorno = new StringBuilder();            
-			Retorno.AppendFormat("Z{0:000000}", ARemessa.Count + 1);
-			Retorno.Append(valortotal.ToRemessaString(17));
-			Retorno.Append("".FillRight(126));
-
-			return Retorno.ToString().ToUpper();
+			return retorno.ToString().ToUpper();
 		}
 
 		/// <summary>
 		/// Lers the retornoDBT627.
 		/// </summary>
-		/// <param name="ARetorno">A retorno.</param>
-		public virtual void LerRetornoDBT627(List<string> ARetorno)
+		/// <param name="aRetorno">A retorno.</param>
+		public virtual void LerRetornoDBT627(List<string> aRetorno)
 		{
-			Titulo titulo = null;
-			foreach (var line in ARetorno)
+			foreach (var line in aRetorno.Where(line => !line[0].IsIn('A', 'Z')))
 			{
-				if (line[0].IsIn('A', 'Z'))
-					continue;
-
+				Titulo titulo = null;
 				if (line[0] == 'F')
 					titulo = Banco.Parent.CriarTituloNaLista();
+
+				if (titulo == null) 
+					continue;
 
 				titulo.Vencimento = line.ExtrairDataDaPosicao(45, 52);
 				titulo.NumeroDocumento = line.ExtrairDaPosicao(2, 26);
@@ -482,6 +486,6 @@ namespace ACBr.Net.Boleto
 			}
 		}
 
-        #endregion Methods		
+		#endregion Methods		
 	}
 }

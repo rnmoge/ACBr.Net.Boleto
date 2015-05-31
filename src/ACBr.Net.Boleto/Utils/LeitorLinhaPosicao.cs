@@ -11,13 +11,11 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+
 using System;
 using System.Globalization;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
-namespace ACBr.Net.Boleto
+namespace ACBr.Net.Boleto.Utils
 {
     /// <summary>
     /// Class LeitorLinhaPosicao.
@@ -103,8 +101,7 @@ namespace ACBr.Net.Boleto
                 decimal retorno = ret.Value / 100;
                 return retorno;
             }
-            else
-                return null;
+	        return null;
         }
 
         /// <summary>

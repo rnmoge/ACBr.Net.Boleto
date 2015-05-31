@@ -11,14 +11,24 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+
 using System;
-using System.IO;
-using System.Net;
-using System.Linq;
-using System.Drawing;
-using System.Net.Mail;
-using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using ACBr.Net.Boleto.Bancos;
+using ACBr.Net.Boleto.Enums;
+using ACBr.Net.Boleto.Interfaces;
+using ACBr.Net.Boleto.Printer;
+using ACBr.Net.Boleto.Utils;
+using ACBr.Net.Core;
+using ACBr.Net.Core.Exceptions;
+using ACBr.Net.Core.Extensions;
+
 #region COM Interop Attributes
 
 #if COM_INTEROP
@@ -26,12 +36,7 @@ using System.Runtime.InteropServices;
 #endif
 
 #endregion COM Interop Attributes
-using ACBr.Net.Core;
-using ACBr.Net.Boleto.Interfaces;
 
-/// <summary>
-/// ACBr.Net.Boleto namespace.
-/// </summary>
 namespace ACBr.Net.Boleto
 {
     #region COM Interop
@@ -118,8 +123,8 @@ namespace ACBr.Net.Boleto
     /// <summary>
     /// Class ACBrBoleto. This class cannot be inherited.
     /// </summary>
-    [ToolboxBitmap(typeof(ACBrBoleto), @"ACBr.Net.Boleto.ico.bmp")]
-    public sealed class ACBrBoleto : ACBrComponent
+    [ToolboxBitmap(typeof(AcBrBoleto), @"ACBr.Net.Boleto.ico.bmp")]
+    public sealed class AcBrBoleto : ACBrComponent
     {
         #region Field
 
@@ -242,15 +247,15 @@ namespace ACBr.Net.Boleto
                 if (boletofc != null && boletofc == value)
                     return;
 
-                if (value is BoletoPrinterBase)
-                {
-                    if (boletofc != null)
-                        boletofc.Dispose();
+	            var @base = value as BoletoPrinterBase;
+	            if (@base == null)
+					return;
 
-                    boletofc = (BoletoPrinterBase)value;
-                    if (value != null)
-                        boletofc.Boleto = this;
-                }
+	            if (boletofc != null)
+		            boletofc.Dispose();
+
+	            boletofc = @base;
+	            boletofc.Boleto = this;
             }
         }
 
@@ -282,11 +287,8 @@ namespace ACBr.Net.Boleto
         /// Banco não definido, impossivel listar boleto</exception>
         public void Imprimir()
         {
-            if(BoletoPrinter == null)
-                throw new Exception("Nenhum componente \"IBoletoFCClass\" associado") ;
-            
-            if(Banco.Numero == 0)
-                throw new Exception("Banco não definido, impossivel listar boleto");
+			Guard.Against<ACBrException>(BoletoPrinter == null, "Nenhum componente \"IBoletoFCClass\" associado");
+			Guard.Against<ACBrException>(Banco.Numero == 0, "Banco não definido, impossivel listar boleto");
 
             ChecarDadosObrigatorios();
             BoletoPrinter.Imprimir();
@@ -300,11 +302,8 @@ namespace ACBr.Net.Boleto
         /// Banco não definido, impossivel listar boleto</exception>
         public void GerarPDF()
         {
-            if (BoletoPrinter == null)
-                throw new Exception("Nenhum componente \"IBoletoFCClass\" associado");
-
-            if (Banco.Numero == 0)
-                throw new Exception("Banco não definido, impossivel listar boleto");
+			Guard.Against<ACBrException>(BoletoPrinter == null, "Nenhum componente \"IBoletoFCClass\" associado");
+			Guard.Against<ACBrException>(Banco.Numero == 0, "Banco não definido, impossivel listar boleto");
 
             ChecarDadosObrigatorios();
             BoletoPrinter.GerarPDF();
@@ -318,11 +317,8 @@ namespace ACBr.Net.Boleto
         /// Banco não definido, impossivel listar boleto</exception>
         public void GerarHTML()
         {
-            if (BoletoPrinter == null)
-                throw new Exception("Nenhum componente \"IBoletoFCClass\" associado");
-
-            if (Banco.Numero == 0)
-                throw new Exception("Banco não definido, impossivel listar boleto");
+            Guard.Against<ACBrException>(BoletoPrinter == null, "Nenhum componente \"IBoletoFCClass\" associado");
+            Guard.Against<ACBrException>(Banco.Numero == 0, "Banco não definido, impossivel listar boleto");
 
             ChecarDadosObrigatorios();
             BoletoPrinter.GerarHTML();
@@ -331,71 +327,71 @@ namespace ACBr.Net.Boleto
         /// <summary>
         /// Enviars the email.
         /// </summary>
-        /// <param name="SmtpHost">The SMTP host.</param>
-        /// <param name="SmtpPort">The SMTP port.</param>
-        /// <param name="SmtpUser">The SMTP user.</param>
-        /// <param name="SmtpPasswd">The SMTP passwd.</param>
-        /// <param name="From">From.</param>
+        /// <param name="smtpHost">The SMTP host.</param>
+        /// <param name="smtpPort">The SMTP port.</param>
+        /// <param name="smtpUser">The SMTP user.</param>
+        /// <param name="smtpPasswd">The SMTP passwd.</param>
+        /// <param name="from">From.</param>
         /// <param name="sTo">The s to.</param>
-        /// <param name="Assunto">The assunto.</param>
-        /// <param name="Mensagem">The mensagem.</param>
-        /// <param name="SSL">if set to <c>true</c> [SSL].</param>
-        /// <param name="EnviaPDF">if set to <c>true</c> [envia PDF].</param>
+        /// <param name="assunto">The assunto.</param>
+        /// <param name="mensagem">The mensagem.</param>
+        /// <param name="ssl">if set to <c>true</c> [SSL].</param>
+        /// <param name="enviaPdf">if set to <c>true</c> [envia PDF].</param>
         /// <param name="CC">The cc.</param>
-        /// <param name="Anexos">The anexos.</param>
-        /// <param name="PedeConfirma">if set to <c>true</c> [pede confirma].</param>
-        /// <param name="AguardarEnvio">if set to <c>true</c> [aguardar envio].</param>
-        /// <param name="NomeRemetente">The nome remetente.</param>
-        /// <param name="TLS">if set to <c>true</c> [TLS].</param>
-        public void EnviarEmail(string SmtpHost, int SmtpPort, string SmtpUser, string SmtpPasswd, string From, string sTo,
-                                string Assunto, string[] Mensagem, bool SSL, bool EnviaPDF = true, string[] CC = null,
-                                string[] Anexos = null, bool PedeConfirma = false,
-                                bool AguardarEnvio = false, string NomeRemetente = "", bool TLS = true)
+        /// <param name="anexos">The anexos.</param>
+        /// <param name="pedeConfirma">if set to <c>true</c> [pede confirma].</param>
+        /// <param name="aguardarEnvio">if set to <c>true</c> [aguardar envio].</param>
+        /// <param name="nomeRemetente">The nome remetente.</param>
+        /// <param name="tls">if set to <c>true</c> [TLS].</param>
+        public void EnviarEmail(string smtpHost, int smtpPort, string smtpUser, string smtpPasswd, string @from, string sTo,
+                                string assunto, string[] mensagem, bool ssl, bool enviaPdf = true, string[] CC = null,
+                                string[] anexos = null, bool pedeConfirma = false,
+                                bool aguardarEnvio = false, string nomeRemetente = "", bool tls = true)
         {
             try
             {
-                if (string.IsNullOrEmpty(From) || string.IsNullOrEmpty(sTo) ||
-                    string.IsNullOrEmpty(SmtpHost) || string.IsNullOrEmpty(SmtpUser) ||
-                    string.IsNullOrEmpty(SmtpPasswd) || string.IsNullOrEmpty(Assunto))
+                if (string.IsNullOrEmpty(@from) || string.IsNullOrEmpty(sTo) ||
+                    string.IsNullOrEmpty(smtpHost) || string.IsNullOrEmpty(smtpUser) ||
+                    string.IsNullOrEmpty(smtpPasswd) || string.IsNullOrEmpty(assunto))
                     return;
 
-                if (SmtpPort <= 0)
-                    SmtpPort = SSL ? 465 : 25;
+                if (smtpPort <= 0)
+                    smtpPort = ssl ? 465 : 25;
 
-                using (var smtpClient = new SmtpClient(SmtpHost, SmtpPort))
+                using (var smtpClient = new SmtpClient(smtpHost, smtpPort))
                 {
                     using (var message = new MailMessage())
                     {
-                        smtpClient.Credentials = new NetworkCredential(SmtpUser, SmtpPasswd);                        
-                        if (TLS)
+                        smtpClient.Credentials = new NetworkCredential(smtpUser, smtpPasswd);                        
+                        if (tls)
                         {
                             smtpClient.EnableSsl = true;
                             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
                         }
                         else
-                            smtpClient.EnableSsl = SSL;
+                            smtpClient.EnableSsl = ssl;
 
-                        if (CC.Length > 0)
+                        if (CC != null && CC.Length > 0)
                         {
                             foreach (var cc in CC)
                                 message.CC.Add(cc);
                         }
 
                         message.Priority = MailPriority.High;
-                        if (PedeConfirma)
+                        if (pedeConfirma)
                         {
-                            message.Headers.Add("Disposition-Notification-To", string.Format("<{0}>", From));
+                            message.Headers.Add("Disposition-Notification-To", string.Format("<{0}>", @from));
                             message.DeliveryNotificationOptions = DeliveryNotificationOptions.OnSuccess;
                         }
 
                         message.To.Add(sTo);
-                        message.ReplyToList.Add(From);
-                        message.From = !string.IsNullOrEmpty(NomeRemetente) ? 
-                            new MailAddress(From, NomeRemetente) : new MailAddress(From);
+                        message.ReplyToList.Add(@from);
+                        message.From = !string.IsNullOrEmpty(nomeRemetente) ? 
+                            new MailAddress(@from, nomeRemetente) : new MailAddress(@from);
 
-                        if (Anexos.Length > 0)
+                        if (anexos != null && anexos.Length > 0)
                         {
-                            foreach (var anexo in Anexos)
+                            foreach (var anexo in anexos)
                             {
                                 if (File.Exists(anexo))
                                     continue;
@@ -406,16 +402,16 @@ namespace ACBr.Net.Boleto
                             }
                         }
 
-                        if (EnviaPDF)
+                        if (enviaPdf)
                         {
-                            if (string.IsNullOrEmpty(BoletoPrinter.NomeArquivo))
+							if (BoletoPrinter.NomeArquivo.IsEmpty())
                                 BoletoPrinter.NomeArquivo = "boleto.pdf";
 
                             GerarPDF();
                         }
                         else
                         {
-                            if (string.IsNullOrEmpty(BoletoPrinter.NomeArquivo))
+                            if (BoletoPrinter.NomeArquivo.IsEmpty())
                                 BoletoPrinter.NomeArquivo = "boleto.html";
 
                             GerarHTML();
@@ -425,13 +421,13 @@ namespace ACBr.Net.Boleto
                         var boletoName = Path.GetFileName(BoletoPrinter.NomeArquivo);
                         message.Attachments.Add(new Attachment(boleto, boletoName));
 
-                        if (!string.IsNullOrEmpty(Assunto))
+                        if (!string.IsNullOrEmpty(assunto))
                         {
-                            message.Subject = Assunto;
+                            message.Subject = assunto;
                         }
 
-                        message.Body = Mensagem.AsString();
-                        if (AguardarEnvio)
+                        message.Body = mensagem.AsString();
+                        if (aguardarEnvio)
                             smtpClient.Send(message);
                         else
                             smtpClient.SendAsync(message, null);
@@ -447,113 +443,112 @@ namespace ACBr.Net.Boleto
         /// <summary>
         /// Adicionar menssagens padrão ao titulo.
         /// </summary>
-        /// <param name="Titulo">The titulo.</param>
-        /// <param name="StringList">The string list.</param>
-        public void AdicionarMensagensPadroes(Titulo Titulo, List<string> StringList)
+        /// <param name="titulo">The titulo.</param>
+        /// <param name="stringList">The string list.</param>
+        public void AdicionarMensagensPadroes(Titulo titulo, List<string> stringList)
         {
             if (!ImprimirMensagemPadrao)
                 return;
 						
-            if (Titulo.DataProtesto.HasValue)
+            if (titulo.DataProtesto.HasValue)
             {
-                if (Titulo.TipoDiasProtesto == TipoDiasIntrucao.Corridos)
-                    StringList.Add(string.Format("Protestar em {0} dias corridos após o vencimento",
-                        Titulo.DataProtesto.Value.Date.Subtract(Titulo.Vencimento.Date).Days));
+                if (titulo.TipoDiasProtesto == TipoDiasIntrucao.Corridos)
+                    stringList.Add(string.Format("Protestar em {0} dias corridos após o vencimento",
+                        titulo.DataProtesto.Value.Date.Subtract(titulo.Vencimento.Date).Days));
                 else
-                    StringList.Add(string.Format("Protestar no {0} dia útil após o vencimento",
-                        Titulo.DataProtesto.Value.Date.Subtract(Titulo.Vencimento.Date).Days));
+                    stringList.Add(string.Format("Protestar no {0} dia útil após o vencimento",
+                        titulo.DataProtesto.Value.Date.Subtract(titulo.Vencimento.Date).Days));
             }
 
-            if (Titulo.ValorAbatimento > 0)
+            if (titulo.ValorAbatimento > 0)
             {
-                if (Titulo.DataAbatimento > DateTime.Now)
-                    StringList.Add(string.Format("Conceder abatimento de {0:c} para pagamento ate {1:dd/MM/yyy}", 
-                        Titulo.ValorAbatimento, Titulo.DataAbatimento));
+                if (titulo.DataAbatimento > DateTime.Now)
+                    stringList.Add(string.Format("Conceder abatimento de {0:c} para pagamento ate {1:dd/MM/yyy}", 
+                        titulo.ValorAbatimento, titulo.DataAbatimento));
                 else
-                    StringList.Add(string.Format("Conceder abatimento de {0:c} para pagamento ate {1:dd/MM/yyy}", 
-                        Titulo.ValorAbatimento, Titulo.Vencimento));
+                    stringList.Add(string.Format("Conceder abatimento de {0:c} para pagamento ate {1:dd/MM/yyy}", 
+                        titulo.ValorAbatimento, titulo.Vencimento));
             }
 
-            if (Titulo.ValorDesconto > 0)
+            if (titulo.ValorDesconto > 0)
             {
-                if (Titulo.DataDesconto > DateTime.Now)
-                    StringList.Add(string.Format("Conceder desconto de {0:c} para pagamento até {1:dd/MM/yyyy}", 
-                        Titulo.ValorDesconto, Titulo.DataDesconto));
+                if (titulo.DataDesconto > DateTime.Now)
+                    stringList.Add(string.Format("Conceder desconto de {0:c} para pagamento até {1:dd/MM/yyyy}", 
+                        titulo.ValorDesconto, titulo.DataDesconto));
                 else
-                    StringList.Add(string.Format("Conceder desconto de {0:c} por dia de antecipaçao", Titulo.ValorDesconto));
+                    stringList.Add(string.Format("Conceder desconto de {0:c} por dia de antecipaçao", titulo.ValorDesconto));
             }
 
-            if (Titulo.ValorMoraJuros > 0)
+            if (titulo.ValorMoraJuros > 0)
             {
-                if (Titulo.DataMoraJuros > DateTime.Now)
-                    StringList.Add(string.Format("Cobrar juros de {0:c} por dia de atraso para pagamento a partir de {1:dd/MM/yyyy}", 
-                        Titulo.ValorMoraJuros, Titulo.Vencimento == Titulo.DataMoraJuros ? Titulo.Vencimento.AddDays(1) : Titulo.DataMoraJuros));
+                if (titulo.DataMoraJuros > DateTime.Now)
+                    stringList.Add(string.Format("Cobrar juros de {0:c} por dia de atraso para pagamento a partir de {1:dd/MM/yyyy}", 
+                        titulo.ValorMoraJuros, titulo.Vencimento == titulo.DataMoraJuros ? titulo.Vencimento.AddDays(1) : titulo.DataMoraJuros));
                 else
-                    StringList.Add(string.Format("Cobrar juros de {0:c} por dia de atraso", Titulo.ValorMoraJuros));
+                    stringList.Add(string.Format("Cobrar juros de {0:c} por dia de atraso", titulo.ValorMoraJuros));
             }
 
-            if (Titulo.PercentualMulta > 0)
-                StringList.Add(string.Format("Cobrar Multa de {0:c}  após o vencimento.", 
-                    (Titulo.ValorDocumento * (1 + Titulo.PercentualMulta / 100) - Titulo.ValorDocumento)));
+            if (titulo.PercentualMulta > 0)
+                stringList.Add(string.Format("Cobrar Multa de {0:c}  após o vencimento.", 
+                    (titulo.ValorDocumento * (1 + titulo.PercentualMulta / 100) - titulo.ValorDocumento)));
         }
 
         /// <summary>
         /// Gera o arquivo de remessa.
         /// </summary>
-        /// <param name="NumeroRemessa">The numero remessa.</param>
+        /// <param name="numeroRemessa">The numero remessa.</param>
         /// <returns>Retorna o local onde foi salvo o arquivo de remessa</returns>
         /// <exception cref="ACBrException">Lista de boletos está vazia</exception>
-        public string GerarRemessa(int NumeroRemessa)
+        public string GerarRemessa(int numeroRemessa)
         {
-            if (ListadeBoletos.Count < 1)
-                throw new ACBrException("Lista de boletos está vazia");
+            Guard.Against<ACBrException>(ListadeBoletos.Count < 1, "Lista de boletos está vazia");
 
             ChecarDadosObrigatorios();
 
             if(!Directory.Exists(DirArqRemessa))
                 Directory.CreateDirectory(DirArqRemessa);
 
-            string NomeArq;
+            string nomeArq;
             if (string.IsNullOrEmpty(NomeArqRemessa))
             {
-                NomeArq = Banco.CalcularNomeArquivoRemessa();
-                NomeArqRemessa = Path.GetFileName(NomeArq);
+                nomeArq = Banco.CalcularNomeArquivoRemessa();
+                NomeArqRemessa = Path.GetFileName(nomeArq);
             }
             else
-                NomeArq = string.Format(@"{0}\{1}", DirArqRemessa, NomeArqRemessa);
+                nomeArq = string.Format(@"{0}\{1}", DirArqRemessa, NomeArqRemessa);
 
-            var Remessa = new List<string>();
-
-			if (LayoutRemessa == Boleto.LayoutRemessa.DBT627)
+            var remessa = new List<string>();
+			switch (LayoutRemessa)
 			{
-				Remessa.Add(Banco.GerarRegistroHeaderDBT627(NumeroRemessa));
-				foreach (var titulo in ListadeBoletos)
-					Remessa.Add(Banco.GerarRegistroTransacaoDBT627(titulo));
-				Remessa.Add(Banco.GerarRegistroTraillerDBT627(Remessa));
-			}
-            else if (LayoutRemessa == LayoutRemessa.CNAB400)
-            {
-                Banco.GerarRegistroHeader400(NumeroRemessa, Remessa);
-                foreach (var titulo in ListadeBoletos)
-                    Banco.GerarRegistroTransacao400(titulo, Remessa);
-                Banco.GerarRegistroTrailler400(Remessa);
-            }
-			else
-            {
-				Remessa.AddText(Banco.GerarRegistroHeader240(NumeroRemessa));
-                foreach (var titulo in ListadeBoletos)
-                    Remessa.AddText(Banco.GerarRegistroTransacao240(titulo));
-				Remessa.AddText(Banco.GerarRegistroTrailler240(Remessa));
-            }
+				case LayoutRemessa.DBT627:
+					remessa.Add(Banco.GerarRegistroHeaderDBT627(numeroRemessa));
+					remessa.AddRange(ListadeBoletos.Select(titulo => Banco.GerarRegistroTransacaoDBT627(titulo)));
+					remessa.Add(Banco.GerarRegistroTraillerDBT627(remessa));
+					break;
 
-            File.WriteAllLines(NomeArq, Remessa);
-            return NomeArq;
+				case LayoutRemessa.CNAB400:
+					Banco.GerarRegistroHeader400(numeroRemessa, remessa);
+					foreach (var titulo in ListadeBoletos)
+						Banco.GerarRegistroTransacao400(titulo, remessa);
+					Banco.GerarRegistroTrailler400(remessa);
+					break;
+
+				default:
+					remessa.AddText(Banco.GerarRegistroHeader240(numeroRemessa));
+					foreach (var titulo in ListadeBoletos)
+						remessa.AddText(Banco.GerarRegistroTransacao240(titulo));
+					remessa.AddText(Banco.GerarRegistroTrailler240(remessa));
+					break;
+			}
+
+            File.WriteAllLines(nomeArq, remessa);
+            return nomeArq;
         }
 
         /// <summary>
         /// Lers the retorno.
         /// </summary>
-        /// <exception cref="ACBr.Net.Core.ACBrException">
+        /// <exception cref="ACBrException">
         /// NomeArqRetorno deve ser informado.
         /// or
         /// or
@@ -563,54 +558,58 @@ namespace ACBr.Net.Boleto
         /// </exception>
         public void LerRetorno()
         {
-            if(string.IsNullOrEmpty(NomeArqRetorno))
-                throw new ACBrException("NomeArqRetorno deve ser informado.");
+            Guard.Against<ACBrException>(string.IsNullOrEmpty(NomeArqRetorno), 
+				"NomeArqRetorno deve ser informado.");
             
-            string NomeArq = string.Format(@"{0}\{1}", DirArqRetorno, NomeArqRetorno);
+            var nomeArq = string.Format(@"{0}\{1}", DirArqRetorno, NomeArqRetorno);
             
-            if(!File.Exists(NomeArq))
-                throw new ACBrException(string.Format("Arquivo não encontrado:{0}{1}", Environment.NewLine, NomeArq));
+            Guard.Against<ACBrException>(!File.Exists(nomeArq),
+				"Arquivo não encontrado:{0}{1}", Environment.NewLine, nomeArq);
 
-            var SlRetorno = File.ReadAllLines(NomeArq).ToList();
+            var slRetorno = File.ReadAllLines(nomeArq).ToList();
 
-            if(SlRetorno.Count < 1)
-                throw new ACBrException(string.Format("O Arquivo de Retorno:{0}{1}{0}está vazio.{0}Não há dados para processar",
-                    Environment.NewLine, NomeArq));
+            Guard.Against<ACBrException>(slRetorno.Count < 1,
+			"O Arquivo de Retorno:{0}{1}{0}está vazio.{0}Não há dados para processar", Environment.NewLine, nomeArq);
             
-            switch(SlRetorno[0].Length)
+            switch(slRetorno[0].Length)
             {
-                case 240:
-                    if(!SlRetorno[0].ExtrairDaPosicao(143, 144).Equals("2"))
-                        throw new ACBrException(string.Format("{1}{0}Não é um arquivo de Retorno de cobrança com layout CNAB240",
-                            Environment.NewLine, NomeArq));
+                case 240:                    
+                    Guard.Against<ACBrException>(!slRetorno[0].ExtrairDaPosicao(143, 143).Equals("2"),
+                        "{1}{0}Não é um arquivo de Retorno de cobrança com layout CNAB240", Environment.NewLine, nomeArq);
                    LayoutRemessa = LayoutRemessa.CNAB240;
                    break;
                     
                 case 400:
-                   if (!SlRetorno[0].ExtrairDaPosicao(1, 9).Equals("02RETORNO"))
-                        throw new ACBrException(string.Format("{1}{0}Não é um arquivo de Retorno de cobrança com layout CNAB400",
-                            Environment.NewLine, NomeArq));
+                   Guard.Against<ACBrException>(!slRetorno[0].ExtrairDaPosicao(1, 9).Equals("02RETORNO"),
+                        "{1}{0}Não é um arquivo de Retorno de cobrança com layout CNAB400", Environment.NewLine, nomeArq);
                    LayoutRemessa = LayoutRemessa.CNAB400;
                    break;
 
 				case 150:
-				   if (!SlRetorno[0].ExtrairDaPosicao(1, 2).Equals("A2"))
-					   throw new ACBrException(string.Format("{1}{0}Não é um arquivo de Retorno de cobrança com layout DBT627",
-						   Environment.NewLine, NomeArq));
+				   Guard.Against<ACBrException>(!slRetorno[0].ExtrairDaPosicao(1, 2).Equals("A2"),
+					   "{1}{0}Não é um arquivo de Retorno de cobrança com layout DBT627", Environment.NewLine, nomeArq);
 				   LayoutRemessa = LayoutRemessa.DBT627;
 				   break;
 
                 default:
 				   throw new ACBrException(string.Format("{1}{0}Não é um arquivo de Retorno de cobrança CNAB240, CNAB400 ou DBT627",
-                       Environment.NewLine, NomeArq));
+                       Environment.NewLine, nomeArq));
             }
 
-			if (LayoutRemessa == LayoutRemessa.DBT627)
-				Banco.LerRetornoDBT627(SlRetorno);
-            else if (LayoutRemessa == LayoutRemessa.CNAB240)
-                Banco.LerRetorno240(SlRetorno);
-            else
-                Banco.LerRetorno400(SlRetorno);
+			switch (LayoutRemessa)
+			{
+				case LayoutRemessa.DBT627:
+					Banco.LerRetornoDBT627(slRetorno);
+					break;
+
+				case LayoutRemessa.CNAB240:
+					Banco.LerRetorno240(slRetorno);
+					break;
+
+				default:
+					Banco.LerRetorno400(slRetorno);
+					break;
+			}
         }
 
         /// <summary>
@@ -619,10 +618,10 @@ namespace ACBr.Net.Boleto
         /// <exception cref="ACBrException">Informações do Cedente incompletas</exception>
         private void ChecarDadosObrigatorios()
         {
-            if (string.IsNullOrEmpty(Cedente.Nome) || string.IsNullOrEmpty(Cedente.Conta) || 
-               (string.IsNullOrEmpty(Cedente.ContaDigito) && Banco.TipoCobranca != TipoCobranca.Banestes) ||
-               string.IsNullOrEmpty(Cedente.Agencia) || (string.IsNullOrEmpty(Cedente.AgenciaDigito) && Banco.TipoCobranca != TipoCobranca.Banestes))
-                throw new ACBrException("Informações do Cedente incompletas");
+            Guard.Against<ACBrException>(Cedente.Nome.IsEmpty() || Cedente.Conta.IsEmpty() || 
+               (Cedente.ContaDigito.IsEmpty() && Banco.TipoCobranca != TipoCobranca.Banestes) ||
+               Cedente.Agencia.IsEmpty() || (Cedente.AgenciaDigito.IsEmpty() && Banco.TipoCobranca != TipoCobranca.Banestes),
+                "Informações do Cedente incompletas");
         }
 
         #endregion Funções

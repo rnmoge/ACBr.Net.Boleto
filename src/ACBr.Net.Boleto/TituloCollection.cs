@@ -11,10 +11,11 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using System;
-using System.Linq;
+
 using System.ComponentModel;
-using System.Collections.Generic;
+using ACBr.Net.Core;
+using ACBr.Net.Core.Generics;
+
 #region COM Interop Attributes
 
 #if COM_INTEROP
@@ -23,11 +24,7 @@ using System.Runtime.InteropServices;
 
 
 #endregion COM Interop Attributes
-using ACBr.Net.Core;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
 namespace ACBr.Net.Boleto
 {
     #region COM Interop Attributes
@@ -52,7 +49,7 @@ namespace ACBr.Net.Boleto
         /// <summary>
         /// The parent
         /// </summary>
-        ACBrBoleto Parent;
+        readonly AcBrBoleto parent;
 
         #endregion Fields
 
@@ -62,9 +59,9 @@ namespace ACBr.Net.Boleto
         /// Initializes a new instance of the <see cref="TituloCollection"/> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        internal TituloCollection(ACBrBoleto parent)
+        internal TituloCollection(AcBrBoleto parent)
         {
-            Parent = parent;
+            this.parent = parent;
         }
 
         #endregion Constructor
@@ -77,8 +74,8 @@ namespace ACBr.Net.Boleto
         /// <returns>Titulo.</returns>
         public Titulo AddNew()
         {
-            var t = new Titulo(Parent);
-            list.Add(t);
+            var t = new Titulo(parent);
+            List.Add(t);
             return t;
         }
 
@@ -89,7 +86,7 @@ namespace ACBr.Net.Boleto
         /// <returns>System.Int32.</returns>
         public int IndexOf(Titulo titulo)
         {
-            return list.IndexOf(titulo);
+            return List.IndexOf(titulo);
         }
 
         #endregion Funções

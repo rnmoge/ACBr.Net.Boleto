@@ -59,26 +59,27 @@
     <Compile Include="ACBrBoleto.cs">
       <SubType>ACBr.Net</SubType>
     </Compile>
-    <Compile Include="Classes\Banco.cs" />
-    <Compile Include="Classes\Bancos\BancoBanrisul.cs" />
-    <Compile Include="Classes\Bancos\BancoBase.cs" />
-    <Compile Include="Classes\Bancos\BancoHSBC.cs" />
-    <Compile Include="Classes\Bancos\BancoItau.cs" />
-    <Compile Include="Classes\Bancos\BancoDoBrasil.cs" />
-    <Compile Include="Classes\Bancos\BancoBradesco.cs" />
-    <Compile Include="Classes\BoletoPrinterBase.cs">
+    <Compile Include="Bancos\Banco.cs" />
+    <Compile Include="Bancos\BancoBanrisul.cs" />
+    <Compile Include="Bancos\BancoBase.cs" />
+    <Compile Include="Bancos\BancoHSBC.cs" />
+    <Compile Include="Bancos\BancoItau.cs" />
+    <Compile Include="Bancos\BancoDoBrasil.cs" />
+    <Compile Include="Bancos\BancoBradesco.cs" />
+    <Compile Include="Bancos\BancoSicredi.cs" />
+    <Compile Include="Printer\BoletoPrinterBase.cs">
       <SubType>ACBr.Net</SubType>
     </Compile>
     <Compile Include="Enums\CarteiraEnvio.cs" />
     <Compile Include="Enums\BoletoFCFiltro.cs" />
-    <Compile Include="Interface\IBanco.cs" />
-    <Compile Include="Interface\IBoletoPrinter.cs" />
-    <Compile Include="Classes\Cedente.cs" />
-    <Compile Include="Classes\Sacado.cs" />
-    <Compile Include="Classes\TituloCollection.cs" />
+    <Compile Include="Interfaces\IBanco.cs" />
+    <Compile Include="Interfaces\IBoletoPrinter.cs" />
+    <Compile Include="Cedente.cs" />
+    <Compile Include="Sacado.cs" />
+    <Compile Include="TituloCollection.cs" />
     <Compile Include="Enums\LayoutBoleto.cs" />
     <Compile Include="Enums\LayoutRemessa.cs" />
-    <Compile Include="Classes\Ocorrencia.cs" />
+    <Compile Include="Ocorrencia.cs" />
     <Compile Include="Enums\AceiteTitulo.cs" />
     <Compile Include="Enums\CaracTitulo.cs" />
     <Compile Include="Enums\Pessoa.cs" />
@@ -89,10 +90,10 @@
     <Compile Include="Enums\TipoImpressao.cs" />
     <Compile Include="Enums\TipoOcorrencia.cs" />
     <Compile Include="EventArgs\OnObterLogoEventArgs.cs" />
-    <Compile Include="Classes\LeitorLinhaPosicao.cs" />
+    <Compile Include="Utils\LeitorLinhaPosicao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\TipoCobranca.cs" />
-    <Compile Include="Classes\Titulo.cs" />
+    <Compile Include="Titulo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ico.bmp" />

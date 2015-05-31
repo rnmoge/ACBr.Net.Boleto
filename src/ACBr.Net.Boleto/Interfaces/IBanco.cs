@@ -11,14 +11,12 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using System;
-using System.Linq;
+
 using System.Collections.Generic;
+using ACBr.Net.Boleto.Bancos;
+using ACBr.Net.Boleto.Enums;
 using ACBr.Net.Core;
 
-/// <summary>
-/// ACBr.Net.Boleto.Interfaces namespace.
-/// </summary>
 namespace ACBr.Net.Boleto.Interfaces
 {
     /// <summary>
@@ -88,6 +86,11 @@ namespace ACBr.Net.Boleto.Interfaces
 		/// </summary>
 		/// <value>The codigos mora aceitos.</value>
 		string CodigosMoraAceitos { get; }
+		/// <summary>
+		/// Gets the codigos mora aceitos.
+		/// </summary>
+		/// <value>The codigos mora aceitos.</value>
+		string CodigosGeracaoAceitos { get; }
 
         #endregion Propriedades
 
@@ -96,134 +99,134 @@ namespace ACBr.Net.Boleto.Interfaces
         /// <summary>
         /// Tipoes the ocorrencia to descricao.
         /// </summary>
-        /// <param name="Tipo">The tipo.</param>
+        /// <param name="tipo">The tipo.</param>
         /// <returns>System.String.</returns>
-        string TipoOcorrenciaToDescricao(TipoOcorrencia Tipo);
+        string TipoOcorrenciaToDescricao(TipoOcorrencia tipo);
         /// <summary>
         /// Cods the ocorrencia to tipo.
         /// </summary>
-        /// <param name="CodOcorrencia">The cod ocorrencia.</param>
+        /// <param name="codOcorrencia">The cod ocorrencia.</param>
         /// <returns>TipoOcorrencia.</returns>
-        TipoOcorrencia CodOcorrenciaToTipo(int CodOcorrencia);
+        TipoOcorrencia CodOcorrenciaToTipo(int codOcorrencia);
         /// <summary>
         /// Tipoes the o correncia to cod.
         /// </summary>
-        /// <param name="Tipo">The tipo.</param>
+        /// <param name="tipo">The tipo.</param>
         /// <returns>System.String.</returns>
-        string TipoOCorrenciaToCod(TipoOcorrencia Tipo);
+        string TipoOCorrenciaToCod(TipoOcorrencia tipo);
         /// <summary>
         /// Cods the motivo rejeicao to descricao.
         /// </summary>
-        /// <param name="Tipo">The tipo.</param>
-        /// <param name="CodMotivo">The cod motivo.</param>
+        /// <param name="tipo">The tipo.</param>
+        /// <param name="codMotivo">The cod motivo.</param>
         /// <returns>System.String.</returns>
-        string CodMotivoRejeicaoToDescricao(TipoOcorrencia Tipo, int CodMotivo);
+        string CodMotivoRejeicaoToDescricao(TipoOcorrencia tipo, int codMotivo);
         /// <summary>
         /// Calculars the digito verificador.
         /// </summary>
-        /// <param name="Titulo">The titulo.</param>
+        /// <param name="titulo">The titulo.</param>
         /// <returns>System.String.</returns>
-        string CalcularDigitoVerificador(Titulo Titulo);
+        string CalcularDigitoVerificador(Titulo titulo);
         /// <summary>
         /// Calculars the tam maximo nosso numero.
         /// </summary>
-        /// <param name="Carteira">The carteira.</param>
-        /// <param name="NossoNumero">The nosso numero.</param>
+        /// <param name="carteira">The carteira.</param>
+        /// <param name="nossoNumero">The nosso numero.</param>
         /// <returns>System.Int32.</returns>
-        int CalcularTamMaximoNossoNumero(string Carteira, string NossoNumero = "");
+        int CalcularTamMaximoNossoNumero(string carteira, string nossoNumero = "");
         /// <summary>
         /// Montars the campo codigo cedente.
         /// </summary>
-        /// <param name="Titulo">The titulo.</param>
+        /// <param name="titulo">The titulo.</param>
         /// <returns>System.String.</returns>
-        string MontarCampoCodigoCedente(Titulo Titulo);
+        string MontarCampoCodigoCedente(Titulo titulo);
         /// <summary>
         /// Montars the campo nosso numero.
         /// </summary>
-        /// <param name="Titulo">The titulo.</param>
+        /// <param name="titulo">The titulo.</param>
         /// <returns>System.String.</returns>
-        string MontarCampoNossoNumero(Titulo Titulo);
+        string MontarCampoNossoNumero(Titulo titulo);
         /// <summary>
         /// Montars the codigo barras.
         /// </summary>
-        /// <param name="Titulo">The titulo.</param>
+        /// <param name="titulo">The titulo.</param>
         /// <returns>System.String.</returns>
-        string MontarCodigoBarras(Titulo Titulo);
+        string MontarCodigoBarras(Titulo titulo);
         /// <summary>
         /// Montars the linha digitavel.
         /// </summary>
-        /// <param name="CodigoBarras">The codigo barras.</param>
-        /// <param name="Titulo">The titulo.</param>
+        /// <param name="codigoBarras">The codigo barras.</param>
+        /// <param name="titulo">The titulo.</param>
         /// <returns>System.String.</returns>
-        string MontarLinhaDigitavel(string CodigoBarras, Titulo Titulo);
+        string MontarLinhaDigitavel(string codigoBarras, Titulo titulo);
         /// <summary>
         /// Gerars the registro header400.
         /// </summary>
-        /// <param name="NumeroRemessa">The numero remessa.</param>
-        /// <param name="ARemessa">A remessa.</param>
-        void GerarRegistroHeader400(int NumeroRemessa, List<string> ARemessa);
+        /// <param name="numeroRemessa">The numero remessa.</param>
+        /// <param name="aRemessa">A remessa.</param>
+        void GerarRegistroHeader400(int numeroRemessa, List<string> aRemessa);
         /// <summary>
         /// Gerars the registro header240.
         /// </summary>
-        /// <param name="NumeroRemessa">The numero remessa.</param>
+        /// <param name="numeroRemessa">The numero remessa.</param>
         /// <returns>System.String.</returns>
-        string GerarRegistroHeader240(int NumeroRemessa);
+        string GerarRegistroHeader240(int numeroRemessa);
         /// <summary>
         /// Gerars the registro transacao400.
         /// </summary>
-        /// <param name="Titulo">The titulo.</param>
-        /// <param name="ARemessa">A remessa.</param>
-        void GerarRegistroTransacao400(Titulo Titulo, List<string> ARemessa);
+        /// <param name="titulo">The titulo.</param>
+        /// <param name="aRemessa">A remessa.</param>
+        void GerarRegistroTransacao400(Titulo titulo, List<string> aRemessa);
         /// <summary>
         /// Gerars the registro transacao240.
         /// </summary>
-        /// <param name="Titulo">The titulo.</param>
+        /// <param name="titulo">The titulo.</param>
         /// <returns>System.String.</returns>
-        string GerarRegistroTransacao240(Titulo Titulo);
+        string GerarRegistroTransacao240(Titulo titulo);
         /// <summary>
         /// Gerars the registro trailler400.
         /// </summary>
-        /// <param name="ARemessa">A remessa.</param>
-        void GerarRegistroTrailler400(List<string> ARemessa);
+        /// <param name="aRemessa">A remessa.</param>
+        void GerarRegistroTrailler400(List<string> aRemessa);
         /// <summary>
         /// Gerars the registro trailler240.
         /// </summary>
-        /// <param name="ARemessa">A remessa.</param>
+        /// <param name="aRemessa">A remessa.</param>
         /// <returns>System.String.</returns>
-        string GerarRegistroTrailler240(List<string> ARemessa);
+        string GerarRegistroTrailler240(List<string> aRemessa);
 		/// <summary>
 		/// Gerars the registro headerDBT627.
 		/// </summary>
-		/// <param name="NumeroRemessa">The numero remessa.</param>
+		/// <param name="numeroRemessa">The numero remessa.</param>
 		/// <returns>System.String.</returns>
-		string GerarRegistroHeaderDBT627(int NumeroRemessa);
+		string GerarRegistroHeaderDBT627(int numeroRemessa);
 		/// <summary>
 		/// Gerars the registro transacaoDBT627.
 		/// </summary>
-		/// <param name="Titulo">The titulo.</param>
+		/// <param name="titulo">The titulo.</param>
 		/// <returns>System.String.</returns>
-		string GerarRegistroTransacaoDBT627(Titulo Titulo);
+		string GerarRegistroTransacaoDBT627(Titulo titulo);
 		/// <summary>
 		/// Gerars the registro traillerDBT627.
 		/// </summary>
-		/// <param name="ARemessa">A remessa.</param>
+		/// <param name="aRemessa">A remessa.</param>
 		/// <returns>System.String.</returns>
-		string GerarRegistroTraillerDBT627(List<string> ARemessa);
+		string GerarRegistroTraillerDBT627(List<string> aRemessa);
         /// <summary>
         /// Lers the retorno400.
         /// </summary>
-        /// <param name="ARetorno">A retorno.</param>
-        void LerRetorno400(List<string> ARetorno);
+        /// <param name="aRetorno">A retorno.</param>
+        void LerRetorno400(List<string> aRetorno);
         /// <summary>
         /// Lers the retorno240.
         /// </summary>
-        /// <param name="ARetorno">A retorno.</param>
-        void LerRetorno240(List<string> ARetorno);
+        /// <param name="aRetorno">A retorno.</param>
+        void LerRetorno240(List<string> aRetorno);
 		/// <summary>
 		/// Lers the retornoDBT627.
 		/// </summary>
-		/// <param name="ARetorno">A retorno.</param>
-		void LerRetornoDBT627(List<string> ARetorno);
+		/// <param name="aRetorno">A retorno.</param>
+		void LerRetornoDBT627(List<string> aRetorno);
         /// <summary>
         /// Calculars the nome arquivo remessa.
         /// </summary>

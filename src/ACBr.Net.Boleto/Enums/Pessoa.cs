@@ -11,14 +11,8 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
-namespace ACBr.Net.Boleto
+namespace ACBr.Net.Boleto.Enums
 {
     /// <summary>
     /// Enum Pessoa

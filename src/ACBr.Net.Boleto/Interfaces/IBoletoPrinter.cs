@@ -11,14 +11,10 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using System;
-using System.Linq;
-using System.Drawing;
-using System.Collections.Generic;
 
-/// <summary>
-/// ACBr.Net.Boleto.Interfaces namespace.
-/// </summary>
+using System.Drawing;
+using ACBr.Net.Boleto.Enums;
+
 namespace ACBr.Net.Boleto.Interfaces
 {
     /// <summary>
@@ -37,7 +33,7 @@ namespace ACBr.Net.Boleto.Interfaces
         /// Gets the boleto.
         /// </summary>
         /// <value>The boleto.</value>
-        ACBrBoleto Boleto { get; }
+        AcBrBoleto Boleto { get; }
         /// <summary>
         /// Gets or sets the dir logo.
         /// </summary>

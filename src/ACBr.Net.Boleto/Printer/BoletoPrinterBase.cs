@@ -11,13 +11,19 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+
 using System;
-using System.IO;
-using System.Linq;
-using System.Drawing;
-using System.Reflection;
 using System.ComponentModel;
-using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Reflection;
+using ACBr.Net.Boleto.Enums;
+using ACBr.Net.Boleto.EventArgs;
+using ACBr.Net.Boleto.Interfaces;
+using ACBr.Net.Core;
+using ACBr.Net.Core.Exceptions;
+using ACBr.Net.Core.Extensions;
+
 #region COM Interop Attributes
 
 #if COM_INTEROP
@@ -25,14 +31,8 @@ using System.Runtime.InteropServices;
 #endif
 
 #endregion COM Interop Attributes
-using ACBr.Net.Core;
-using ACBr.Net.Boleto.Events;
-using ACBr.Net.Boleto.Interfaces;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
-namespace ACBr.Net.Boleto
+namespace ACBr.Net.Boleto.Printer
 {
     #region COM Interop
 
@@ -147,9 +147,9 @@ namespace ACBr.Net.Boleto
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BoletoFCBase"/> class.
+		/// Initializes a new instance of the <see cref="BoletoPrinterBase"/> class.
         /// </summary>
-        public BoletoPrinterBase()
+        protected BoletoPrinterBase()
         {
             Layout = LayoutBoleto.Padrao;
             dirlogo = string.Empty;
@@ -178,7 +178,7 @@ namespace ACBr.Net.Boleto
         /// </summary>
         /// <value>The boleto.</value>
         [Browsable(false)]
-        public virtual ACBrBoleto Boleto { get; internal set; }
+        public virtual AcBrBoleto Boleto { get; internal set; }
 
         /// <summary>
         /// Get/Set Diretorio onde se encontra os logos dos bancos para impressão
@@ -190,12 +190,11 @@ namespace ACBr.Net.Boleto
         {
             get
             {
-                if (string.IsNullOrEmpty(dirlogo.Trim()))
+	            if (string.IsNullOrEmpty(dirlogo.Trim()))
                     return string.Format(@"{0}\Logos\", Assembly.GetExecutingAssembly().GetPath());
-                else
-                    return dirlogo;
+	            return dirlogo;
             }
-            set
+	        set
             {
                 dirlogo = value;
             }
@@ -258,10 +257,9 @@ namespace ACBr.Net.Boleto
         {
             get
             {
-                if (Boleto == null || Boleto.Banco == null)
+	            if (Boleto == null || Boleto.Banco == null)
                     return "";
-                else
-                    return string.Format(@"{0}\{1:000}.bmp", DirLogo, Boleto.Banco.Numero);
+	            return string.Format(@"{0}\{1:000}.bmp", DirLogo, Boleto.Banco.Numero);
             }
         }
 

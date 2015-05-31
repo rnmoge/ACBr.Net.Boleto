@@ -11,10 +11,13 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
-using System;
-using System.Linq;
-using System.ComponentModel;
+
 using System.Collections.Generic;
+using System.ComponentModel;
+using ACBr.Net.Boleto.Enums;
+using ACBr.Net.Boleto.Interfaces;
+using ACBr.Net.Core;
+
 #region COM Interop Attributes
 
 #if COM_INTEROP
@@ -23,13 +26,8 @@ using System.Runtime.InteropServices;
 
 
 #endregion COM Interop Attributes
-using ACBr.Net.Core;
-using ACBr.Net.Boleto.Interfaces;
 
-/// <summary>
-/// The Boleto namespace.
-/// </summary>
-namespace ACBr.Net.Boleto
+namespace ACBr.Net.Boleto.Bancos
 {
     #region COM Interop Attributes
 
@@ -63,9 +61,9 @@ namespace ACBr.Net.Boleto
         /// Initializes a new instance of the <see cref="Banco"/> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        internal Banco(ACBrBoleto parent)
+        internal Banco(AcBrBoleto parent)
         {
-            this.Parent = parent;
+            Parent = parent;
             TipoCobranca = TipoCobranca.Nenhum;
         }
 
@@ -78,7 +76,7 @@ namespace ACBr.Net.Boleto
         /// </summary>
         /// <value>The parent.</value>
         [Browsable(false)]
-        public ACBrBoleto Parent { get; private set; }
+        public AcBrBoleto Parent { get; private set; }
 
         /// <summary>
         /// Gets the banco class.
@@ -93,12 +91,8 @@ namespace ACBr.Net.Boleto
         /// <value>The nome.</value>
         public string Nome
         {
-            get
-            {
-                if (BancoClass == null)
-                    return "Nenhum";
-                else
-                    return BancoClass.Nome;
+            get {
+	            return BancoClass == null ? "Nenhum" : BancoClass.Nome;
             }
         }
 
@@ -109,12 +103,8 @@ namespace ACBr.Net.Boleto
         [Browsable(false)]
         public int TamanhoAgencia 
         { 
-            get
-            {
-                if (BancoClass == null)
-                    return 0;
-                else
-                    return BancoClass.TamanhoAgencia;
+            get {
+	            return BancoClass == null ? 0 : BancoClass.TamanhoAgencia;
             }
         }
 
@@ -125,12 +115,8 @@ namespace ACBr.Net.Boleto
         [Browsable(false)]
         public int TamanhoConta
         {
-            get
-            {
-                if (BancoClass == null)
-                    return 0;
-                else
-                    return BancoClass.TamanhoConta;
+            get {
+	            return BancoClass == null ? 0 : BancoClass.TamanhoConta;
             }
         }
 
@@ -141,12 +127,8 @@ namespace ACBr.Net.Boleto
         [Browsable(false)]
         public int TamanhoCarteira
         {
-            get
-            {
-                if (BancoClass == null)
-                    return 0;
-                else
-                    return BancoClass.TamanhoCarteira;
+            get {
+	            return BancoClass == null ? 0 : BancoClass.TamanhoCarteira;
             }
         }
 
@@ -157,12 +139,8 @@ namespace ACBr.Net.Boleto
         [Browsable(false)]
         public int Numero
         { 
-            get
-            {
-                if (BancoClass == null)
-                    return 0;
-                else
-                    return BancoClass.Numero;
+            get {
+	            return BancoClass == null ? 0 : BancoClass.Numero;
             }
         }
 
@@ -173,12 +151,8 @@ namespace ACBr.Net.Boleto
         [Browsable(false)]
         public int Digito
         {
-            get
-            {
-                if (BancoClass == null)
-                    return 0;
-                else
-                    return BancoClass.Digito;
+            get {
+	            return BancoClass == null ? 0 : BancoClass.Digito;
             }
         }
 
@@ -189,12 +163,8 @@ namespace ACBr.Net.Boleto
         [Browsable(false)]
         public int TamanhoMaximoNossoNum
         {
-            get
-            {
-                if (BancoClass == null)
-                    return 0;
-                else
-                    return BancoClass.TamanhoMaximoNossoNum;
+            get {
+	            return BancoClass == null ? 0 : BancoClass.TamanhoMaximoNossoNum;
             }
         }
 
@@ -235,6 +205,10 @@ namespace ACBr.Net.Boleto
 					case TipoCobranca.HSBC:
 						BancoClass = new BancoHSBC(this);
 						break;
+						
+					case TipoCobranca.Sicred:
+						BancoClass = new BancoSicredi(this);
+						break;
 
                     default:
                         BancoClass = new BancoBase(this);
@@ -253,21 +227,32 @@ namespace ACBr.Net.Boleto
         {
             get
             {
-                if (BancoClass == null)
+	            if (BancoClass == null)
                     return null;
-                else
-                    return BancoClass.OrientacoesBanco.ToArray();
+	            return BancoClass.OrientacoesBanco.ToArray();
             }
         }
 
+		/// <summary>
+		/// Gets the codigos mora aceitos.
+		/// </summary>
+		/// <value>The codigos mora aceitos.</value>
 		public string CodigosMoraAceitos
+		{
+			get {
+				return BancoClass == null ? string.Empty : BancoClass.CodigosMoraAceitos;
+			}
+		}
+
+		/// <summary>
+		/// Gets the codigos geracao aceitos.
+		/// </summary>
+		/// <value>The codigos geracao aceitos.</value>
+		public string CodigosGeracaoAceitos
 		{
 			get
 			{
-				if (BancoClass == null)
-					return string.Empty;
-				else
-					return BancoClass.CodigosMoraAceitos;
+				return BancoClass == null ? string.Empty : BancoClass.CodigosGeracaoAceitos;
 			}
 		}
 
