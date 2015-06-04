@@ -89,9 +89,9 @@ namespace ACBr.Net.Boleto.Interfaces
         /// <summary>
         /// Carregas the logo.
         /// </summary>
-        /// <param name="PictureLogo">The picture logo.</param>
-        /// <param name="NumeroBanco">The numero banco.</param>
-        void CarregaLogo(ref Image PictureLogo, int NumeroBanco);
+        /// <param name="pictureLogo">The picture logo.</param>
+        /// <param name="numeroBanco">The numero banco.</param>
+        void CarregaLogo(ref Image pictureLogo, int numeroBanco);
 
         #endregion Methods
     }

@@ -218,9 +218,7 @@ namespace ACBr.Net.Boleto
             }
             set
             {
-                if(!string.IsNullOrEmpty(value.Trim()) && !value.IsCPFOrCNPJ())
-                    throw new ACBrException(@"CPF\CNPJ Invalido");
-
+               Guard.Against<ACBrException>(!value.IsEmpty() && !value.IsCPFOrCNPJ(), @"CPF\CNPJ Invalido");
                 cpfcnpj = value;
             }
         }

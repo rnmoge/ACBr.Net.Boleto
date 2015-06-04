@@ -372,6 +372,82 @@
             </summary>
             <value><c>true</c> if [process messages]; otherwise, <c>false</c>.</value>
         </member>
+        <member name="T:ACBr.Net.Core.ECF.Aliquota">
+            <summary>
+            Classe Aliquota. Está classe não pode ser herdada.
+            </summary>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.Aliquota.Sequencia">
+            <summary>
+            Gets the sequencia.
+            </summary>
+            <value>The sequencia.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.Aliquota.Indice">
+            <summary>
+            Gets the indice.
+            </summary>
+            <value>The indice.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.Aliquota.ValorAliquota">
+            <summary>
+            Gets the valor aliquota.
+            </summary>
+            <value>The valor aliquota.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.Aliquota.Tipo">
+            <summary>
+            Gets the tipo.
+            </summary>
+            <value>The tipo.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.Aliquota.Total">
+            <summary>
+            Gets the total.
+            </summary>
+            <value>The total.</value>
+        </member>
+        <member name="T:ACBr.Net.Core.ECF.ComprovanteNaoFiscal">
+            <summary>
+            Classe ComprovanteNaoFiscal. Está classe não pode ser herdada.
+            </summary>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.ComprovanteNaoFiscal.Indice">
+            <summary>
+            Gets the indice.
+            </summary>
+            <value>The indice.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.ComprovanteNaoFiscal.Descricao">
+            <summary>
+            Gets the descricao.
+            </summary>
+            <value>The descricao.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.ComprovanteNaoFiscal.PermiteVinculado">
+            <summary>
+            Gets a value indicating whether [permite vinculado].
+            </summary>
+            <value><c>true</c> if [permite vinculado]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.ComprovanteNaoFiscal.FormaPagamento">
+            <summary>
+            Gets the forma pagamento.
+            </summary>
+            <value>The forma pagamento.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.ComprovanteNaoFiscal.Total">
+            <summary>
+            Gets the total.
+            </summary>
+            <value>The total.</value>
+        </member>
+        <member name="P:ACBr.Net.Core.ECF.ComprovanteNaoFiscal.Contador">
+            <summary>
+            Gets the contador.
+            </summary>
+            <value>The contador.</value>
+        </member>
         <member name="F:ACBr.Net.ECF.EstadoECF.NaoInicializada">
             <summary>
             Porta Serial ainda nao foi aberta
@@ -652,6 +728,13 @@
             <param name="sender">The sender.</param>
             <param name="e">The e.</param>
         </member>
+        <member name="M:ACBr.Net.Core.Extensions.EventHandlerExtension.Raise(System.EventHandler,System.EventArgs)">
+            <summary>
+            Raises the specified e.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <param name="e">The <see cref="T:System.EventArgs"/> instance containing the event data.</param>
+        </member>
         <member name="M:ACBr.Net.Core.Extensions.EventHandlerExtension.Raise``1(System.EventHandler{``0},System.Object,``0)">
             <summary>
             Chama o evento.
@@ -659,6 +742,14 @@
             <typeparam name="T"></typeparam>
             <param name="eventHandler">The event handler.</param>
             <param name="sender">The sender.</param>
+            <param name="e">The e.</param>
+        </member>
+        <member name="M:ACBr.Net.Core.Extensions.EventHandlerExtension.Raise``1(System.EventHandler{``0},``0)">
+            <summary>
+            Chama o evento.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="eventHandler">The event handler.</param>
             <param name="e">The e.</param>
         </member>
         <member name="T:ACBr.Net.Core.Extensions.ListExtension">
@@ -1399,6 +1490,18 @@
             marked by <see cref="T:JetBrains.Annotations.AssertionMethodAttribute"/> attribute. The mandatory argument of
             the attribute is the assertion type.
             </summary>
+        </member>
+        <member name="M:JetBrains.Annotations.AssertionConditionAttribute.#ctor(JetBrains.Annotations.AssertionConditionType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JetBrains.Annotations.AssertionConditionAttribute"/> class.
+            </summary>
+            <param name="conditionType">Type of the condition.</param>
+        </member>
+        <member name="P:JetBrains.Annotations.AssertionConditionAttribute.ConditionType">
+            <summary>
+            Gets the type of the condition.
+            </summary>
+            <value>The type of the condition.</value>
         </member>
         <member name="T:JetBrains.Annotations.AssertionConditionType">
             <summary>

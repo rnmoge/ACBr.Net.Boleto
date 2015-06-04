@@ -1244,9 +1244,8 @@ namespace ACBr.Net.Boleto.Bancos
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public override void LerRetorno400(List<string> aRetorno)
         {
-			if (aRetorno[0].ExtrairInt32DaPosicao(77, 79) != Numero)
-				throw new ACBrException(string.Format("{0} não é um arquivo de retorno do {1}",
-													   Banco.Parent.NomeArqRetorno, Nome));
+			Guard.Against<ACBrException>(aRetorno[0].ExtrairInt32DaPosicao(77, 79) != Numero,
+				"{0} não é um arquivo de retorno do {1}", Banco.Parent.NomeArqRetorno, Nome);
 
 			var rCedente = aRetorno[0].ExtrairDaPosicao(47, 76);
 			var rAgencia = aRetorno[0].ExtrairDaPosicao(27, 30).Trim();
@@ -1254,9 +1253,10 @@ namespace ACBr.Net.Boleto.Bancos
 			var rConta = aRetorno[0].ExtrairDaPosicao(32, 39).Trim();
 			var rDigitoConta = aRetorno[0].ExtrairDaPosicao(40, 40).Trim();			
 
-			if (!Banco.Parent.LeCedenteRetorno && (rAgencia != Banco.Parent.Cedente.Agencia.OnlyNumbers() ||
-				rConta != Banco.Parent.Cedente.Conta.OnlyNumbers()))
-				throw new ACBrException(@"Agencia\Conta do arquivo inválido");
+			Guard.Against<ACBrException>(
+				!Banco.Parent.LeCedenteRetorno && (rAgencia != Banco.Parent.Cedente.Agencia.OnlyNumbers() ||
+				rConta != Banco.Parent.Cedente.Conta.OnlyNumbers()),
+				@"Agencia\Conta do arquivo inválido");
 
 			Banco.Parent.NumeroArquivo = aRetorno[0].ExtrairInt32DaPosicao(109, 113);
 			Banco.Parent.DataArquivo = aRetorno[0].ExtrairDataDaPosicao(95, 100);
@@ -1381,9 +1381,8 @@ namespace ACBr.Net.Boleto.Bancos
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public override void LerRetorno240(List<string> aRetorno)
         {
-			if (aRetorno[0].ExtrairInt32DaPosicao(1, 3) != Numero)
-				throw new ACBrException(string.Format("{0} não é um arquivo de retorno do {1}'",
-					Banco.Parent.NomeArqRetorno, Nome));
+			Guard.Against<ACBrException>(aRetorno[0].ExtrairInt32DaPosicao(1, 3) != Numero,
+				"{0} não é um arquivo de retorno do {1}'", Banco.Parent.NomeArqRetorno, Nome);
 
 			Banco.Parent.DataArquivo = aRetorno[0].ExtrairDataDaPosicao(146, 152);
 			Banco.Parent.NumeroArquivo = aRetorno[0].ExtrairInt32DaPosicao(158, 163);
@@ -1391,8 +1390,9 @@ namespace ACBr.Net.Boleto.Bancos
 			var rCedente = aRetorno[0].ExtrairDaPosicao(73, 102).Trim();
 			var rCNPJCPF = aRetorno[0].ExtrairDaPosicao(19, 32).OnlyNumbers();
 
-			if (!Banco.Parent.LeCedenteRetorno && rCNPJCPF != Banco.Parent.Cedente.CNPJCPF.OnlyNumbers())
-				throw new ACBrException(@"CNPJ\CPF do arquivo inválido");
+			Guard.Against<ACBrException>(
+				!Banco.Parent.LeCedenteRetorno && rCNPJCPF != Banco.Parent.Cedente.CNPJCPF.OnlyNumbers(),
+                @"CNPJ\CPF do arquivo inválido");
 
 			Banco.Parent.Cedente.Nome = rCedente;
 			Banco.Parent.Cedente.CNPJCPF = rCNPJCPF;

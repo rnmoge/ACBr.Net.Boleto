@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ACBr.Net.Boleto.Enums;
 using ACBr.Net.Boleto.Utils;
@@ -567,9 +568,7 @@ namespace ACBr.Net.Boleto.Bancos
 				return Modulo.DigitoFinal.ToString();
 			});
 
-            var ret = "0";
-
-            // numero base para o calculo do primeiro e segundo digitos
+			// numero base para o calculo do primeiro e segundo digitos
 			var aNumeroDoc = titulo.NossoNumero.Right(13).ZeroFill(13);
 
 			// Calculo do primeiro digito
@@ -585,7 +584,7 @@ namespace ACBr.Net.Boleto.Bancos
 			aNumeroBase = numero + cedente + vencimento;
 			var aDigito2  = calcularDigito(aNumeroBase);
 
-			ret = aDigito1 + aDigito2;
+			var ret = aDigito1 + aDigito2;
 
             return ret;
         }
@@ -801,25 +800,45 @@ namespace ACBr.Net.Boleto.Bancos
 			}
 
 			//Pegando o tipo de EspecieDoc
-			var aEspecie = string.Empty;
-			if (titulo.EspecieDoc.Trim() == "DP")
-				aEspecie = "01";
-			else if (titulo.EspecieDoc.Trim() == "NP")
-				aEspecie = "02";
-			else if (titulo.EspecieDoc.Trim() == "NS")
-				aEspecie = "03";
-			else if (titulo.EspecieDoc.Trim() == "RC")
-				aEspecie = "05";
-			else if (titulo.EspecieDoc.Trim() == "DS")
-				aEspecie = "10";
-			else if (titulo.EspecieDoc.Trim() == "SD")
-				aEspecie = "08";
-			else if (titulo.EspecieDoc.Trim() == "CE")
-				aEspecie = "09";
-			else if (titulo.EspecieDoc.Trim() == "PD")
-				aEspecie = "98";
-			else
-				aEspecie = titulo.EspecieDoc;
+			string aEspecie;
+			switch (titulo.EspecieDoc.Trim())
+			{
+				case "DP":
+					aEspecie = "01";
+					break;
+
+				case "NP":
+					aEspecie = "02";
+					break;
+
+				case "NS":
+					aEspecie = "03";
+					break;
+
+				case "RC":
+					aEspecie = "05";
+					break;
+
+				case "DS":
+					aEspecie = "10";
+					break;
+
+				case "SD":
+					aEspecie = "08";
+					break;
+
+				case "CE":
+					aEspecie = "09";
+					break;
+
+				case "PD":
+					aEspecie = "98";
+					break;
+
+				default:
+					aEspecie = titulo.EspecieDoc;
+					break;
+			}
 
 			//Pegando Tipo de Sacado}
 			string aTipoSacado;
@@ -838,22 +857,17 @@ namespace ACBr.Net.Boleto.Bancos
 					break;
 			}
 
-			var mensagemCedente = string.Empty;
-			foreach (var msg in titulo.Mensagem)
-				mensagemCedente += msg;
-
-			if (mensagemCedente.Length > 60)
-				mensagemCedente = mensagemCedente.Substring(1, 60);
+			//Codigo desnecessario ?
+			//var mensagemCedente = titulo.Mensagem.AsString();
+			//if (mensagemCedente.Length > 60)
+			//	mensagemCedente = mensagemCedente.Substring(1, 60);
 
 			var contaDigito = titulo.Parent.Cedente.Conta.OnlyNumbers();
 			contaDigito += titulo.Parent.Cedente.ContaDigito;
 			contaDigito = contaDigito.ZeroFill(11);
 
-			string diasprotesto;
-			if (titulo.DataProtesto.HasValue)
-				diasprotesto = string.Format("{0:00}", titulo.DataProtesto.Value.Date.Subtract(titulo.Vencimento.Date).Days);
-			else
-				diasprotesto = "  ";
+			var diasprotesto = titulo.DataProtesto.HasValue ? string.Format("{0:00}", 
+				titulo.DataProtesto.Value.Date.Subtract(titulo.Vencimento.Date).Days) : "  ";
 
 			var wLinha = new StringBuilder();
 			wLinha.Append('1');                                                            //ID Registro
@@ -932,48 +946,164 @@ namespace ACBr.Net.Boleto.Bancos
         {
 			Guard.Against<ACBrException>(aRetorno[0].ExtrairInt32DaPosicao(77, 79) != Numero,
 				"{0} não é um arquivo de retorno do {1}", Banco.Parent.NomeArqRetorno, Nome);
-        }
 
-		/// <summary>
-		/// Gerars the registro header240.
-		/// </summary>
-		/// <param name="numeroRemessa">The numero remessa.</param>
-		/// <returns>System.String.</returns>
-        public override string GerarRegistroHeader240(int numeroRemessa)
-        {
-			return string.Empty;
-        }
+			var rCedente = aRetorno[0].ExtrairDaPosicao(47, 76);
+			var rCodigoCedente = aRetorno[0].ExtrairInt32DaPosicao(109, 118);
+			var rAgencia = aRetorno[0].ExtrairDaPosicao(28, 31);
+			var rConta = aRetorno[0].ExtrairDaPosicao(38, 43);
+			var rDigitoConta  = aRetorno[0].ExtrairDaPosicao(44);
 
-		/// <summary>
-		/// Gerars the registro transacao240.
-		/// </summary>
-		/// <param name="titulo">The titulo.</param>
-		/// <returns>System.String.</returns>
-        public override string GerarRegistroTransacao240(Titulo titulo)
-        {
-			return string.Empty;
-        }
+			var cnr = aRetorno[0].ExtrairDaPosicao(12, 26) == "COBRANCA CNR";
+			
+			Banco.Parent.NumeroArquivo = aRetorno[0].ExtrairInt32DaPosicao(389, 393);
+			Banco.Parent.DataArquivo = aRetorno[0].ExtrairDataDaPosicao(95, 100, "ddMMyy");
 
-		/// <summary>
-		/// Gerars the registro trailler240.
-		/// </summary>
-		/// <param name="aRemessa">A remessa.</param>
-		/// <returns>System.String.</returns>
-        public override string GerarRegistroTrailler240(List<string> aRemessa)
-        {
-			return string.Empty;
-        }
+			if (!cnr)
+				Banco.Parent.DataCreditoLanc = aRetorno[0].ExtrairDataDaPosicao(120, 125, "ddMMyy");
 
-		/// <summary>
-		/// Lers the retorno240.
-		/// </summary>
-		/// <param name="aRetorno">A retorno.</param>
-		/// <exception cref="ACBrException">@CNPJ\CPF do arquivo inválido</exception>
-		/// <exception cref="ACBrException">@CNPJ\CPF do arquivo inválido</exception>
-        public override void LerRetorno240(List<string> aRetorno)
-        {
-            Guard.Against<ACBrException>(aRetorno[0].ExtrairInt32DaPosicao(1, 3) != Numero,
-				"{0} não é um arquivo de retorno do {1}'", Banco.Parent.NomeArqRetorno, Nome);
+			string rCNPJCPF;
+			switch (aRetorno[1].ExtrairInt32DaPosicao(2, 3))
+			{
+				case 11:
+					rCNPJCPF = aRetorno[1].ExtrairDaPosicao(7, 17);
+					break;
+
+				case 14:
+					rCNPJCPF = aRetorno[1].ExtrairDaPosicao(4, 17);
+					break;
+
+				default:
+					rCNPJCPF = string.Empty;
+					break;
+			}
+
+			if (!rCNPJCPF.IsEmpty())
+			{
+				Guard.Against<ACBrException>(
+					Banco.Parent.LeCedenteRetorno && rCNPJCPF != Banco.Parent.Cedente.CNPJCPF.OnlyNumbers(),
+					"CNPJ\\CPF do arquivo inválido");
+			}
+
+			Guard.Against<ACBrException>(
+				!Banco.Parent.LeCedenteRetorno && rCodigoCedente != Banco.Parent.Cedente.CodigoCedente.OnlyNumbers().ToInt32(),
+				"Cedente do arquivo inválido{0}Informado = {1}{0}Esperado = {2}", Environment.NewLine,
+				Banco.Parent.Cedente.CodigoCedente.OnlyNumbers(), rCodigoCedente);
+
+			Guard.Against<ACBrException>(
+				!Banco.Parent.LeCedenteRetorno && rAgencia != Banco.Parent.Cedente.Agencia.OnlyNumbers(),
+				"Agencia do arquivo inválido{0}Informado = {1}{0}Esperado = {2}", Environment.NewLine,
+				Banco.Parent.Cedente.Agencia.OnlyNumbers(), rAgencia);
+
+			Guard.Against<ACBrException>(
+				!Banco.Parent.LeCedenteRetorno && rConta != Banco.Parent.Cedente.Conta.OnlyNumbers(),
+				"Conta do arquivo inválido{0}Informado = {1}{0}Esperado = {2}", Environment.NewLine,
+				Banco.Parent.Cedente.Conta.OnlyNumbers(), rConta);
+
+			if (Banco.Parent.LeCedenteRetorno)
+			{
+				Banco.Parent.Cedente.Nome = rCedente;
+				if (!cnr)
+					Banco.Parent.Cedente.CNPJCPF = rCNPJCPF;
+				
+				Banco.Parent.Cedente.Agencia = rAgencia;
+				Banco.Parent.Cedente.AgenciaDigito = "";
+				Banco.Parent.Cedente.Conta = rConta;
+				Banco.Parent.Cedente.ContaDigito = rDigitoConta;
+				switch (aRetorno[1].ExtrairInt32DaPosicao(2, 3))
+				{
+					case 11:
+						Banco.Parent.Cedente.TipoInscricao = PessoaCedente.Fisica;
+						break;
+
+					default:
+						Banco.Parent.Cedente.TipoInscricao = PessoaCedente.Juridica;
+						break;
+				}
+			}
+
+			Banco.Parent.ListadeBoletos.Clear();
+			for (var i = 1; i < aRetorno.Count - 2; i++)
+			{
+				var linha = aRetorno[i];
+				if (linha.ExtrairDaPosicao(1, 1) != "1")
+					continue;
+
+				var titulo = Banco.Parent.CriarTituloNaLista();
+				titulo.SeuNumero = cnr ? linha.ExtrairDaPosicao(117, 122) : linha.ExtrairDaPosicao(38, 62);
+
+				titulo.NumeroDocumento = linha.ExtrairDaPosicao(117, 126);
+
+				var codOcorrencia = linha.ExtrairInt32OpcionalDaPosicao(109, 110).HasValue ?
+					                 linha.ExtrairInt32DaPosicao(109, 110) : 0;
+
+				titulo.OcorrenciaOriginal.Tipo = CodOcorrenciaToTipo(codOcorrencia);
+
+				if (codOcorrencia == 19)
+				{
+					var motivoLinha = linha.ExtrairDaPosicao(295);
+					if (motivoLinha == "A")
+					{
+						titulo.MotivoRejeicaoComando.Add(motivoLinha);
+						titulo.DescricaoMotivoRejeicaoComando.Add("A - Aceito");
+					}
+					else
+					{
+						titulo.MotivoRejeicaoComando.Add(motivoLinha);
+						titulo.DescricaoMotivoRejeicaoComando.Add("D - Desprezado");
+					}
+				}
+				else
+				{
+					var ocorrencia = titulo.OcorrenciaOriginal.Tipo;
+					var motivoLinha = 319;
+					for (var j = 0; j < 4; j++)
+					{
+						var codMotivo = linha.ExtrairInt32OpcionalDaPosicao(motivoLinha, motivoLinha + 1).HasValue ?
+										linha.ExtrairInt32DaPosicao(motivoLinha, motivoLinha + 1) : 0;
+
+						//Somente estas ocorrencias possuem motivos 00
+						if (j == 0 && codOcorrencia.IsIn(2, 6, 9, 10, 15, 17))
+						{
+							titulo.MotivoRejeicaoComando.Add(codMotivo.ToString());
+							titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(ocorrencia, codMotivo));
+						}
+						else
+						{
+							//Apos o 1º motivo os 00 significam que não existe mais motivo
+							if (codMotivo == 0)
+							{
+								titulo.MotivoRejeicaoComando.Add("00");
+								titulo.DescricaoMotivoRejeicaoComando.Add("Sem Motivo");
+							}
+							else
+							{
+								titulo.MotivoRejeicaoComando.Add(codMotivo.ToString());
+								titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(ocorrencia, codMotivo));
+							}
+						}
+
+						//Incrementa a coluna dos motivos
+						motivoLinha += 2;
+					}
+				}
+
+				titulo.DataOcorrencia = linha.ExtrairDataDaPosicao(111, 116, "ddMMyy");
+				titulo.Vencimento = linha.ExtrairDataDaPosicao(147, 152, "ddMMyy");
+				if (cnr)
+					titulo.DataCredito = linha.ExtrairDataDaPosicao(83, 88, "ddMMyy");
+
+				titulo.ValorDocumento = linha.ExtrairDecimalDaPosicao(153, 165);
+				titulo.ValorDespesaCobranca = linha.ExtrairDecimalDaPosicao(176, 188);
+				titulo.ValorAbatimento = linha.ExtrairDecimalDaPosicao(228, 240);
+				titulo.ValorDesconto = linha.ExtrairDecimalDaPosicao(241, 253);
+				titulo.ValorRecebido = linha.ExtrairDecimalDaPosicao(254, 266);
+				titulo.ValorMoraJuros = linha.ExtrairDecimalDaPosicao(267, 279);
+
+				titulo.Carteira = linha.ExtrairDaPosicao(108);
+
+				titulo.NossoNumero = cnr ? linha.ExtrairDaPosicao(63, 75) : 
+					                       linha.ExtrairDaPosicao(127, 137);
+			}
         }
 
         #endregion Methods

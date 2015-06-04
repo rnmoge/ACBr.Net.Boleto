@@ -310,7 +310,7 @@ namespace ACBr.Net.Boleto.Bancos
 		/// <param name="aRemessa">A remessa.</param>
         public virtual void GerarRegistroTransacao400(Titulo titulo, List<string> aRemessa)
         {
-            
+			throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
 		/// <summary>
@@ -320,7 +320,7 @@ namespace ACBr.Net.Boleto.Bancos
 		/// <returns>System.String.</returns>
         public virtual string GerarRegistroTransacao240(Titulo titulo)
         {
-            return string.Empty;
+			throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
 		/// <summary>
@@ -329,7 +329,7 @@ namespace ACBr.Net.Boleto.Bancos
 		/// <param name="aRemessa">A remessa.</param>
         public virtual void GerarRegistroTrailler400(List<string> aRemessa)
         {
-            
+			throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
 		/// <summary>
@@ -339,7 +339,7 @@ namespace ACBr.Net.Boleto.Bancos
 		/// <returns>System.String.</returns>
         public virtual string GerarRegistroTrailler240(List<string> aRemessa)
         {
-            return string.Empty;
+			throw new NotImplementedException("Esta função não esta implementada para este banco");
         }
 
 		/// <summary>

@@ -79,7 +79,6 @@ namespace ACBr.Net.Boleto
             NumeroDocumento = string.Empty;
             SeuNumero = string.Empty;
             Vencimento = DateTime.Now;
-            DataProcessamento = DateTime.Now;
             nossonumero = string.Empty;
             UsoBanco = string.Empty;
             carteira = string.Empty;
@@ -158,11 +157,9 @@ namespace ACBr.Net.Boleto
             }
             set
             {
-                int tamanho;
-                if (Parent.Banco.TamanhoMaximoNossoNum > 0)
-                    tamanho = Parent.Banco.TamanhoMaximoNossoNum;
-                else
-                    tamanho = Parent.Banco.CalcularTamMaximoNossoNumero(Carteira, value);
+	            var tamanho = Parent.Banco.TamanhoMaximoNossoNum > 0 ? 
+							  Parent.Banco.TamanhoMaximoNossoNum : 
+		                      Parent.Banco.CalcularTamMaximoNossoNumero(Carteira, value);
 
 	            Guard.Against<ACBrException>(
 					value.Trim().Length > tamanho, "Tamanho Máximo do Nosso Número é: {0}", tamanho);
@@ -314,17 +311,17 @@ namespace ACBr.Net.Boleto
         /// Gets or sets the data ocorrencia.
         /// </summary>
         /// <value>The data ocorrencia.</value>
-        public DateTime DataOcorrencia { get; set; }
+        public DateTime? DataOcorrencia { get; set; }
         /// <summary>
         /// Gets or sets the data credito.
         /// </summary>
         /// <value>The data credito.</value>
-        public DateTime DataCredito { get; set; }
+        public DateTime? DataCredito { get; set; }
         /// <summary>
         /// Gets or sets the data abatimento.
         /// </summary>
         /// <value>The data abatimento.</value>
-        public DateTime DataAbatimento { get; set; }
+        public DateTime? DataAbatimento { get; set; }
         /// <summary>
         /// Gets or sets the data desconto.
         /// </summary>
@@ -344,7 +341,7 @@ namespace ACBr.Net.Boleto
         /// Gets or sets the data baixa.
         /// </summary>
         /// <value>The data baixa.</value>
-        public DateTime DataBaixa { get; set; }
+        public DateTime? DataBaixa { get; set; }
         /// <summary>
         /// Gets or sets the valor despesa cobranca.
         /// </summary>

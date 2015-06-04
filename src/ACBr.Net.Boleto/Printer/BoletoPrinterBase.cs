@@ -140,7 +140,7 @@ namespace ACBr.Net.Boleto.Printer
         /// <summary>
         /// The dirlogo
         /// </summary>
-        protected string dirlogo;
+        protected string Dirlogo;
 
         #endregion fields
 
@@ -152,7 +152,7 @@ namespace ACBr.Net.Boleto.Printer
         protected BoletoPrinterBase()
         {
             Layout = LayoutBoleto.Padrao;
-            dirlogo = string.Empty;
+            Dirlogo = string.Empty;
             MostrarPreview = true;
             MostrarSetup = true;
             NumCopias = 1;
@@ -190,13 +190,13 @@ namespace ACBr.Net.Boleto.Printer
         {
             get
             {
-	            if (string.IsNullOrEmpty(dirlogo.Trim()))
+	            if (string.IsNullOrEmpty(Dirlogo.Trim()))
                     return string.Format(@"{0}\Logos\", Assembly.GetExecutingAssembly().GetPath());
-	            return dirlogo;
+	            return Dirlogo;
             }
 	        set
             {
-                dirlogo = value;
+                Dirlogo = value;
             }
         }
 
@@ -277,11 +277,8 @@ namespace ACBr.Net.Boleto.Printer
         /// </exception>
         public virtual void Imprimir()
         {
-            if (Boleto == null)
-                throw new ACBrException("Componente não está associado ao ACBrBoleto");
-
-            if (Boleto.ListadeBoletos.Count < 1)
-                throw new ACBrException("Lista de Boletos está vazia");
+            Guard.Against<ACBrException>(Boleto == null, "Componente não está associado ao ACBrBoleto");
+			Guard.Against<ACBrException>(Boleto.ListadeBoletos.Count < 1, "Lista de Boletos está vazia");
         }
 
         /// <summary>
@@ -333,32 +330,24 @@ namespace ACBr.Net.Boleto.Printer
         /// <summary>
         /// Função usada para caregar o logo para impressão no boleto.
         /// </summary>
-        /// <param name="PictureLogo">The picture logo.</param>
-        /// <param name="NumeroBanco">The numero banco.</param>
-        public virtual void CarregaLogo(ref Image PictureLogo, int NumeroBanco)
+        /// <param name="pictureLogo">The picture logo.</param>
+        /// <param name="numeroBanco">The numero banco.</param>
+        public virtual void CarregaLogo(ref Image pictureLogo, int numeroBanco)
         {
             if (OnObterLogo != null)
             {
-                var sync = OnObterLogo.Target as ISynchronizeInvoke;
-                var e = new OnObterLogoEventArgs(NumeroBanco);
-
+				var e = new OnObterLogoEventArgs(numeroBanco);
 #if !COM_INTEROP
-                if (sync != null)
-                    sync.Invoke(OnObterLogo, new object[] { this, e });
-                else
-                    OnObterLogo.Invoke(this, e);
+				OnObterLogo.Raise(this, e);
 #else
-				if (sync != null)
-					sync.Invoke(OnObterLogo, new object[] { e });
-				else
-					OnObterLogo.Invoke(e);
+				OnObterLogo.Raise(e);
 #endif
-                PictureLogo = e.Logo;
+				pictureLogo = e.Logo;
             }
             else
             {
                 if (File.Exists(ArquivoLogo))
-                    PictureLogo = Image.FromFile(ArquivoLogo);
+                    pictureLogo = Image.FromFile(ArquivoLogo);
             }
         }
 

@@ -1003,9 +1003,8 @@ namespace ACBr.Net.Boleto.Bancos
         /// Agencia\\Conta do arquivo inválido</exception>
         public override void LerRetorno400(List<string> aRetorno)
         {
-            if(aRetorno[0].ExtrairInt32DaPosicao(77,79) != Numero)
-                throw new ACBrException(string.Format("{0} não é um arquivo de retorno do {1}",
-                                                       Banco.Parent.NomeArqRetorno, Nome));
+            Guard.Against<ACBrException>(aRetorno[0].ExtrairInt32DaPosicao(77,79) != Numero,
+			"{0} não é um arquivo de retorno do {1}", Banco.Parent.NomeArqRetorno, Nome);
             
             var rCodEmpresa = aRetorno[0].ExtrairDaPosicao(27, 46).Trim();
             var rCedente = aRetorno[0].ExtrairDaPosicao(47, 76).Trim();
@@ -1035,12 +1034,12 @@ namespace ACBr.Net.Boleto.Bancos
 
             if(!Banco.Parent.LeCedenteRetorno)
             {
-                if (rCodEmpresa != Banco.Parent.Cedente.CodigoCedente.FillRight(20, '0'))
-                    throw new ACBrException("Código da Empresa do arquivo inválido");
+                Guard.Against<ACBrException>(rCodEmpresa != Banco.Parent.Cedente.CodigoCedente.FillRight(20, '0'),
+					"Código da Empresa do arquivo inválido");
                 
-                if (rAgencia != Banco.Parent.Cedente.Agencia.OnlyNumbers() ||
-                    rConta != Banco.Parent.Cedente.Conta.FillRight(rConta.Length))
-                    throw new ACBrException("Agencia\\Conta do arquivo inválido");
+                Guard.Against<ACBrException>(rAgencia != Banco.Parent.Cedente.Agencia.OnlyNumbers() ||
+                    rConta != Banco.Parent.Cedente.Conta.FillRight(rConta.Length),
+					"Agencia\\Conta do arquivo inválido");
             }
             
             switch(aRetorno[1].ExtrairInt32DaPosicao(2, 3))
