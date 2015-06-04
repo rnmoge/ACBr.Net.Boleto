@@ -49,7 +49,7 @@ namespace ACBr.Net.Boleto
         /// <summary>
         /// The parent
         /// </summary>
-        readonly AcBrBoleto parent;
+        readonly ACBrBoleto parent;
 
         #endregion Fields
 
@@ -59,7 +59,7 @@ namespace ACBr.Net.Boleto
         /// Initializes a new instance of the <see cref="TituloCollection"/> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        internal TituloCollection(AcBrBoleto parent)
+        internal TituloCollection(ACBrBoleto parent)
         {
             this.parent = parent;
         }

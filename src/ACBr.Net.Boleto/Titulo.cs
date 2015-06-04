@@ -63,7 +63,7 @@ namespace ACBr.Net.Boleto
         /// Initializes a new instance of the <see cref="Titulo" /> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        internal Titulo(AcBrBoleto parent)
+        internal Titulo(ACBrBoleto parent)
         {
             Parent = parent;
             OcorrenciaOriginal = new Ocorrencia();
@@ -108,7 +108,7 @@ namespace ACBr.Net.Boleto
         /// Gets the parent.
         /// </summary>
         /// <value>The parent.</value>
-        public AcBrBoleto Parent { get; private set; }
+        public ACBrBoleto Parent { get; private set; }
         /// <summary>
         /// Gets or sets the local pagamento.
         /// </summary>

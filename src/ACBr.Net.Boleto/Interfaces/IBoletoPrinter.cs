@@ -33,7 +33,7 @@ namespace ACBr.Net.Boleto.Interfaces
         /// Gets the boleto.
         /// </summary>
         /// <value>The boleto.</value>
-        AcBrBoleto Boleto { get; }
+        ACBrBoleto Boleto { get; }
         /// <summary>
         /// Gets or sets the dir logo.
         /// </summary>

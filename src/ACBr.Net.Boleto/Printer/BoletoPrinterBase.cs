@@ -178,7 +178,7 @@ namespace ACBr.Net.Boleto.Printer
         /// </summary>
         /// <value>The boleto.</value>
         [Browsable(false)]
-        public virtual AcBrBoleto Boleto { get; internal set; }
+        public virtual ACBrBoleto Boleto { get; internal set; }
 
         /// <summary>
         /// Get/Set Diretorio onde se encontra os logos dos bancos para impressão

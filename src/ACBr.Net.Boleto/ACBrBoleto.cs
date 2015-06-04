@@ -123,8 +123,9 @@ namespace ACBr.Net.Boleto
     /// <summary>
     /// Class ACBrBoleto. This class cannot be inherited.
     /// </summary>
-    [ToolboxBitmap(typeof(AcBrBoleto), @"ACBr.Net.Boleto.ico.bmp")]
-    public sealed class AcBrBoleto : ACBrComponent
+    [ToolboxBitmap(typeof(ACBrBoleto), @"ACBr.Net.Boleto.ico.bmp")]
+    // ReSharper disable once InconsistentNaming
+    public sealed class ACBrBoleto : ACBrComponent
     {
         #region Field
 

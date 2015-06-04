@@ -61,7 +61,7 @@ namespace ACBr.Net.Boleto.Bancos
         /// Initializes a new instance of the <see cref="Banco"/> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        internal Banco(AcBrBoleto parent)
+        internal Banco(ACBrBoleto parent)
         {
             Parent = parent;
             TipoCobranca = TipoCobranca.Nenhum;
@@ -76,7 +76,7 @@ namespace ACBr.Net.Boleto.Bancos
         /// </summary>
         /// <value>The parent.</value>
         [Browsable(false)]
-        public AcBrBoleto Parent { get; private set; }
+        public ACBrBoleto Parent { get; private set; }
 
         /// <summary>
         /// Gets the banco class.

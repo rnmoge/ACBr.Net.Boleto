@@ -69,7 +69,7 @@ namespace ACBr.Net.Boleto
         /// Initializes a new instance of the <see cref="Cedente"/> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        internal Cedente(AcBrBoleto parent)
+        internal Cedente(ACBrBoleto parent)
         {
             Parent = parent;
             TipoDocumento = TipoDocumento.Tradicional;
@@ -105,7 +105,7 @@ namespace ACBr.Net.Boleto
         /// </summary>
         /// <value>The parent.</value>
         [Browsable(false)]
-        public AcBrBoleto Parent { get; private set; }
+        public ACBrBoleto Parent { get; private set; }
 
         /// <summary>
         /// Gets or sets the nome.
