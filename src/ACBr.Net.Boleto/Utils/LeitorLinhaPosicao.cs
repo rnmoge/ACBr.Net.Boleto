@@ -75,6 +75,9 @@ namespace ACBr.Net.Boleto.Utils
 		public static DateTime ExtrairDataDaPosicao(this string linha, int de, int ate, string format = "ddMMyyyy")
         {
 			var valor = linha.ExtrairDaPosicao(de, ate);
+            if (valor == new string('0', valor.Length))
+                return DateTime.MinValue;
+
             return DateTime.ParseExact(valor, format, null);
         }
 
@@ -138,6 +141,9 @@ namespace ACBr.Net.Boleto.Utils
 		public static DateTime? ExtrairDataOpcionalDaPosicao(this string linha, int de, int ate, string format = "ddMMyyyy")
         {
 			var valor = linha.ExtrairDaPosicao(de, ate);
+		    if (valor == new string('0', valor.Length))
+		        return null;
+
             DateTime aux;
             if (DateTime.TryParseExact(valor, format, null, DateTimeStyles.None, out aux))
             {

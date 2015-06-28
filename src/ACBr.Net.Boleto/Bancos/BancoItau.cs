@@ -84,8 +84,8 @@ namespace ACBr.Net.Boleto.Bancos
         /// <returns>System.String.</returns>
         public override string TipoOcorrenciaToDescricao(TipoOcorrencia tipo)
         {
-            var CodOcorrencia = TipoOCorrenciaToCod(tipo).ToInt32();   
-            switch(CodOcorrencia)
+            var codOcorrencia = TipoOCorrenciaToCod(tipo).ToInt32();   
+            switch(codOcorrencia)
             {
                 case 2: return "02-Entrada Confirmada";
                 case 3: return "03-Entrada Rejeitada";
@@ -150,7 +150,7 @@ namespace ACBr.Net.Boleto.Bancos
                 case 72: return "72-Baixa por Crédito em C/C Através do Sispag sem Título Correspondente";
                 case 73: return "73-Confirmação de Entrada na Cobrança Simples - Entrada não Aceita na Cobrança Contratual";
                 case 76: return "76-Cheque Compensado";
-                default: return string.Format("{0:00}-Outras Ocorrencias", CodOcorrencia);
+                default: return string.Format("{0:00}-Outras Ocorrencias", codOcorrencia);
             }
         }
 
@@ -601,15 +601,15 @@ namespace ACBr.Net.Boleto.Bancos
         /// <returns>System.String.</returns>
         public override string CalcularDigitoVerificador(Titulo titulo)
         {
-            string Docto;
+            string docto;
             if (titulo.Carteira.IsIn("116", "117", "119", "134", "135", "136", "104", "147",
                 "105", "112", "212", "166", "113", "126", "131", "145", "150", "168"))
             {
-                Docto = string.Format("{0}{1}", titulo.Carteira, titulo.NossoNumero.FillRight(TamanhoMaximoNossoNum, '0'));
+                docto = string.Format("{0}{1}", titulo.Carteira, titulo.NossoNumero.FillRight(TamanhoMaximoNossoNum, '0'));
             }
             else
             {
-                Docto = String.Format("{0}{1}{2}{3}", titulo.Parent.Cedente.Agencia,
+                docto = String.Format("{0}{1}{2}{3}", titulo.Parent.Cedente.Agencia,
                     titulo.Parent.Cedente.Conta, titulo.Carteira, titulo.NossoNumero.FillRight(TamanhoMaximoNossoNum, '0'));
             }
 
@@ -617,7 +617,7 @@ namespace ACBr.Net.Boleto.Bancos
             Modulo.MultiplicadorFinal = 2;
             Modulo.MultiplicadorAtual = 2;
             Modulo.FormulaDigito = CalcDigFormula.Modulo10;
-            Modulo.Documento = Docto;
+            Modulo.Documento = docto;
             Modulo.Calcular();
             return Modulo.DigitoFinal.ToString();
         }
@@ -640,10 +640,8 @@ namespace ACBr.Net.Boleto.Bancos
         /// <returns>System.String.</returns>
         public override string MontarCampoNossoNumero(Titulo titulo)
         {
-            var NossoNr = titulo.Carteira + titulo.NossoNumero.FillRight(TamanhoMaximoNossoNum, '0');
-            NossoNr.Insert(3, "/");
-            NossoNr.Insert(12, "-");
-            return NossoNr + CalcularDigitoVerificador(titulo);
+            return string.Format(@"{0}/{1}-{2}", titulo.Carteira,
+                titulo.NossoNumero.FillRight(TamanhoMaximoNossoNum, '0'), CalcularDigitoVerificador(titulo));
         }
 
         /// <summary>
@@ -653,17 +651,17 @@ namespace ACBr.Net.Boleto.Bancos
         /// <returns>System.String.</returns>
         public override string MontarCodigoBarras(Titulo titulo)
         {
-            var FatorVencimento = titulo.Vencimento.CalcularFatorVencimento();
-            var ANossoNumero = String.Format("{0}{1}{2}", titulo.Carteira, titulo.NossoNumero.FillRight(8, '0'),
+            var fatorVencimento = titulo.Vencimento.CalcularFatorVencimento();
+            var aNossoNumero = String.Format("{0}{1}{2}", titulo.Carteira, titulo.NossoNumero.FillRight(8, '0'),
                 CalcularDigitoVerificador(titulo));
-            var aAgenciaCC = String.Format("{0}{1}{2}", titulo.Parent.Cedente.Agencia,
+            var aAgenciaCc = String.Format("{0}{1}{2}", titulo.Parent.Cedente.Agencia,
                 titulo.Parent.Cedente.Conta, titulo.Parent.Cedente.ContaDigito); 
 
-            var CodigoBarras = string.Format("{0:000}9{1}{2}{3}{4}000", Numero, FatorVencimento,
-                       titulo.ValorDocumento.ToDecimalString(10), ANossoNumero, aAgenciaCC);
+            var codigoBarras = string.Format("{0:000}9{1}{2}{3}{4}000", Numero, fatorVencimento,
+                       titulo.ValorDocumento.ToDecimalString(10), aNossoNumero, aAgenciaCc);
 
-            var DigitoCodBarras = CalcularDigitoCodigoBarras(CodigoBarras);
-            return CodigoBarras.Insert(4, DigitoCodBarras);
+            var digitoCodBarras = CalcularDigitoCodigoBarras(codigoBarras);
+            return codigoBarras.Insert(4, digitoCodBarras);
         }
 
         /// <summary>
@@ -706,72 +704,72 @@ namespace ACBr.Net.Boleto.Bancos
         /// <exception cref="System.NotImplementedException">Esta função não esta implementada para este banco</exception>
         public override string GerarRegistroHeader240(int numeroRemessa)
         {
-			string ATipoInscricao;
+			string aTipoInscricao;
 			switch (Banco.Parent.Cedente.TipoInscricao)
 			{
-				case PessoaCedente.Fisica: ATipoInscricao = "1"; break;
-				default: ATipoInscricao = "2"; break;
+				case PessoaCedente.Fisica: aTipoInscricao = "1"; break;
+				default: aTipoInscricao = "2"; break;
 			}
 
 			var cedente = Banco.Parent.Cedente;
-			var Result = new StringBuilder();
+			var result = new StringBuilder();
 
 			//GERAR REGISTRO-HEADER DO ARQUIVO
-			Result.AppendFormat("{0:000}", Banco.Numero);		//1 a 3 - Código do banco
-			Result.Append("0000");								//4 a 7 - Lote de serviço
-			Result.Append("0");									//8 - Tipo de registro - Registro header de arquivo
-            Result.Append("".FillLeft(9));						//9 a 17 Uso exclusivo FEBRABAN/CNAB
-            Result.Append(ATipoInscricao);						//18 - Tipo de inscrição do cedente
-            Result.Append(cedente.CNPJCPF.ZeroFill(14));		//19 a 32 -Número de inscrição do cedente
-            Result.Append("".FillLeft(20));						//33 a 52 - Brancos
-            Result.Append("0");									//53 - Zeros
-            Result.Append(cedente.Agencia.ZeroFill(4));			//54 a 57 - Código da agência do cedente
-            Result.Append(" ");									//58 - Brancos
-            Result.Append("0000000");							//59 a 65 - Zeros
-            Result.Append(cedente.Conta.ZeroFill(5));			//66 a 70 - Número da conta do cedente
-            Result.Append(" ");									//71 - Branco
-            Result.Append(cedente.ContaDigito.ZeroFill(1));		//72 - Dígito da conta do cedente
-            Result.Append(cedente.Nome.FillLeft(30));			//73 a 102 - Nome do cedente
-            Result.Append("BANCO ITAU SA".PadLeft(30));			//103 a 132 - Nome do banco
-            Result.Append("".FillLeft(10));						//133 A 142 - Brancos
-            Result.Append("1");                                 //143 - Código de Remessa (1) / Retorno (2)
-            Result.AppendFormat("{0:ddMMyyyy}", DateTime.Now);  //144 a 151 - Data do de geração do arquivo
-            Result.AppendFormat("{0:hhmmss}", DateTime.Now);    //152 a 157 - Hora de geração do arquivo
-			Result.Append("000000");                            //158 a 163 - Número sequencial do arquivo retorno
-            Result.Append("040");                               //164 a 166 - Número da versão do layout do arquivo
-            Result.Append("00000");                             //167 a 171 - Zeros
-            Result.Append("".FillLeft(54));                     //172 a 225 - 54 Brancos
-            Result.Append("000");                               //226 a 228 - zeros
-            Result.Append("".FillLeft(12));                     //229 a 240 - Brancos
+			result.AppendFormat("{0:000}", Banco.Numero);		//1 a 3 - Código do banco
+			result.Append("0000");								//4 a 7 - Lote de serviço
+			result.Append("0");									//8 - Tipo de registro - Registro header de arquivo
+            result.Append("".FillLeft(9));						//9 a 17 Uso exclusivo FEBRABAN/CNAB
+            result.Append(aTipoInscricao);						//18 - Tipo de inscrição do cedente
+            result.Append(cedente.CNPJCPF.ZeroFill(14));		//19 a 32 -Número de inscrição do cedente
+            result.Append("".FillLeft(20));						//33 a 52 - Brancos
+            result.Append("0");									//53 - Zeros
+            result.Append(cedente.Agencia.ZeroFill(4));			//54 a 57 - Código da agência do cedente
+            result.Append(" ");									//58 - Brancos
+            result.Append("0000000");							//59 a 65 - Zeros
+            result.Append(cedente.Conta.ZeroFill(5));			//66 a 70 - Número da conta do cedente
+            result.Append(" ");									//71 - Branco
+            result.Append(cedente.ContaDigito.ZeroFill(1));		//72 - Dígito da conta do cedente
+            result.Append(cedente.Nome.FillLeft(30));			//73 a 102 - Nome do cedente
+            result.Append("BANCO ITAU SA".PadLeft(30));			//103 a 132 - Nome do banco
+            result.Append("".FillLeft(10));						//133 A 142 - Brancos
+            result.Append("1");                                 //143 - Código de Remessa (1) / Retorno (2)
+            result.AppendFormat("{0:ddMMyyyy}", DateTime.Now);  //144 a 151 - Data do de geração do arquivo
+            result.AppendFormat("{0:hhmmss}", DateTime.Now);    //152 a 157 - Hora de geração do arquivo
+			result.Append("000000");                            //158 a 163 - Número sequencial do arquivo retorno
+            result.Append("040");                               //164 a 166 - Número da versão do layout do arquivo
+            result.Append("00000");                             //167 a 171 - Zeros
+            result.Append("".FillLeft(54));                     //172 a 225 - 54 Brancos
+            result.Append("000");                               //226 a 228 - zeros
+            result.Append("".FillLeft(12));                     //229 a 240 - Brancos
 
 			//GERAR REGISTRO HEADER DO LOTE
-			Result.Append(Environment.NewLine);
-			Result.AppendFormat("{0:000}", Banco.Numero);		//1 a 3 - Código do banco
-            Result.Append("0001");                              //4 a 7 - Lote de serviço
-            Result.Append("1");                                 //8 - Tipo de registro - Registro header de arquivo
-            Result.Append("R");                                 //9 - Tipo de operação: R (Remessa) ou T (Retorno)
-            Result.Append("01");                                //10 a 11 - Tipo de serviço: 01 (Cobrança)
-            Result.Append("00");                                //12 a 13 - Forma de lançamento: preencher com ZEROS no caso de cobrança
-            Result.Append("030");                               //14 a 16 - Número da versão do layout do lote
-            Result.Append(" ");                                 //17 - Uso exclusivo FEBRABAN/CNAB
-            Result.Append(ATipoInscricao);                      //18 - Tipo de inscrição do cedente
-            Result.Append(cedente.CNPJCPF.ZeroFill(15));        //19 a 33 -Número de inscrição do cedente
-            Result.Append("".FillLeft(20));                     //34 a 53 - Brancos
-            Result.Append("0");                                 //54 - Zeros
-            Result.Append(cedente.Agencia.ZeroFill(4));         //55 a 58 - Código da agência do cedente
-            Result.Append(" ");                                 //59
-            Result.Append("0000000");                           //60 a 66
-            Result.Append(cedente.Conta.ZeroFill(5));           //67 a 71 - Número da conta do cedente
-            Result.Append(" ");                                 //72
-            Result.Append(cedente.ContaDigito);                 //73 - Dígito verificador da agência / conta
-			Result.Append(cedente.Nome.FillLeft(30));           //74 a 103 - Nome do cedente
-            Result.Append("".FillLeft(80));                     //104 a 183 - Brancos
-            Result.Append("00000000");                          //184 a 191 - Número sequência do arquivo retorno.
-            Result.AppendFormat("{0:ddMMyyyy}", DateTime.Now);  //192 a 199 - Data de geração do arquivo
-            Result.Append("".ZeroFill(8));                      //200 a 207 - Data do crédito - Só para arquivo retorno
-            Result.Append("".FillLeft(33));                     //208 a 240 - Uso exclusivo FEBRABAN/CNAB
+			result.Append(Environment.NewLine);
+			result.AppendFormat("{0:000}", Banco.Numero);		//1 a 3 - Código do banco
+            result.Append("0001");                              //4 a 7 - Lote de serviço
+            result.Append("1");                                 //8 - Tipo de registro - Registro header de arquivo
+            result.Append("R");                                 //9 - Tipo de operação: R (Remessa) ou T (Retorno)
+            result.Append("01");                                //10 a 11 - Tipo de serviço: 01 (Cobrança)
+            result.Append("00");                                //12 a 13 - Forma de lançamento: preencher com ZEROS no caso de cobrança
+            result.Append("030");                               //14 a 16 - Número da versão do layout do lote
+            result.Append(" ");                                 //17 - Uso exclusivo FEBRABAN/CNAB
+            result.Append(aTipoInscricao);                      //18 - Tipo de inscrição do cedente
+            result.Append(cedente.CNPJCPF.ZeroFill(15));        //19 a 33 -Número de inscrição do cedente
+            result.Append("".FillLeft(20));                     //34 a 53 - Brancos
+            result.Append("0");                                 //54 - Zeros
+            result.Append(cedente.Agencia.ZeroFill(4));         //55 a 58 - Código da agência do cedente
+            result.Append(" ");                                 //59
+            result.Append("0000000");                           //60 a 66
+            result.Append(cedente.Conta.ZeroFill(5));           //67 a 71 - Número da conta do cedente
+            result.Append(" ");                                 //72
+            result.Append(cedente.ContaDigito);                 //73 - Dígito verificador da agência / conta
+			result.Append(cedente.Nome.FillLeft(30));           //74 a 103 - Nome do cedente
+            result.Append("".FillLeft(80));                     //104 a 183 - Brancos
+            result.Append("00000000");                          //184 a 191 - Número sequência do arquivo retorno.
+            result.AppendFormat("{0:ddMMyyyy}", DateTime.Now);  //192 a 199 - Data de geração do arquivo
+            result.Append("".ZeroFill(8));                      //200 a 207 - Data do crédito - Só para arquivo retorno
+            result.Append("".FillLeft(33));                     //208 a 240 - Uso exclusivo FEBRABAN/CNAB
 
-			return Result.ToString().ToUpper();
+			return result.ToString().ToUpper();
         }
 
         /// <summary>
@@ -781,148 +779,148 @@ namespace ACBr.Net.Boleto.Bancos
         /// <param name="aRemessa">A remessa.</param>
         public override void GerarRegistroTransacao400(Titulo titulo, List<string> aRemessa)
         {
-			var DoMontaInstrucoes1 = new Func<string>(() =>
+			var doMontaInstrucoes1 = new Func<string>(() =>
 			{
 				if (titulo.Mensagem.Count < 1)
 					return string.Empty;
 
-				var Result = new StringBuilder();
-				Result.Append(Environment.NewLine); 
-				Result.Append("6");                                         // IDENTIFICAÇÃO DO REGISTRO
-				Result.Append("2");                                         // IDENTIFICAÇÃO DO LAYOUT PARA O REGISTRO
-				Result.Append(titulo.Mensagem[0].FillLeft(69));             // CONTEÚDO DA 1ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+				var result = new StringBuilder();
+				result.Append(Environment.NewLine); 
+				result.Append("6");                                         // IDENTIFICAÇÃO DO REGISTRO
+				result.Append("2");                                         // IDENTIFICAÇÃO DO LAYOUT PARA O REGISTRO
+				result.Append(titulo.Mensagem[0].FillLeft(69));             // CONTEÚDO DA 1ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
 				
 				if(titulo.Mensagem.Count >= 2)
-					Result.Append(titulo.Mensagem[1].FillLeft(69));         // CONTEÚDO DA 2ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+					result.Append(titulo.Mensagem[1].FillLeft(69));         // CONTEÚDO DA 2ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
 				else
-				    Result.Append("".FillLeft(69));                         // CONTEÚDO DO RESTANTE DAS LINHAS
+				    result.Append("".FillLeft(69));                         // CONTEÚDO DO RESTANTE DAS LINHAS
 				
 				if(titulo.Mensagem.Count >= 3)
-					Result.Append(titulo.Mensagem[2].FillLeft(69));         // CONTEÚDO DA 3ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+					result.Append(titulo.Mensagem[2].FillLeft(69));         // CONTEÚDO DA 3ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
 				else
-				    Result.Append("".FillLeft(69));                         // CONTEÚDO DO RESTANTE DAS LINHAS
+				    result.Append("".FillLeft(69));                         // CONTEÚDO DO RESTANTE DAS LINHAS
 				
 				if(titulo.Mensagem.Count >= 4)
-					Result.Append(titulo.Mensagem[3].FillLeft(69));         // CONTEÚDO DA 4ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+					result.Append(titulo.Mensagem[3].FillLeft(69));         // CONTEÚDO DA 4ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
 				else
-				    Result.Append("".FillLeft(69));                         // CONTEÚDO DO RESTANTE DAS LINHAS
+				    result.Append("".FillLeft(69));                         // CONTEÚDO DO RESTANTE DAS LINHAS
 				
 				if(titulo.Mensagem.Count >= 5)
-					Result.Append(titulo.Mensagem[4].FillLeft(69));         // CONTEÚDO DA 5ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
+					result.Append(titulo.Mensagem[4].FillLeft(69));         // CONTEÚDO DA 5ª LINHA DE IMPRESSÃO DA ÁREA "INSTRUÇÕES” DO BOLETO
 				else
-				    Result.Append("".FillLeft(69));                         // CONTEÚDO DO RESTANTE DAS LINHAS
+				    result.Append("".FillLeft(69));                         // CONTEÚDO DO RESTANTE DAS LINHAS
 
-				Result.Append("".FillLeft(47));                             // COMPLEMENTO DO REGISTRO
-				Result.AppendFormat("{0:000000}", aRemessa.Count + 2);      // Nº SEQÜENCIAL DO REGISTRO NO ARQUIVO
+				result.Append("".FillLeft(47));                             // COMPLEMENTO DO REGISTRO
+				result.AppendFormat("{0:000000}", aRemessa.Count + 2);      // Nº SEQÜENCIAL DO REGISTRO NO ARQUIVO
 
-				return Result.ToString().ToUpper();
+				return result.ToString().ToUpper();
 			});
 
 			//Pegando o Tipo de Ocorrencia
-			string ATipoOcorrencia;
+			string aTipoOcorrencia;
 			switch (titulo.OcorrenciaOriginal.Tipo)
 			{
-				case TipoOcorrencia.RemessaBaixar: ATipoOcorrencia = "02"; break;
-				case TipoOcorrencia.RemessaConcederAbatimento: ATipoOcorrencia = "04"; break;
-				case TipoOcorrencia.RemessaCancelarAbatimento: ATipoOcorrencia = "05"; break;
-				case TipoOcorrencia.RemessaAlterarVencimento: ATipoOcorrencia = "06"; break;
-				case TipoOcorrencia.RemessaAlterarUsoEmpresa: ATipoOcorrencia = "07"; break;
-				case TipoOcorrencia.RemessaAlterarSeuNumero: ATipoOcorrencia = "08"; break;
-				case TipoOcorrencia.RemessaProtestar: ATipoOcorrencia = "09"; break;
-				case TipoOcorrencia.RemessaNaoProtestar: ATipoOcorrencia = "10"; break;
-				case TipoOcorrencia.RemessaProtestoFinsFalimentares: ATipoOcorrencia = "11"; break;
-				case TipoOcorrencia.RemessaSustarProtesto: ATipoOcorrencia = "18"; break;
-				case TipoOcorrencia.RemessaOutrasAlteracoes: ATipoOcorrencia = "31"; break;
-				case TipoOcorrencia.RemessaBaixaporPagtoDiretoCedente: ATipoOcorrencia = "34"; break;
-				case TipoOcorrencia.RemessaCancelarInstrucao: ATipoOcorrencia = "35"; break;
-				case TipoOcorrencia.RemessaAlterarVencSustarProtesto: ATipoOcorrencia = "37"; break;
-				case TipoOcorrencia.RemessaCedenteDiscordaSacado: ATipoOcorrencia = "38"; break;
-				case TipoOcorrencia.RemessaCedenteSolicitaDispensaJuros: ATipoOcorrencia = "47"; break;
-				default: ATipoOcorrencia = "01"; break;
+				case TipoOcorrencia.RemessaBaixar: aTipoOcorrencia = "02"; break;
+				case TipoOcorrencia.RemessaConcederAbatimento: aTipoOcorrencia = "04"; break;
+				case TipoOcorrencia.RemessaCancelarAbatimento: aTipoOcorrencia = "05"; break;
+				case TipoOcorrencia.RemessaAlterarVencimento: aTipoOcorrencia = "06"; break;
+				case TipoOcorrencia.RemessaAlterarUsoEmpresa: aTipoOcorrencia = "07"; break;
+				case TipoOcorrencia.RemessaAlterarSeuNumero: aTipoOcorrencia = "08"; break;
+				case TipoOcorrencia.RemessaProtestar: aTipoOcorrencia = "09"; break;
+				case TipoOcorrencia.RemessaNaoProtestar: aTipoOcorrencia = "10"; break;
+				case TipoOcorrencia.RemessaProtestoFinsFalimentares: aTipoOcorrencia = "11"; break;
+				case TipoOcorrencia.RemessaSustarProtesto: aTipoOcorrencia = "18"; break;
+				case TipoOcorrencia.RemessaOutrasAlteracoes: aTipoOcorrencia = "31"; break;
+				case TipoOcorrencia.RemessaBaixaporPagtoDiretoCedente: aTipoOcorrencia = "34"; break;
+				case TipoOcorrencia.RemessaCancelarInstrucao: aTipoOcorrencia = "35"; break;
+				case TipoOcorrencia.RemessaAlterarVencSustarProtesto: aTipoOcorrencia = "37"; break;
+				case TipoOcorrencia.RemessaCedenteDiscordaSacado: aTipoOcorrencia = "38"; break;
+				case TipoOcorrencia.RemessaCedenteSolicitaDispensaJuros: aTipoOcorrencia = "47"; break;
+				default: aTipoOcorrencia = "01"; break;
 			}
 
 			//Pegando o Aceite do Titulo
-			string ATipoAceite;
+			string aTipoAceite;
 			switch (titulo.Aceite)
 			{
-				case AceiteTitulo.Nao: ATipoAceite = "N"; break;
-				default: ATipoAceite = "A"; break;
+				case AceiteTitulo.Nao: aTipoAceite = "N"; break;
+				default: aTipoAceite = "A"; break;
 			}
 
 			//Pegando o tipo de EspecieDoc
-			string ATipoEspecieDoc = string.Empty;
+			var aTipoEspecieDoc = string.Empty;
 			if (titulo.EspecieDoc.Trim() == "DM")
-				ATipoEspecieDoc = "01";
+				aTipoEspecieDoc = "01";
 			else if (titulo.EspecieDoc.Trim() == "NP")
-				ATipoEspecieDoc = "02";
+				aTipoEspecieDoc = "02";
 			else if (titulo.EspecieDoc.Trim() == "NS")
-				ATipoEspecieDoc = "03";
+				aTipoEspecieDoc = "03";
 			else if (titulo.EspecieDoc.Trim() == "ME")
-				ATipoEspecieDoc = "04";
+				aTipoEspecieDoc = "04";
 			else if (titulo.EspecieDoc.Trim() == "RC")
-				ATipoEspecieDoc = "05";
+				aTipoEspecieDoc = "05";
 			else if (titulo.EspecieDoc.Trim() == "CT")
-				ATipoEspecieDoc = "06";
+				aTipoEspecieDoc = "06";
 			else if (titulo.EspecieDoc.Trim() == "CS")
-				ATipoEspecieDoc = "07";
+				aTipoEspecieDoc = "07";
 			else if (titulo.EspecieDoc.Trim() == "DS")
-				ATipoEspecieDoc = "08";
+				aTipoEspecieDoc = "08";
 			else if (titulo.EspecieDoc.Trim() == "LC")
-				ATipoEspecieDoc = "09";
+				aTipoEspecieDoc = "09";
 			else if (titulo.EspecieDoc.Trim() == "ND")
-				ATipoEspecieDoc = "13";
+				aTipoEspecieDoc = "13";
 			else if (titulo.EspecieDoc.Trim() == "DD")
-				ATipoEspecieDoc = "15";
+				aTipoEspecieDoc = "15";
 			else if (titulo.EspecieDoc.Trim() == "EC")
-				ATipoEspecieDoc = "16";
+				aTipoEspecieDoc = "16";
 			else if (titulo.EspecieDoc.Trim() == "PS")
-				ATipoEspecieDoc = "17";
+				aTipoEspecieDoc = "17";
 			else if (titulo.EspecieDoc.Trim() == "DV")
-				ATipoEspecieDoc = "99";
+				aTipoEspecieDoc = "99";
 
 			//Mora Juros
-			string ADataMoraJuros;
+			string aDataMoraJuros;
 			if (titulo.ValorMoraJuros > 0)
 			{
 				if (titulo.DataMoraJuros.HasValue)
-					ADataMoraJuros = string.Format("{0:ddMMyyyy}", titulo.DataMoraJuros);
+					aDataMoraJuros = string.Format("{0:ddMMyyyy}", titulo.DataMoraJuros);
 				else
-					ADataMoraJuros = "".ZeroFill(8);
+					aDataMoraJuros = "".ZeroFill(8);
 			}
 			else
-				ADataMoraJuros = "".ZeroFill(8);
+				aDataMoraJuros = "".ZeroFill(8);
 
 			//Descontos
-			string ADataDesconto;
+			string aDataDesconto;
 			if (titulo.ValorDesconto > 0)
 			{
 				if (titulo.DataDesconto.HasValue)
-					ADataDesconto = string.Format("{0:ddMMyyyy}", titulo.DataDesconto);
+					aDataDesconto = string.Format("{0:ddMMyyyy}", titulo.DataDesconto);
 				else
-					ADataDesconto = "".ZeroFill(8);
+					aDataDesconto = "".ZeroFill(8);
 			}
 			else
-				ADataDesconto = "".ZeroFill(8);
+				aDataDesconto = "".ZeroFill(8);
 
 			//Pegando Tipo Cendete
-			string ATipoCedente;
+			string aTipoCedente;
 			switch(titulo.Parent.Cedente.TipoInscricao)
 			{
-                case PessoaCedente.Fisica: ATipoCedente = "01"; break;
-                default: ATipoCedente = "02"; break;
+                case PessoaCedente.Fisica: aTipoCedente = "01"; break;
+                default: aTipoCedente = "02"; break;
 			}
 
 			//Pegando Tipo de Sacado
-			string ATipoSacado;
+			string aTipoSacado;
 			switch (titulo.Sacado.Pessoa)
 			{
-				case Pessoa.Fisica: ATipoSacado = "01"; break;
-				case Pessoa.Juridica: ATipoSacado = "02"; break;
-				default: ATipoSacado = "99"; break;
+				case Pessoa.Fisica: aTipoSacado = "01"; break;
+				case Pessoa.Juridica: aTipoSacado = "02"; break;
+				default: aTipoSacado = "99"; break;
 			}
 
 			//endereco
-			string end = string.Format("{0} {1} {2}", titulo.Sacado.Logradouro, 
+			var end = string.Format("{0} {1} {2}", titulo.Sacado.Logradouro, 
 					titulo.Sacado.Numero, titulo.Sacado.Complemento).FillLeft(40);
 
 			var wLinha = new StringBuilder();
@@ -930,7 +928,7 @@ namespace ACBr.Net.Boleto.Bancos
 			//Cobrança sem registro com opção de envio de arquivo remessa
 			if (titulo.Carteira.Trim().IsIn("102", "103", "107", "172", "173", "196"))
 			{
-				string ANossoNumero = Banco.MontarCampoNossoNumero(titulo);		
+				var aNossoNumero = Banco.MontarCampoNossoNumero(titulo);		
 
 				wLinha.Append("6");                                                               // 6 - FIXO
                 wLinha.Append("1");                                                               // 1 - FIXO
@@ -940,18 +938,18 @@ namespace ACBr.Net.Boleto.Bancos
                 wLinha.Append(titulo.Parent.Cedente.ContaDigito.ZeroFill(1));                     // DÍGITO DE AUTO CONFERÊNCIA AG/CONTA EMPRESA
                 wLinha.Append(titulo.Carteira.Trim());                                            // NÚMERO DA CARTEIRA NO BANCO
                 wLinha.Append(titulo.NossoNumero.ZeroFill(8));                                    // IDENTIFICAÇÃO DO TÍTULO NO BANCO
-                wLinha.Append(ANossoNumero[ANossoNumero.Length-1]);					              // DAC DO NOSSO NÚMERO
+                wLinha.Append(aNossoNumero[aNossoNumero.Length-1]);					              // DAC DO NOSSO NÚMERO
                 wLinha.Append("0");                                                               // 0 - R$
                 wLinha.Append("R$".FillLeft(4));                                                  // LITERAL DE MOEDA
                 wLinha.Append(titulo.ValorDocumento.ToDecimalString(13));                         // VALOR NOMINAL DO TÍTULO
                 wLinha.Append(titulo.SeuNumero.FillLeft(10));                                     // IDENTIFICAÇÃO DO TÍTULO NA EMPRESA
                 wLinha.AppendFormat("{0:ddMMyy}", titulo.Vencimento);                             // DATA DE VENCIMENTO DO TÍTULO
-				wLinha.Append(ATipoEspecieDoc.ZeroFill(2));                                       // ESPÉCIE DO TÍTULO
-				wLinha.Append(ATipoAceite);                                                       // IDENTIFICAÇÃO DE TITILO ACEITO OU NÃO ACEITO
+				wLinha.Append(aTipoEspecieDoc.ZeroFill(2));                                       // ESPÉCIE DO TÍTULO
+				wLinha.Append(aTipoAceite);                                                       // IDENTIFICAÇÃO DE TITILO ACEITO OU NÃO ACEITO
                 wLinha.AppendFormat("{0:ddMMyy}", titulo.DataDocumento);                          // DATA DE EMISSÃO
                    
 				//Dados do sacado
-                wLinha.Append(ATipoSacado);                                                       // IDENTIFICAÇÃO DO TIPO DE INSCRIÇÃO/SACADO
+                wLinha.Append(aTipoSacado);                                                       // IDENTIFICAÇÃO DO TIPO DE INSCRIÇÃO/SACADO
                 wLinha.Append(titulo.Sacado.CNPJCPF.ZeroFill(15));                                // Nº DE INSCRIÇÃO DO SACADO  (CPF/CGC)
                 wLinha.Append(titulo.Sacado.NomeSacado.FillLeft(30));                             // NOME DO SACADO
                 wLinha.Append("".FillLeft(9));                                                    // BRANCOS(COMPLEMENTO DE REGISTRO)
@@ -971,13 +969,13 @@ namespace ACBr.Net.Boleto.Bancos
                  wLinha.Append("".FillLeft(31));                                                  // COMPLEMENTO DO REGISTRO
                  wLinha.AppendFormat("{0:000000}", aRemessa.Count + 1);
 
-				wLinha.Append(DoMontaInstrucoes1());
+				wLinha.Append(doMontaInstrucoes1());
 			}
 			else
 			{
 				//Carteira com registro
 				wLinha.Append("1");                                                               // 1 a 1 - IDENTIFICAÇÃO DO REGISTRO TRANSAÇÃO
-                wLinha.Append(ATipoCedente);                                                      // TIPO DE INSCRIÇÃO DA EMPRESA
+                wLinha.Append(aTipoCedente);                                                      // TIPO DE INSCRIÇÃO DA EMPRESA
 				wLinha.Append(titulo.Parent.Cedente.CNPJCPF.OnlyNumbers().ZeroFill(14));          // Nº DE INSCRIÇÃO DA EMPRESA (CPF/CGC)
 				wLinha.Append(titulo.Parent.Cedente.Agencia.OnlyNumbers().ZeroFill(4));           // AGÊNCIA MANTENEDORA DA CONTA
 				wLinha.Append("00");                                                              // COMPLEMENTO DE REGISTRO
@@ -991,26 +989,26 @@ namespace ACBr.Net.Boleto.Bancos
 				wLinha.Append(titulo.Carteira);                                                   // NÚMERO DA CARTEIRA NO BANCO
 				wLinha.Append("".FillLeft(21));                                                   // IDENTIFICAÇÃO DA OPERAÇÃO NO BANCO
                 wLinha.Append("I");                                                               // CÓDIGO DA CARTEIRA
-                wLinha.Append(ATipoOcorrencia);                                                   // IDENTIFICAÇÃO DA OCORRÊNCIA
+                wLinha.Append(aTipoOcorrencia);                                                   // IDENTIFICAÇÃO DA OCORRÊNCIA
                 wLinha.Append(titulo.NumeroDocumento.FillLeft(10));                               // Nº DO DOCUMENTO DE COBRANÇA (DUPL.,NP ETC.)
                 wLinha.AppendFormat("{0:ddMMyy}", titulo.Vencimento);                             // DATA DE VENCIMENTO DO TÍTULO
                 wLinha.Append(titulo.ValorDocumento.ToDecimalString());                           // VALOR NOMINAL DO TÍTULO
 				wLinha.AppendFormat("{0:000}", Banco.Numero);                                     // Nº DO BANCO NA CÂMARA DE COMPENSAÇÃO
                 wLinha.Append("00000");                                                           // AGÊNCIA ONDE O TÍTULO SERÁ COBRADO
-                wLinha.Append(ATipoEspecieDoc.ZeroFill(2));                                       // ESPÉCIE DO TÍTULO
-                wLinha.Append(ATipoAceite);                                                       // IDENTIFICAÇÃO DE TITILO ACEITO OU NÃO ACEITO
+                wLinha.Append(aTipoEspecieDoc.ZeroFill(2));                                       // ESPÉCIE DO TÍTULO
+                wLinha.Append(aTipoAceite);                                                       // IDENTIFICAÇÃO DE TITILO ACEITO OU NÃO ACEITO
                 wLinha.AppendFormat("{0:ddMMyy}", titulo.DataDocumento);                          // DATA DA EMISSÃO DO TÍTULO
                 wLinha.Append(titulo.Instrucao1.Trim().ZeroFill(2));                              // 1ª INSTRUÇÃO
                 wLinha.Append(titulo.Instrucao2.Trim().ZeroFill(2));                              // 2ª INSTRUÇÃO
                 wLinha.Append(titulo.ValorMoraJuros.ToDecimalString());                           // VALOR DE MORA POR DIA DE ATRASO
-                wLinha.Append(ADataDesconto);                                                     // DATA LIMITE PARA CONCESSÃO DE DESCONTO
+                wLinha.Append(aDataDesconto);                                                     // DATA LIMITE PARA CONCESSÃO DE DESCONTO
 				wLinha.Append(titulo.ValorDesconto > 0 ? titulo.ValorDesconto.ToDecimalString() :
                          "".ZeroFill(13));                                                        // VALOR DO DESCONTO A SER CONCEDIDO
                 wLinha.Append(titulo.ValorIOF.ToDecimalString());                                 // VALOR DO I.O.F. RECOLHIDO P/ NOTAS SEGURO
                 wLinha.Append(titulo.ValorAbatimento.ToDecimalString());                          // VALOR DO ABATIMENTO A SER CONCEDIDO
 
                    //Dados do sacado
-                wLinha.Append(ATipoSacado);                                                       // IDENTIFICAÇÃO DO TIPO DE INSCRIÇÃO/SACADO
+                wLinha.Append(aTipoSacado);                                                       // IDENTIFICAÇÃO DO TIPO DE INSCRIÇÃO/SACADO
                 wLinha.Append(titulo.Sacado.CNPJCPF.OnlyNumbers().ZeroFill(14));                  // Nº DE INSCRIÇÃO DO SACADO  (CPF/CGC)
                 wLinha.Append(titulo.Sacado.NomeSacado.FillLeft(30));                             // NOME DO SACADO
                 wLinha.Append("".FillLeft(10));                                                   // BRANCOS(COMPLEMENTO DE REGISTRO)
@@ -1023,7 +1021,7 @@ namespace ACBr.Net.Boleto.Bancos
                    //Dados do sacador/avalista
                 wLinha.Append("".FillLeft(30));                                                   // NOME DO SACADOR/AVALISTA
                 wLinha.Append("".FillLeft(4));                                                    // COMPLEMENTO DO REGISTRO
-                wLinha.Append(ADataMoraJuros);                                                    // DATA DE MORA
+                wLinha.Append(aDataMoraJuros);                                                    // DATA DE MORA
                 wLinha.Append(titulo.DataProtesto.HasValue && titulo.DataProtesto > titulo.Vencimento ?
 					titulo.DataProtesto.Value.Date.Subtract(titulo.Vencimento.Date).Days.ToString("00") :
 				    "00");                                                                        // PRAZO
@@ -1043,149 +1041,149 @@ namespace ACBr.Net.Boleto.Bancos
 		public override string GerarRegistroTransacao240(Titulo titulo)
 		{
 			//Pegando o Tipo de Ocorrencia
-			string ATipoOcorrencia;
+			string aTipoOcorrencia;
 			switch (titulo.OcorrenciaOriginal.Tipo)
 			{
-				case TipoOcorrencia.RemessaBaixar: ATipoOcorrencia = "02"; break;
-				case TipoOcorrencia.RemessaConcederAbatimento: ATipoOcorrencia = "04"; break;
-				case TipoOcorrencia.RemessaCancelarAbatimento: ATipoOcorrencia = "05"; break;
-				case TipoOcorrencia.RemessaAlterarVencimento: ATipoOcorrencia = "06"; break;
-				case TipoOcorrencia.RemessaSustarProtesto: ATipoOcorrencia = "18"; break;
-				case TipoOcorrencia.RemessaCancelarInstrucaoProtesto: ATipoOcorrencia = "10"; break;
-				default: ATipoOcorrencia = "01"; break;
+				case TipoOcorrencia.RemessaBaixar: aTipoOcorrencia = "02"; break;
+				case TipoOcorrencia.RemessaConcederAbatimento: aTipoOcorrencia = "04"; break;
+				case TipoOcorrencia.RemessaCancelarAbatimento: aTipoOcorrencia = "05"; break;
+				case TipoOcorrencia.RemessaAlterarVencimento: aTipoOcorrencia = "06"; break;
+				case TipoOcorrencia.RemessaSustarProtesto: aTipoOcorrencia = "18"; break;
+				case TipoOcorrencia.RemessaCancelarInstrucaoProtesto: aTipoOcorrencia = "10"; break;
+				default: aTipoOcorrencia = "01"; break;
 			}
 
 			//Pegando o Aceite do Titulo
-			string ATipoAceite;
+			string aTipoAceite;
 			switch (titulo.Aceite)
 			{
-				case AceiteTitulo.Nao: ATipoAceite = "N"; break;
-				default: ATipoAceite = "A"; break;
+				case AceiteTitulo.Nao: aTipoAceite = "N"; break;
+				default: aTipoAceite = "A"; break;
 			}
 
 			//Mora Juros
-			string ADataMoraJuros;
+			string aDataMoraJuros;
 			if (titulo.ValorMoraJuros > 0)
 			{
 				if (titulo.DataMoraJuros.HasValue)
-					ADataMoraJuros = string.Format("{0:ddMMyyyy}", titulo.DataMoraJuros);
+					aDataMoraJuros = string.Format("{0:ddMMyyyy}", titulo.DataMoraJuros);
 				else
-					ADataMoraJuros = "".ZeroFill(8);
+					aDataMoraJuros = "".ZeroFill(8);
 			}
 			else
-				ADataMoraJuros = "".ZeroFill(8);
+				aDataMoraJuros = "".ZeroFill(8);
 
 			//Descontos
-			string ADataDesconto;
+			string aDataDesconto;
 			if (titulo.ValorDesconto > 0)
 			{
 				if (titulo.DataDesconto.HasValue)
-					ADataDesconto = string.Format("{0:ddMMyyyy}", titulo.DataDesconto);
+					aDataDesconto = string.Format("{0:ddMMyyyy}", titulo.DataDesconto);
 				else
-					ADataDesconto = "".ZeroFill(8);
+					aDataDesconto = "".ZeroFill(8);
 			}
 			else
-				ADataDesconto = "".ZeroFill(8);
+				aDataDesconto = "".ZeroFill(8);
 
 			//Index boleto
-			string AIndex = string.Format("{0:00000}", titulo.Parent.ListadeBoletos.IndexOf(titulo) + 1);
+			var aIndex = string.Format("{0:00000}", titulo.Parent.ListadeBoletos.IndexOf(titulo) + 1);
 
 			//Data Protesto
-			string ADataProtesto;
+			string aDataProtesto;
 			if (titulo.DataProtesto.HasValue && titulo.DataProtesto > titulo.Vencimento)
-				ADataProtesto = string.Format("{0:dd}", titulo.DataProtesto.Value.Date.Subtract(titulo.Vencimento.Date));
+				aDataProtesto = string.Format("{0:dd}", titulo.DataProtesto.Value.Date.Subtract(titulo.Vencimento.Date));
 			else
-				ADataProtesto = "00";
+				aDataProtesto = "00";
 
-			var Result = new StringBuilder();
-			Result.AppendFormat("{0:000}", Banco.Numero);						   //1 a 3 - Código do banco
-			Result.Append("0001");                                                 //4 a 7 - Lote de serviço
-			Result.Append("3");                                                    //8 - Tipo do registro: Registro detalhe
-			Result.Append(AIndex);												   //9 a 13 - Número seqüencial do registro no lote - Cada registro possui dois segmentos
-			Result.Append("P");                                                    //14 - Código do segmento do registro detalhe
-			Result.Append(" ");                                                    //15 - Uso exclusivo FEBRABAN/CNAB: Branco
-			Result.Append(ATipoOcorrencia);                                        //16 a 17 - Código de movimento
-			Result.Append("0");                                                    //18
-			Result.Append(titulo.Parent.Cedente.Agencia.ZeroFill(4));              //19 a 22 - Agência mantenedora da conta
-			Result.Append(" ");                                                    //23
-			Result.Append("0000000");                                              //24 a 30 - Complemento de Registro
-			Result.Append(titulo.Parent.Cedente.Conta.ZeroFill(5));				   //31 a 35 - Número da Conta Corrente
-			Result.Append(" ");                                                    //36
-			Result.Append(titulo.Parent.Cedente.ContaDigito);                      //37 - Dígito verificador da agência / conta
-			Result.Append(titulo.Carteira);                                        //38 a 40 - Carteira
-			Result.Append(titulo.NossoNumero.ZeroFill(8));                         //41 a 48 - Nosso número - identificação do título no banco
-			Result.Append(CalcularDigitoVerificador(titulo));                      //49 - Dígito verificador da agência / conta preencher somente em cobrança sem registro
-			Result.Append("".FillLeft(8));                                         //50 a 57 - Brancos
-			Result.Append("".ZeroFill(5));                                         //58 a 62 - Complemento
-			Result.Append(titulo.NumeroDocumento.FillLeft(10));                    //63 a 72 - Número que identifica o título na empresa [ Alterado conforme instruções da CSO Brasília ] {27-07-09}
-			Result.Append("".FillLeft(5));                                         //73 a 77 - Brancos
-			Result.AppendFormat("{0:ddMMyyyy}", titulo.Vencimento);                //78 a 85 - Data de vencimento do título
-			Result.Append(titulo.ValorDocumento.ToDecimalString(15));              //86 a 100 - Valor nominal do título
-			Result.Append("00000");                                                //101 a 105 - Agência cobradora. // Ficando com Zeros o Itaú definirá a agência cobradora pelo CEP do sacado
-			Result.Append(" ");                                                    //106 - Dígito da agência cobradora
-			Result.Append(titulo.EspecieDoc.FillLeft(2));                                                  // 107 a 108 - Espécie do documento
-			Result.Append(ATipoAceite);											   //109 - Identificação de título Aceito / Não aceito
-			Result.AppendFormat("{0:ddMMyyyy}", titulo.DataDocumento);             //110 a 117 - Data da emissão do documento
-			Result.Append("0");                                                    //118 - Zeros
-			Result.Append(ADataMoraJuros);                                         //119 a 126 - Data a partir da qual serão cobrados juros
-			Result.Append(titulo.ValorMoraJuros > 0 ?
+			var result = new StringBuilder();
+			result.AppendFormat("{0:000}", Banco.Numero);						   //1 a 3 - Código do banco
+			result.Append("0001");                                                 //4 a 7 - Lote de serviço
+			result.Append("3");                                                    //8 - Tipo do registro: Registro detalhe
+			result.Append(aIndex);												   //9 a 13 - Número seqüencial do registro no lote - Cada registro possui dois segmentos
+			result.Append("P");                                                    //14 - Código do segmento do registro detalhe
+			result.Append(" ");                                                    //15 - Uso exclusivo FEBRABAN/CNAB: Branco
+			result.Append(aTipoOcorrencia);                                        //16 a 17 - Código de movimento
+			result.Append("0");                                                    //18
+			result.Append(titulo.Parent.Cedente.Agencia.ZeroFill(4));              //19 a 22 - Agência mantenedora da conta
+			result.Append(" ");                                                    //23
+			result.Append("0000000");                                              //24 a 30 - Complemento de Registro
+			result.Append(titulo.Parent.Cedente.Conta.ZeroFill(5));				   //31 a 35 - Número da Conta Corrente
+			result.Append(" ");                                                    //36
+			result.Append(titulo.Parent.Cedente.ContaDigito);                      //37 - Dígito verificador da agência / conta
+			result.Append(titulo.Carteira);                                        //38 a 40 - Carteira
+			result.Append(titulo.NossoNumero.ZeroFill(8));                         //41 a 48 - Nosso número - identificação do título no banco
+			result.Append(CalcularDigitoVerificador(titulo));                      //49 - Dígito verificador da agência / conta preencher somente em cobrança sem registro
+			result.Append("".FillLeft(8));                                         //50 a 57 - Brancos
+			result.Append("".ZeroFill(5));                                         //58 a 62 - Complemento
+			result.Append(titulo.NumeroDocumento.FillLeft(10));                    //63 a 72 - Número que identifica o título na empresa [ Alterado conforme instruções da CSO Brasília ] {27-07-09}
+			result.Append("".FillLeft(5));                                         //73 a 77 - Brancos
+			result.AppendFormat("{0:ddMMyyyy}", titulo.Vencimento);                //78 a 85 - Data de vencimento do título
+			result.Append(titulo.ValorDocumento.ToDecimalString(15));              //86 a 100 - Valor nominal do título
+			result.Append("00000");                                                //101 a 105 - Agência cobradora. // Ficando com Zeros o Itaú definirá a agência cobradora pelo CEP do sacado
+			result.Append(" ");                                                    //106 - Dígito da agência cobradora
+			result.Append(titulo.EspecieDoc.FillLeft(2));                                                  // 107 a 108 - Espécie do documento
+			result.Append(aTipoAceite);											   //109 - Identificação de título Aceito / Não aceito
+			result.AppendFormat("{0:ddMMyyyy}", titulo.DataDocumento);             //110 a 117 - Data da emissão do documento
+			result.Append("0");                                                    //118 - Zeros
+			result.Append(aDataMoraJuros);                                         //119 a 126 - Data a partir da qual serão cobrados juros
+			result.Append(titulo.ValorMoraJuros > 0 ?
 				titulo.ValorMoraJuros.ToDecimalString(15) : "".ZeroFill(15));      //127 a 141 - Valor de juros de mora por dia
-			Result.Append("0");                                                    //142 - Zeros
-			Result.Append(ADataDesconto);                                          //143 a 150 - Data limite para desconto
-			Result.Append(titulo.ValorDesconto > 0 ?
+			result.Append("0");                                                    //142 - Zeros
+			result.Append(aDataDesconto);                                          //143 a 150 - Data limite para desconto
+			result.Append(titulo.ValorDesconto > 0 ?
 				titulo.ValorDesconto.ToDecimalString(15) : "".ZeroFill(15));       //151 a 165 - Valor do desconto por dia
-			Result.Append(titulo.ValorIOF.ToDecimalString(15));                    //166 a 180 - Valor do IOF a ser recolhido
-			Result.Append(titulo.ValorAbatimento.ToDecimalString(15));             //181 a 195 - Valor do abatimento
-			Result.Append(titulo.SeuNumero.FillLeft(25));                          //196 a 220 - Identificação do título na empresa
-			Result.Append(titulo.DataProtesto.HasValue &&
+			result.Append(titulo.ValorIOF.ToDecimalString(15));                    //166 a 180 - Valor do IOF a ser recolhido
+			result.Append(titulo.ValorAbatimento.ToDecimalString(15));             //181 a 195 - Valor do abatimento
+			result.Append(titulo.SeuNumero.FillLeft(25));                          //196 a 220 - Identificação do título na empresa
+			result.Append(titulo.DataProtesto.HasValue &&
 				titulo.DataProtesto > titulo.Vencimento ? "1" : "3");			   //221 - Código de protesto: Protestar em XX dias corridos
-			Result.Append(ADataProtesto);										   //222 a 223 - Prazo para protesto (em dias corridos)
-			Result.Append("0");                                                    //224 - Código de Baixa
-			Result.Append("00");                                                   //225 A 226 - Dias para baixa
-			Result.Append("0000000000000 ");
+			result.Append(aDataProtesto);										   //222 a 223 - Prazo para protesto (em dias corridos)
+			result.Append("0");                                                    //224 - Código de Baixa
+			result.Append("00");                                                   //225 A 226 - Dias para baixa
+			result.Append("0000000000000 ");
 
 			//SEGMENTO Q
-			string ATipoInscricao;
+			string aTipoInscricao;
 			switch (titulo.Sacado.Pessoa)
 			{
-				case Pessoa.Fisica: ATipoInscricao = "1"; break;
-				case Pessoa.Juridica: ATipoInscricao = "2"; break;
-				default: ATipoInscricao = "9"; break;
+				case Pessoa.Fisica: aTipoInscricao = "1"; break;
+				case Pessoa.Juridica: aTipoInscricao = "2"; break;
+				default: aTipoInscricao = "9"; break;
 			}
 
 			//Endereco sacado
-			string SEndereco = string.Format("{0} {1} {2}", titulo.Sacado.Logradouro,
+			var sEndereco = string.Format("{0} {1} {2}", titulo.Sacado.Logradouro,
 				titulo.Sacado.Numero, titulo.Sacado.Complemento).FillLeft(40);
 
-			Result.Append(Environment.NewLine);
-			Result.AppendFormat("{0:000}", Banco.Numero);				    //1 a 3 - Código do banco
-			Result.Append("0001");                                          //Número do lote
-            Result.Append("3");                                             //Tipo do registro: Registro detalhe
-            Result.Append(AIndex);											//Número seqüencial do registro no lote - Cada registro possui dois segmentos
-            Result.Append("Q");                                             //Código do segmento do registro detalhe
-            Result.Append(" ");                                             //Uso exclusivo FEBRABAN/CNAB: Branco
-            Result.Append("01");                                            //16 a 17
+			result.Append(Environment.NewLine);
+			result.AppendFormat("{0:000}", Banco.Numero);				    //1 a 3 - Código do banco
+			result.Append("0001");                                          //Número do lote
+            result.Append("3");                                             //Tipo do registro: Registro detalhe
+            result.Append(aIndex);											//Número seqüencial do registro no lote - Cada registro possui dois segmentos
+            result.Append("Q");                                             //Código do segmento do registro detalhe
+            result.Append(" ");                                             //Uso exclusivo FEBRABAN/CNAB: Branco
+            result.Append("01");                                            //16 a 17
             
 		    //Dados do sacado}
-            Result.Append(ATipoInscricao);                                  //18 a 18 Tipo inscricao
-            Result.Append(titulo.Sacado.CNPJCPF.ZeroFill(15));              //19 a 33
-            Result.Append(titulo.Sacado.NomeSacado.FillLeft(30));           //34 a 63
-            Result.Append("".FillLeft(10));                                 //64 a 73
-            Result.Append(SEndereco);  // 74 a 113
-            Result.Append(titulo.Sacado.Bairro.FillLeft(15));               //114 a 128
-            Result.Append(titulo.Sacado.CEP.ZeroFill(8));                   //129 a 136
-            Result.Append(titulo.Sacado.Cidade.FillLeft(15));               //137 a 151
-            Result.Append(titulo.Sacado.UF.FillLeft(2));                    //152 a 153
+            result.Append(aTipoInscricao);                                  //18 a 18 Tipo inscricao
+            result.Append(titulo.Sacado.CNPJCPF.ZeroFill(15));              //19 a 33
+            result.Append(titulo.Sacado.NomeSacado.FillLeft(30));           //34 a 63
+            result.Append("".FillLeft(10));                                 //64 a 73
+            result.Append(sEndereco);  // 74 a 113
+            result.Append(titulo.Sacado.Bairro.FillLeft(15));               //114 a 128
+            result.Append(titulo.Sacado.CEP.ZeroFill(8));                   //129 a 136
+            result.Append(titulo.Sacado.Cidade.FillLeft(15));               //137 a 151
+            result.Append(titulo.Sacado.UF.FillLeft(2));                    //152 a 153
             
 			//Dados do sacador/avalista}
-            Result.Append("0");                                             //Tipo de inscrição: Não informado
-            Result.Append("".ZeroFill(15));                                 //Número de inscrição
-            Result.Append("".FillLeft(30));                                 //Nome do sacador/avalista
-            Result.Append("".FillLeft(10));                                 //Uso exclusivo FEBRABAN/CNAB
-            Result.Append("".ZeroFill(3));                                  //Uso exclusivo FEBRABAN/CNAB
-            Result.Append("".FillLeft(28));                                 //Uso exclusivo FEBRABAN/CNAB
+            result.Append("0");                                             //Tipo de inscrição: Não informado
+            result.Append("".ZeroFill(15));                                 //Número de inscrição
+            result.Append("".FillLeft(30));                                 //Nome do sacador/avalista
+            result.Append("".FillLeft(10));                                 //Uso exclusivo FEBRABAN/CNAB
+            result.Append("".ZeroFill(3));                                  //Uso exclusivo FEBRABAN/CNAB
+            result.Append("".FillLeft(28));                                 //Uso exclusivo FEBRABAN/CNAB
 
-			return Result.ToString().ToUpper();
+			return result.ToString().ToUpper();
 		}
 
         /// <summary>
@@ -1208,33 +1206,33 @@ namespace ACBr.Net.Boleto.Bancos
         /// <returns>System.String.</returns>
         public override string GerarRegistroTrailler240(List<string> aRemessa)
         {
-			var Result = new StringBuilder();
+			var result = new StringBuilder();
             //REGISTRO TRAILER DO LOTE
-			Result.AppendFormat("{0:000}", Banco.Numero);        //Código do banco
-            Result.Append("0001");                               //Número do lote
-            Result.Append("5");                                  //Tipo do registro: Registro trailer do lote
-            Result.Append("".FillLeft(9));                       //Uso exclusivo FEBRABAN/CNAB
-            Result.AppendFormat("{0:000000}", aRemessa.Count);   //Quantidade de Registro da Remessa
-            Result.Append("".ZeroFill(6));                       //Quantidade de títulos em cobrança simples
-            Result.Append("".ZeroFill(17));                      //Valor dos títulos em cobrança simples
-            Result.Append("".ZeroFill(6));                       //Quantidade títulos em cobrança vinculada
-            Result.Append("".ZeroFill(17));                      //Valor dos títulos em cobrança vinculada
-            Result.Append("".ZeroFill(46));                      //Complemento
-            Result.Append("".FillLeft(8));                       //Referencia do aviso bancario
-            Result.Append("".FillLeft(117));
+			result.AppendFormat("{0:000}", Banco.Numero);        //Código do banco
+            result.Append("0001");                               //Número do lote
+            result.Append("5");                                  //Tipo do registro: Registro trailer do lote
+            result.Append("".FillLeft(9));                       //Uso exclusivo FEBRABAN/CNAB
+            result.AppendFormat("{0:000000}", aRemessa.Count);   //Quantidade de Registro da Remessa
+            result.Append("".ZeroFill(6));                       //Quantidade de títulos em cobrança simples
+            result.Append("".ZeroFill(17));                      //Valor dos títulos em cobrança simples
+            result.Append("".ZeroFill(6));                       //Quantidade títulos em cobrança vinculada
+            result.Append("".ZeroFill(17));                      //Valor dos títulos em cobrança vinculada
+            result.Append("".ZeroFill(46));                      //Complemento
+            result.Append("".FillLeft(8));                       //Referencia do aviso bancario
+            result.Append("".FillLeft(117));
 
           //GERAR REGISTRO TRAILER DO ARQUIVO
-    		Result.Append(Environment.NewLine);
-            Result.AppendFormat("{0:000}", Banco.Numero);        //Código do banco
-            Result.Append("9999");                               //Lote de serviço
-			Result.Append("9");                                  //Tipo do registro: Registro trailer do arquivo
-            Result.Append("".FillLeft(9));                       //Uso exclusivo FEBRABAN/CNAB}
-            Result.Append("000001");                             //Quantidade de lotes do arquivo}
-            Result.AppendFormat("{0:000000}", aRemessa.Count);   //Quantidade de registros do arquivo, inclusive este registro que está sendo criado agora}
-            Result.Append("".ZeroFill(6));                       //Complemento
-            Result.Append("".FillLeft(205));
+    		result.Append(Environment.NewLine);
+            result.AppendFormat("{0:000}", Banco.Numero);        //Código do banco
+            result.Append("9999");                               //Lote de serviço
+			result.Append("9");                                  //Tipo do registro: Registro trailer do arquivo
+            result.Append("".FillLeft(9));                       //Uso exclusivo FEBRABAN/CNAB}
+            result.Append("000001");                             //Quantidade de lotes do arquivo}
+            result.AppendFormat("{0:000000}", aRemessa.Count);   //Quantidade de registros do arquivo, inclusive este registro que está sendo criado agora}
+            result.Append("".ZeroFill(6));                       //Complemento
+            result.Append("".FillLeft(205));
 
-			return Result.ToString().ToUpper();
+			return result.ToString().ToUpper();
         }
 
         /// <summary>
@@ -1259,8 +1257,8 @@ namespace ACBr.Net.Boleto.Bancos
 				@"Agencia\Conta do arquivo inválido");
 
 			Banco.Parent.NumeroArquivo = aRetorno[0].ExtrairInt32DaPosicao(109, 113);
-			Banco.Parent.DataArquivo = aRetorno[0].ExtrairDataDaPosicao(95, 100);
-			Banco.Parent.DataCreditoLanc = aRetorno[0].ExtrairDataDaPosicao(114, 119);
+			Banco.Parent.DataArquivo = aRetorno[0].ExtrairDataDaPosicao(95, 100, "ddMMyy");
+            Banco.Parent.DataCreditoLanc = aRetorno[0].ExtrairDataDaPosicao(114, 119, "ddMMyy");
 
 			Banco.Parent.Cedente.TipoInscricao = (PessoaCedente)aRetorno[1].ExtrairInt32DaPosicao(2, 3);
 
@@ -1283,94 +1281,88 @@ namespace ACBr.Net.Boleto.Bancos
 
 			Banco.Parent.ListadeBoletos.Clear();
 						
-			Titulo Titulo;
-			for (int ContLinha = 1; ContLinha < aRetorno.Count - 1; ContLinha++)
+			Titulo titulo;
+			for (var contLinha = 1; contLinha < aRetorno.Count - 1; contLinha++)
 			{
-				var Linha = aRetorno[ContLinha];
+				var linha = aRetorno[contLinha];
 
-				if (Linha.ExtrairDaPosicao(1, 1) != "7" && Linha.ExtrairDaPosicao(1, 1) != "1")
+				if (linha.ExtrairDaPosicao(1, 1) != "7" && linha.ExtrairDaPosicao(1, 1) != "1")
 					continue;
 
-				Titulo = Banco.Parent.CriarTituloNaLista();
+				titulo = Banco.Parent.CriarTituloNaLista();
 
-				Titulo.SeuNumero = Linha.ExtrairDaPosicao(38, 62);
-				Titulo.NumeroDocumento = Linha.ExtrairDaPosicao(117, 126);
-				Titulo.OcorrenciaOriginal.Tipo = CodOcorrenciaToTipo(Linha.ExtrairInt32DaPosicao(109, 110));
+				titulo.SeuNumero = linha.ExtrairDaPosicao(38, 62);
+				titulo.NumeroDocumento = linha.ExtrairDaPosicao(117, 126);
+				titulo.OcorrenciaOriginal.Tipo = CodOcorrenciaToTipo(linha.ExtrairInt32DaPosicao(109, 110));
 
-				if (Titulo.OcorrenciaOriginal.Tipo.IsIn(TipoOcorrencia.RetornoInstrucaoProtestoRejeitadaSustadaOuPendente,
+				if (titulo.OcorrenciaOriginal.Tipo.IsIn(TipoOcorrencia.RetornoInstrucaoProtestoRejeitadaSustadaOuPendente,
 					TipoOcorrencia.RetornoAlegacaoDoSacado, TipoOcorrencia.RetornoInstrucaoCancelada))
 				{
-					var MotivoLinha = 302;
-					var motivo = Linha.ExtrairDaPosicao(MotivoLinha, MotivoLinha + 3).Trim();
-					Titulo.MotivoRejeicaoComando.Add(string.IsNullOrEmpty(motivo) ? "0000" : motivo);
+					var motivoLinha = 302;
+					var motivo = linha.ExtrairDaPosicao(motivoLinha, motivoLinha + 3).Trim();
+					titulo.MotivoRejeicaoComando.Add(string.IsNullOrEmpty(motivo) ? "0000" : motivo);
 					
-					if(Titulo.MotivoRejeicaoComando[0] != "0000")
+					if(titulo.MotivoRejeicaoComando[0] != "0000")
 					{
-						var CodOcorrencia = Titulo.MotivoRejeicaoComando[0].ToInt32();
-						var mdescricao = CodMotivoRejeicaoToDescricao(Titulo.OcorrenciaOriginal.Tipo, CodOcorrencia);
-						Titulo.DescricaoMotivoRejeicaoComando.Add(mdescricao);
+						var codOcorrencia = titulo.MotivoRejeicaoComando[0].ToInt32();
+						var mdescricao = CodMotivoRejeicaoToDescricao(titulo.OcorrenciaOriginal.Tipo, codOcorrencia);
+						titulo.DescricaoMotivoRejeicaoComando.Add(mdescricao);
 					}
 				}
 				else
 				{					
-					int MotivoLinha = 378;
-					int CodMotivo;
-					for (int i = 0; i < 3; i++)
+					var motivoLinha = 378;
+					int codMotivo;
+					for (var i = 0; i < 3; i++)
 					{						
-						Titulo.MotivoRejeicaoComando.Add(Linha.ExtrairDaPosicao(MotivoLinha, MotivoLinha + 1));
-						if (Titulo.MotivoRejeicaoComando[i] != "00")
+						titulo.MotivoRejeicaoComando.Add(linha.ExtrairDaPosicao(motivoLinha, motivoLinha + 1));
+						if (titulo.MotivoRejeicaoComando[i] != "00")
 						{
-							CodMotivo = Titulo.MotivoRejeicaoComando[i].ToInt32();
-							Titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(Titulo.OcorrenciaOriginal.Tipo, CodMotivo));
+							codMotivo = titulo.MotivoRejeicaoComando[i].ToInt32();
+							titulo.DescricaoMotivoRejeicaoComando.Add(CodMotivoRejeicaoToDescricao(titulo.OcorrenciaOriginal.Tipo, codMotivo));
 						}
-						MotivoLinha += 2;
+						motivoLinha += 2;
 					}
 				}
 
-				Titulo.DataOcorrencia = Linha.ExtrairDataDaPosicao(111, 116);
+                titulo.DataOcorrencia = linha.ExtrairDataDaPosicao(111, 116, "ddMMyy");
 
 				//Espécie do documento
-				switch (Linha.ExtrairDaPosicao(174, 175).Trim().ToInt32())
+				switch (linha.ExtrairDaPosicao(174, 175).Trim().ToInt32())
 				{
-					case 1: Titulo.EspecieDoc = "DM"; break;
-					case 2: Titulo.EspecieDoc = "NP"; break;
-					case 3: Titulo.EspecieDoc = "NS"; break;
-					case 4: Titulo.EspecieDoc = "ME"; break;
-					case 5: Titulo.EspecieDoc = "RC"; break;
-					case 6: Titulo.EspecieDoc = "CT"; break;
-					case 7: Titulo.EspecieDoc = "CS"; break;
-					case 8: Titulo.EspecieDoc = "DS"; break;
-					case 9: Titulo.EspecieDoc = "LC"; break;
-					case 13: Titulo.EspecieDoc = "ND"; break;
-					case 15: Titulo.EspecieDoc = "DD"; break;
-					case 16: Titulo.EspecieDoc = "EC"; break;
-					case 17: Titulo.EspecieDoc = "PS"; break;
-					default: Titulo.EspecieDoc = "DV"; break;
+					case 1: titulo.EspecieDoc = "DM"; break;
+					case 2: titulo.EspecieDoc = "NP"; break;
+					case 3: titulo.EspecieDoc = "NS"; break;
+					case 4: titulo.EspecieDoc = "ME"; break;
+					case 5: titulo.EspecieDoc = "RC"; break;
+					case 6: titulo.EspecieDoc = "CT"; break;
+					case 7: titulo.EspecieDoc = "CS"; break;
+					case 8: titulo.EspecieDoc = "DS"; break;
+					case 9: titulo.EspecieDoc = "LC"; break;
+					case 13: titulo.EspecieDoc = "ND"; break;
+					case 15: titulo.EspecieDoc = "DD"; break;
+					case 16: titulo.EspecieDoc = "EC"; break;
+					case 17: titulo.EspecieDoc = "PS"; break;
+					default: titulo.EspecieDoc = "DV"; break;
 				}
 
-				Titulo.Vencimento = Linha.ExtrairDataDaPosicao(147, 152);
+                titulo.Vencimento = linha.ExtrairDataDaPosicao(147, 152, "ddMMyy");
 
-				Titulo.ValorDocumento = Linha.ExtrairDecimalDaPosicao(153, 165);
-				Titulo.ValorIOF = Linha.ExtrairDecimalDaPosicao(215, 227);
-				Titulo.ValorAbatimento = Linha.ExtrairDecimalDaPosicao(228, 240);
-				Titulo.ValorDesconto = Linha.ExtrairDecimalDaPosicao(241, 253);
-				Titulo.ValorRecebido = Linha.ExtrairDecimalDaPosicao(254, 266);
-				Titulo.ValorMoraJuros = Linha.ExtrairDecimalDaPosicao(267, 279);
-				Titulo.ValorOutrosCreditos = Linha.ExtrairDecimalDaPosicao(280, 292);
-				Titulo.NossoNumero = Linha.ExtrairDaPosicao(64, 80);
-				Titulo.Carteira = Linha.ExtrairDaPosicao(92, 94);
-				Titulo.ValorDespesaCobranca = Linha.ExtrairDecimalDaPosicao(176, 188);
+				titulo.ValorDocumento = linha.ExtrairDecimalDaPosicao(153, 165);
+				titulo.ValorIOF = linha.ExtrairDecimalDaPosicao(215, 227);
+				titulo.ValorAbatimento = linha.ExtrairDecimalDaPosicao(228, 240);
+				titulo.ValorDesconto = linha.ExtrairDecimalDaPosicao(241, 253);
+				titulo.ValorRecebido = linha.ExtrairDecimalDaPosicao(254, 266);
+				titulo.ValorMoraJuros = linha.ExtrairDecimalDaPosicao(267, 279);
+				titulo.ValorOutrosCreditos = linha.ExtrairDecimalDaPosicao(280, 292);
+				titulo.NossoNumero = linha.ExtrairDaPosicao(64, 80);
+				titulo.Carteira = linha.ExtrairDaPosicao(92, 94);
+				titulo.ValorDespesaCobranca = linha.ExtrairDecimalDaPosicao(176, 188);
 
-				Titulo.NossoNumero = Linha.ExtrairDaPosicao(63, 70);
-				Titulo.Carteira = Linha.ExtrairDaPosicao(83, 85);
-
-				var tempdata = Linha.ExtrairDataOpcionalDaPosicao(296, 301);
-				if (tempdata.HasValue)
-					Titulo.DataCredito = tempdata.Value;
-
-				tempdata = Linha.ExtrairDataOpcionalDaPosicao(111, 116);
-				if (tempdata.HasValue)
-					Titulo.DataBaixa = tempdata.Value;
+				titulo.NossoNumero = linha.ExtrairDaPosicao(63, 70);
+				titulo.Carteira = linha.ExtrairDaPosicao(83, 85);
+                titulo.DataCredito = linha.ExtrairDataOpcionalDaPosicao(296, 301, "ddMMyy");
+                titulo.DataBaixa = linha.ExtrairDataOpcionalDaPosicao(111, 116, "ddMMyy");
 			}
         }
 
@@ -1412,64 +1404,64 @@ namespace ACBr.Net.Boleto.Bancos
 
 			Titulo titulo = null;
 
-			for (int ContLinha = 1; ContLinha < aRetorno.Count - 1; ContLinha++)
+			for (var contLinha = 1; contLinha < aRetorno.Count - 1; contLinha++)
 			{
-				var Linha = aRetorno[ContLinha];
+				var linha = aRetorno[contLinha];
 
 				// verifica se o registro (linha) é um registro detalhe (segmento J)
-				if (Linha.ExtrairInt32DaPosicao(8, 8) != 3)
+				if (linha.ExtrairInt32DaPosicao(8, 8) != 3)
 					continue;
 
 				// se for segmento T cria um novo titulo                
-				if (Linha.ExtrairDaPosicao(14, 14) == "T")
+				if (linha.ExtrairDaPosicao(14, 14) == "T")
 				{
 					titulo = Banco.Parent.CriarTituloNaLista();
 
-					titulo.SeuNumero = Linha.ExtrairDaPosicao(59, 68);
-					titulo.NumeroDocumento = Linha.ExtrairDaPosicao(59, 68);
-					titulo.Carteira = Linha.ExtrairDaPosicao(38, 40);
+					titulo.SeuNumero = linha.ExtrairDaPosicao(59, 68);
+					titulo.NumeroDocumento = linha.ExtrairDaPosicao(59, 68);
+					titulo.Carteira = linha.ExtrairDaPosicao(38, 40);
 
-					var dt = Linha.ExtrairDataOpcionalDaPosicao(74, 81);
+					var dt = linha.ExtrairDataOpcionalDaPosicao(74, 81);
 					if (dt.HasValue)
 						titulo.Vencimento = dt.Value;
 
-					titulo.ValorDocumento = Linha.ExtrairDecimalDaPosicao(82, 96);
-					titulo.NossoNumero = Linha.ExtrairDaPosicao(41, 48);
-					titulo.ValorDespesaCobranca = Linha.ExtrairDecimalDaPosicao(199, 213);
-					titulo.OcorrenciaOriginal.Tipo = CodOcorrenciaToTipo(Linha.ExtrairInt32DaPosicao(16, 17));
+					titulo.ValorDocumento = linha.ExtrairDecimalDaPosicao(82, 96);
+					titulo.NossoNumero = linha.ExtrairDaPosicao(41, 48);
+					titulo.ValorDespesaCobranca = linha.ExtrairDecimalDaPosicao(199, 213);
+					titulo.OcorrenciaOriginal.Tipo = CodOcorrenciaToTipo(linha.ExtrairInt32DaPosicao(16, 17));
 
-					var IdxMotivo = 214;
-					while (IdxMotivo < 221)
+					var idxMotivo = 214;
+					while (idxMotivo < 221)
 					{
-						if (!string.IsNullOrEmpty(Linha.ExtrairDaPosicao(IdxMotivo, IdxMotivo + 1)) || 
-							!Linha.ExtrairDaPosicao(IdxMotivo, IdxMotivo + 1).Equals("00"))
+						if (!string.IsNullOrEmpty(linha.ExtrairDaPosicao(idxMotivo, idxMotivo + 1)) || 
+							!linha.ExtrairDaPosicao(idxMotivo, idxMotivo + 1).Equals("00"))
 						{
-							titulo.MotivoRejeicaoComando.Add(Linha.ExtrairDaPosicao(IdxMotivo, IdxMotivo + 1));
+							titulo.MotivoRejeicaoComando.Add(linha.ExtrairDaPosicao(idxMotivo, idxMotivo + 1));
 							titulo.DescricaoMotivoRejeicaoComando.Add(
 								CodMotivoRejeicaoToDescricao(titulo.OcorrenciaOriginal.Tipo,
-								Linha.ExtrairInt32DaPosicao(IdxMotivo, IdxMotivo + 1)));
+								linha.ExtrairInt32DaPosicao(idxMotivo, idxMotivo + 1)));
 						}
-						IdxMotivo += 2;
+						idxMotivo += 2;
 					}
 				}
 				else
 				{
 					// segmento U
-					titulo.ValorIOF = Linha.ExtrairDecimalDaPosicao(63, 77);
-					titulo.ValorAbatimento = Linha.ExtrairDecimalDaPosicao(48, 62);
-					titulo.ValorDesconto = Linha.ExtrairDecimalDaPosicao(33, 47);
-					titulo.ValorMoraJuros = Linha.ExtrairDecimalDaPosicao(18, 32);
-					titulo.ValorOutrosCreditos = Linha.ExtrairDecimalDaPosicao(123, 137);
-					titulo.ValorRecebido = Linha.ExtrairDecimalDaPosicao(78, 92);
-					titulo.ValorOutrasDespesas = Linha.ExtrairDecimalDaPosicao(108, 113);
+					titulo.ValorIOF = linha.ExtrairDecimalDaPosicao(63, 77);
+					titulo.ValorAbatimento = linha.ExtrairDecimalDaPosicao(48, 62);
+					titulo.ValorDesconto = linha.ExtrairDecimalDaPosicao(33, 47);
+					titulo.ValorMoraJuros = linha.ExtrairDecimalDaPosicao(18, 32);
+					titulo.ValorOutrosCreditos = linha.ExtrairDecimalDaPosicao(123, 137);
+					titulo.ValorRecebido = linha.ExtrairDecimalDaPosicao(78, 92);
+					titulo.ValorOutrasDespesas = linha.ExtrairDecimalDaPosicao(108, 113);
 
-					var TempData = Linha.ExtrairDataOpcionalDaPosicao(138, 145);
-					if (TempData.HasValue)
-						titulo.DataOcorrencia = TempData.Value;
+					var tempData = linha.ExtrairDataOpcionalDaPosicao(138, 145);
+					if (tempData.HasValue)
+						titulo.DataOcorrencia = tempData.Value;
 
-					TempData = Linha.ExtrairDataOpcionalDaPosicao(146, 153);
-					if (TempData.HasValue)
-						titulo.DataCredito = TempData.Value;
+					tempData = linha.ExtrairDataOpcionalDaPosicao(146, 153);
+					if (tempData.HasValue)
+						titulo.DataCredito = tempData.Value;
 				}
 			}
         }

@@ -296,7 +296,7 @@ namespace ACBr.Net.Boleto
         /// Gets or sets the ocorrencia original.
         /// </summary>
         /// <value>The ocorrencia original.</value>
-        public Ocorrencia OcorrenciaOriginal { get; set; }
+        public Ocorrencia OcorrenciaOriginal { get; private set; }
         /// <summary>
         /// Gets the motivo rejeicao comando.
         /// </summary>
